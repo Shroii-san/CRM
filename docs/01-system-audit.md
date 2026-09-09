@@ -135,29 +135,6 @@ error
 - Belum dapat menentukan custom `ORDER BY`.
 - Search, filter, sort, dan pagination harus menggunakan pola yang lebih baik sehingga tidak saling merusak.
 
-Contoh:
-
-```text
-search
-↓
-filter
-↓
-sort
-↓
-pagination
-```
-
-Request dapat menggunakan pola:
-
-```text
-/customers
-    ?search=andi
-    &status=active
-    &sort=name
-    &direction=asc
-    &page=2
-```
-
 ---
 
 ## 3.2 Action Modal
@@ -223,7 +200,7 @@ PIC / Contact Person
 = perwakilan dari pihak customer/company
 ```
 
-Jangan menggunakan kedua field tersebut untuk merepresentasikan orang dengan responsibility yang sama.
+Jangan menggunakan kedua field tersebut untuk merepresentasikan orang dengan role yang sama.
 
 ### Import
 
@@ -238,7 +215,7 @@ Jika customer dapat memiliki attachment, struktur penyimpanan file perlu konsist
 
 # 4. MARKETING / SALES MANAGEMENT
 
-> URL saat ini `/marketing`, tetapi halaman sebenarnya merupakan Sales Management. Naming perlu disesuaikan agar URL, menu, controller, dan domain terminology konsisten.
+> URL saat ini `/marketing`, tetapi halaman sebenarnya merupakan Sales Management. Naming perlu disesuaikan agar URL, menu, controller konsisten.
 
 - `name` sebaiknya direpresentasikan dengan struktur data yang konsisten ketika search/filter menghasilkan lebih dari satu data.
 - Filter menyebabkan pagination tidak bekerja.
@@ -334,7 +311,7 @@ Won / Lost
 
 `Tanggal Kerja` kurang tepat.
 
-Gunakan terminology berdasarkan business meaning, misalnya:
+Gunakan istilah berdasarkan business meaning, misalnya:
 
 ```text
 deal_created_at
@@ -357,9 +334,9 @@ Ini merupakan salah satu bagian yang bersifat **fundamental/business logic**, bu
 - Deal belum dapat berpindah stage.
 - Perpindahan deal harus dapat dilakukan secara dinamis.
 - Hanya menampilkan data setelah card diklik; perlu UX yang lebih baik untuk melihat data deal.
-- `x-overflow` masih aktif/tidak sesuai.
+- ada horizontal scrollbar di masing masing card.
 - Lebar scrollbar terlalu besar.
-- Hover peek kurang tepat secara UX.
+- Hover peek kurang tepat secara UI/UX.
 
 ### Pipeline–Stage Relationship
 
@@ -398,13 +375,13 @@ Tetapi perpindahan tersebut harus mengikuti business rule.
 Contohnya harus ditentukan:
 
 ```text
-Qualification → Proposal       ✓
-Proposal → Negotiation         ✓
-Negotiation → Won              ✓
+Qualification -> Proposal       ✓
+Proposal -> Negotiation         ✓
+Negotiation -> Won              ✓
 
-Won → Qualification            ?
-Lost → Negotiation             ?
-Qualification → Won            ?
+Won -> Qualification            ?
+Lost -> Negotiation             ?
+Qualification -> Won            ?
 ```
 
 Jangan hanya mengimplementasikan:
@@ -461,12 +438,7 @@ Location
 Status
 ```
 
-bukan hanya:
-
-```text
-Sales
-Province
-```
+- Atau gunakan filter by yang lain jika ada opsi yang lebih baik
 
 - Search/filter/sort/pagination perlu menggunakan pola yang konsisten.
 
@@ -491,7 +463,7 @@ Province
 
 ## 9.1 Create Menu
 
-Menu tidak seharusnya dapat membuat halaman/fitur baru secara arbitrary.
+Menu tidak seharusnya dapat membuat halaman/fitur baru.
 
 Jika Superadmin membuat:
 
@@ -667,17 +639,17 @@ AJAX / Fetch
 Contoh:
 
 ```text
-Initial table       → Blade
-Search              → AJAX
-Filter              → AJAX
-Pagination           → AJAX
-Sort                 → AJAX
-Modal detail         → AJAX
-Cascade dropdown     → AJAX
-Chart                → AJAX
+Initial table       -> Blade
+Search              -> AJAX
+Filter              -> AJAX
+Pagination           -> AJAX
+Sort                 -> AJAX
+Modal detail         -> AJAX
+Cascade dropdown     -> AJAX
+Chart                -> AJAX
 ```
 
-Dengan demikian Laravel tetap dimanfaatkan sebagai server-side framework, sementara AJAX digunakan ketika memang memberikan manfaat.
+Dengan demikian Laravel tetap dimanfaatkan sebagai server-side render, sementara AJAX digunakan ketika memang diperlukan.
 
 ---
 
@@ -685,7 +657,7 @@ Dengan demikian Laravel tetap dimanfaatkan sebagai server-side framework, sement
 
 Komponen yang memiliki pola berulang sebaiknya dibuat reusable.
 
-Minimal kandidat:
+Minimal yang diperlukan:
 
 ```text
 DataTable
@@ -984,41 +956,13 @@ Perlu ditentukan juga:
 
 Database perlu diperiksa kembali berdasarkan domain, bukan hanya berdasarkan kebutuhan halaman.
 
-Minimal pastikan relationship berikut jelas:
-
-```text
-Company
-    ↓
-Contact / PIC
-
-User
-    ↓
-Sales
-
-Customer
-    ↓
-Company
-    ↓
-Contact / PIC
-    ↓
-Assigned Sales
-
-Deal
-    ↓
-Customer
-    ↓
-Pipeline
-    ↓
-Current Stage
-```
-
 Perlu diperiksa:
 
 - foreign key
 - relationship
 - nullable field
 - unique constraint
-- referential integrity
+- reference
 - cascade behavior
 - naming convention
 
@@ -1056,15 +1000,15 @@ Contoh history:
 
 ```text
 10:00
-Qualification → Proposal
+Qualification -> Proposal
 oleh Sales A
 
 11:30
-Proposal → Negotiation
+Proposal -> Negotiation
 oleh Sales A
 
 14:00
-Negotiation → Won
+Negotiation -> Won
 oleh Sales B
 ```
 
@@ -1115,7 +1059,7 @@ User A
 UPDATE
 Deal #123
 stage:
-Proposal → Negotiation
+Proposal -> Negotiation
 2026-09-04 14:00
 ```
 
@@ -1141,7 +1085,7 @@ Create Activity
 
 Jika salah satu proses wajib gagal, perubahan sebelumnya harus di-rollback.
 
-Tujuannya menghindari kondisi data parsial/inconsistent.
+Tujuannya menghindari kondisi data yang tidak konsisten.
 
 ---
 
@@ -1216,7 +1160,7 @@ Session Security
 - Hapus `console.log()` yang tidak diperlukan.
 - Konsistenkan nama icon.
 - Konsistenkan nama field.
-- Konsistenkan terminology.
+- Konsistenkan istilah.
 - Konsistenkan naming controller/model/component.
 - Hindari dua component yang melakukan fungsi sama tetapi memiliki behaviour berbeda tanpa alasan.
 - Ubah inline style menjadi utility class Tailwind jika memang sesuai.
@@ -1333,7 +1277,7 @@ Bagian ini harus dikerjakan sebelum polishing UI.
 ## 27.2 Pipeline & Deal
 
 - Perbaiki business logic Pipeline.
-- Perbaiki relationship Pipeline → Stage → Deal.
+- Perbaiki relationship Pipeline -> Stage -> Deal.
 - Hilangkan hardcoded stage.
 - Implementasikan dynamic stage.
 - Implementasikan transition.
@@ -1508,7 +1452,7 @@ POLISHING & PRODUCTION
 1. UX
 2. Responsive
 3. Accessibility
-4. Terminology
+4. istilah
 5. Naming consistency
 6. Icon consistency
 7. Cleanup

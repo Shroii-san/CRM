@@ -4,7 +4,7 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 
 ---
 
-## 🗺️ URUTAN IMPLEMENTASI (PHASING)
+## URUTAN IMPLEMENTASI (PHASING)
 
 ### PHASE 1: DOMAIN & DATABASE DESIGN
 
@@ -98,7 +98,7 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 
 ---
 
-## 🎯 RINGKASAN PRIORITAS (SLA)
+## RINGKASAN PRIORITAS (SLA)
 
 | Level  | Kategori                  | Fokus Utama                                                                                                                                                            |
 | :----- | :------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

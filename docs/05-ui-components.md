@@ -8,7 +8,7 @@ Dokumen ini memuat standar pengelolaan aset _frontend_, strategi _rendering_, da
 
 Aplikasi menggunakan **Vite** sebagai _module bundler_ utama. Penempatan aset harus mengikuti aturan ketat berikut:
 
-- **`resources/css` & `resources/js`:** Tempat untuk semua _source code_ CSS (Tailwind) dan JavaScript aplikasi. Seluruh _script_ interaktif, logika _chart_, _table_, dan _modal_ harus ditulis di sini agar diproses (di-_build_) dan di-minify oleh Vite.
+- **`resources/css` & `resources/js`:** Tempat untuk semua _source code_ CSS (Tailwind) dan JavaScript aplikasi. Seluruh _script_ interaktif, logika _chart_, _table_, dan _modal_ harus ditulis di sini agar diproses (di-_build_) dan oleh Vite.
 - **`public/`:** HANYA digunakan untuk aset statis yang tidak perlu diproses, seperti gambar, logo perusahaan, favicon, atau dokumen _dummy_.
 - **Larangan:** Tidak boleh meletakkan file `.js` atau `.css` aplikasi langsung di folder `public/js` atau `public/css`.
 

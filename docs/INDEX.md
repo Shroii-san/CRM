@@ -4,7 +4,7 @@ Selamat datang di direktori dokumentasi proyek. Seluruh dokumen di dalam folder 
 
 ---
 
-## 📚 DAFTAR DOKUMEN
+## DAFTAR DOKUMEN
 
 ### 1. [01 - Laporan Audit Sistem](./01-system-audit.md)
 
@@ -28,13 +28,13 @@ Aturan teknis pengembangan antarmuka. Berisi manajemen aset Vite (`resources/` v
 
 ---
 
-## 🔗 LINK CEPAT
+## LINK CEPAT
 
-- 📄 [Kembali ke README Utama (Root Project)](../README.md)
+- [Kembali ke README Utama (Root Project)](../README.md)
 
 ---
 
-## 💡 PANDUAN PENGGUNAAN DOKUMENTASI
+## PANDUAN PENGGUNAAN DOKUMENTASI
 
 1. **Developer Baru:** Dimulai dari membaca `README.md` untuk setup environment lokal, lalu pelajari `04-architecture-and-api.md` dan `05-ui-and-components.md` sebelum menulis kode.
 2. **Pelaporan Progress:** Gunakan checklist pada `02-roadmap-and-phases.md` untuk memantau status pengerjaan fitur yang sedang berjalan.

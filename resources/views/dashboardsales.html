@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Penjualan - Sales Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .profile-modal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .modal-backdrop {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .sidebar-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .status-badge {
+            transition: all 0.2s ease;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .data-card:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .target-progress {
+            transition: width 1s ease-in-out;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="text-white font-bold text-xl">LIXEN</div>
+                    <div class="text-white text-sm opacity-75">/ Sales / Data Penjualan</div>
+                </div>
+                
+                <!-- Profile Button -->
+                <button id="profileToggle" class="flex items-center space-x-2 text-white hover:text-indigo-300 focus:outline-none transition-colors">
+                    <img class="h-8 w-8 rounded-full border-2 border-white" 
+                        src="https://via.placeholder.com/32x32/667eea/ffffff?text=S" 
+                        alt="Profile">
+                    <div>
+                        <span class="text-white font-medium block">sales_user</span>
+                        <span class="text-blue-200 text-xs block">sales</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-sm ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1 pt-16 p-6 bg-gray-50 min-h-screen">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Data Penjualan Saya</h1>
+                    <p class="text-gray-600">Statistik pribadi, data penjualan, dan target pencapaian</p>
+                </div>
+                <button id="addSaleBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Tambah Penjualan
+                </button>
+            </div>
+        </div>
+
+        <!-- Personal Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="stats-card rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-200 text-sm mb-1">Penjualan Bulan Ini</p>
+                        <p class="text-white text-2xl font-bold">17</p>
+                        <p class="text-blue-200 text-sm">↑ 13% dari bulan lalu</p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 p-3 rounded-full">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Revenue Pribadi</p>
+                        <p class="text-gray-800 text-2xl font-bold">485M</p>
+                        <p class="text-green-600 text-sm">↑ 22% dari target</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Target Achievement</p>
+                        <p class="text-gray-800 text-2xl font-bold">85%</p>
+                        <p class="text-yellow-600 text-sm">17/20 target</p>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <i class="fas fa-target text-yellow-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Ranking Tim</p>
+                        <p class="text-gray-800 text-2xl font-bold">#2</p>
+                        <p class="text-blue-600 text-sm">dari 8 sales</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-trophy text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts & Target -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Personal Statistics Chart -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-gray-800 text-lg font-semibold mb-4">
+                    <i class="fas fa-chart-bar mr-2 text-indigo-600"></i>
+                    Statistik Penjualan Pribadi (6 Bulan)
+                </h3>
+                <div class="chart-container">
+                    <canvas id="personalChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Personal Target -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-gray-800 text-lg font-semibold mb-4">
+                    <i class="fas fa-bullseye mr-2 text-indigo-600"></i>
+                    Target Penjualan Pribadi
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-gray-700 font-medium mb-3">Target Bulan Ini</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Penjualan (17/20)</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3">
+                                    <div class="target-progress bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Revenue (485M/400M)</span>
+                                    <span>121%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3">
+                                    <div class="target-progress bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Details -->
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="p-3 bg-blue-50 rounded-lg">
+                            <p class="text-2xl font-bold text-blue-600">3</p>
+                            <p class="text-gray-500 text-sm">Tersisa</p>
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="text-2xl font-bold text-green-600">85M</p>
+                            <p class="text-gray-500 text-sm">Bonus</p>
+                        </div>
+                        <div class="p-3 bg-yellow-50 rounded-lg">
+                            <p class="text-2xl font-bold text-yellow-600">5</p>
+                            <p class="text-gray-500 text-sm">Hari</p>
+                        </div>
+                    </div>
+
+                    <!-- Achievement Badge -->
+                    <div class="p-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white text-center">
+                        <i class="fas fa-star text-2xl mb-2"></i>
+                        <p class="font-semibold">Excellent Performance!</p>
+                        <p class="text-sm opacity-90">Revenue target tercapai 121%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Data Table -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-gray-800 text-lg font-semibold">
+                    <i class="fas fa-table mr-2 text-indigo-600"></i>
+                    Data Penjualan Saya
+                </h3>
+                <div class="flex space-x-2">
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                        <option>Bulan Ini</option>
+                        <option>Bulan Lalu</option>
+                        <option>3 Bulan Terakhir</option>
+                        <option>Tahun Ini</option>
+                    </select>
+                    <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors text-sm">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">ID</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Customer</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Produk/Layanan</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Kategori Industri</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Nilai</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Tanggal</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Status</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#MY-001</td>
+                            <td class="py-3 px-4">PT. Solusi Digital</td>
+                            <td class="py-3 px-4">Website E-commerce</td>
+                            <td class="py-3 px-4">Teknologi</td>
+                            <td class="py-3 px-4 font-semibold">Rp 45.000.000</td>
+                            <td class="py-3 px-4">26 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm cursor-pointer">Completed</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#MY-002</td>
+                            <td class="py-3 px-4">CV. Maju Bersama</td>
+                            <td class="py-3 px-4">Sistem Management</td>
+                            <td class="py-3 px-4">Manufaktur</td>
+                            <td class="py-3 px-4 font-semibold">Rp 32.000.000</td>
+                            <td class="py-3 px-4">25 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm cursor-pointer">Processing</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#MY-003</td>
+                            <td class="py-3 px-4">UD. Berkah Mandiri</td>
+                            <td class="py-3 px-4">Mobile Application</td>
+                            <td class="py-3 px-4">Retail</td>
+                            <td class="py-3 px-4 font-semibold">Rp 28.500.000</td>
+                            <td class="py-3 px-4">24 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm cursor-pointer">Completed</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#MY-004</td>
+                            <td class="py-3 px-4">PT. Global Sejahtera</td>
+                            <td class="py-3 px-4">Digital Marketing</td>
+                            <td class="py-3 px-4">Jasa</td>
+                            <td class="py-3 px-4 font-semibold">Rp 15.750.000</td>
+                            <td class="py-3 px-4">23 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm cursor-pointer">Pending</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#MY-005</td>
+                            <td class="py-3 px-4">CV. Inovasi Mandiri</td>
+                            <td class="py-3 px-4">Cloud Solutions</td>
+                            <td class="py-3 px-4">Teknologi</td>
+                            <td class="py-3 px-4 font-semibold">Rp 52.000.000</td>
+                            <td class="py-3 px-4">22 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm cursor-pointer">Completed</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+                <div class="text-sm text-gray-600">
+                    Menampilkan 1-5 dari 17 data penjualan
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">Previous</button>
+                    <button class="px-3 py-1 rounded-lg bg-indigo-600 text-white">1</button>
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">3</button>
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Sale Modal -->
+    <div id="saleModal" class="fixed inset-0 z-50 modal-backdrop hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-xl max-w-3xl w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300 max-h-[90vh] overflow-y-auto" id="saleModalContent">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Tambah Data Penjualan Baru</h3>
+                        <button id="closeSaleModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Nama Customer</label>
+                            <input type="text" placeholder="Nama Customer" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Produk/Layanan</label>
+                            <input type="text" placeholder="Nama Produk/Layanan" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Kategori Industri</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Kategori Industri --</option>
+                                <option value="teknologi">Teknologi</option>
+                                <option value="manufaktur">Manufaktur</option>
+                                <option value="retail">Retail</option>
+                                <option value="jasa">Jasa</option>
+                                <option value="kesehatan">Kesehatan</option>
+                                <option value="pendidikan">Pendidikan</option>
+                                <option value="keuangan">Keuangan</option>
+                                <option value="properti">Properti</option>
+                                <option value="otomotif">Otomotif</option>
+                                <option value="makanan">Makanan & Minuman</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Nilai Penjualan</label>
+                            <input type="number" placeholder="0" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal</label>
+                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Status</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option>Pending</option>
+                                <option>Processing</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+
+                        <!-- Location Fields -->
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Provinsi</label>
+                            <select id="province" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Provinsi --</option>
+                                <option value="1">DKI Jakarta</option>
+                                <option value="2">Jawa Barat</option>
+                                <option value="3">Jawa Tengah</option>
+                                <option value="4">Jawa Timur</option>
+                                <option value="5">Bali</option>
+                                <option value="6">Sumatera Utara</option>
+                                <option value="7">Sumatera Selatan</option>
+                                <option value="8">Kalimantan Timur</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Kabupaten/Kota</label>
+                            <select id="regency" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Kabupaten/Kota --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Kecamatan</label>
+                            <select id="district" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Kecamatan --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Kelurahan/Desa</label>
+                            <select id="village" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Kelurahan/Desa --</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Alamat Lengkap</label>
+                            <textarea placeholder="Masukkan alamat lengkap customer..." rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Keterangan</label>
+                            <textarea placeholder="Deskripsi atau catatan penjualan..." rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 mt-6">
+                        <button id="saveSaleBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-save mr-2"></i>Simpan Data
+                        </button>
+                        <button id="cancelSaleBtn" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-50 modal-backdrop hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="profile-modal rounded-xl max-w-md w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300 max-h-[90vh] overflow-y-auto relative" id="profileContent">
+                <button id="closeProfileX" class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="p-8">
+                    <div class="text-center">
+                        <div class="mb-6">
+                            <img class="h-20 w-20 rounded-full border-4 border-white mx-auto mb-4" 
+                                src="https://via.placeholder.com/80x80/667eea/ffffff?text=SU" 
+                                alt="Profile">
+                            <h2 class="text-white text-xl font-bold">sales_user</h2>
+                            <p class="text-blue-200 text-sm">Sales Executive</p>
+                        </div>
+                        <div class="space-y-4 text-left mb-6">
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Email</label>
+                                <p class="text-white">sales@lixen.com</p>
+                            </div>
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Departemen</label>
+                                <p class="text-white">Sales & Business Development</p>
+                            </div>
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Target Pribadi</label>
+                                <p class="text-white">17/20 Penjualan (85%)</p>
+                            </div>
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Revenue</label>
+                                <p class="text-white">Rp 485M (121%)</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <a href="dashboard-sales.html" class="w-full bg-indigo-600 bg-opacity-80 text-white py-3 px-4 rounded-lg font-medium hover:bg-opacity-90 transition-all block text-center">
+                                <i class="fas fa-chart-line mr-2"></i>Dashboard Sales
+                            </a>
+                            <a href="data-penjualan-sales.html" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all block text-center">
+                                <i class="fas fa-chart-bar mr-2"></i>Data Penjualan
+                            </a>
+                            <a href="target-pribadi.html" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all block text-center">
+                                <i class="fas fa-bullseye mr-2"></i>Target Pribadi
+                            </a>
+                            <a href="edit-profile.html" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all block text-center">
+                                <i class="fas fa-edit mr-2"></i>Edit Profile
+                            </a>
+                            <button class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all">
+                                <i class="fas fa-cog mr-2"></i>Pengaturan
+                            </button>
+                            <button class="w-full bg-red-500 bg-opacity-30 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-50 transition-all">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data for location dropdowns
+            const locationData = {
+                provinces: {
+                    1: { name: "DKI Jakarta", regencies: {
+                        11: { name: "Jakarta Pusat", districts: {
+                            111: { name: "Gambir", villages: {1111: "Gambir", 1112: "Kebon Kelapa"} },
+                            112: { name: "Tanah Abang", villages: {1121: "Bendungan Hilir", 1122: "Karet Tengsin"} }
+                        }},
+                        12: { name: "Jakarta Selatan", districts: {
+                            121: { name: "Kebayoran Baru", villages: {1211: "Kramat Pela", 1212: "Gunung"} },
+                            122: { name: "Tebet", villages: {1221: "Tebet Barat", 1222: "Tebet Timur"} }
+                        }}
+                    }},
+                    2: { name: "Jawa Barat", regencies: {
+                        21: { name: "Bandung", districts: {
+                            211: { name: "Cidadap", villages: {2111: "Hegarmanah", 2112: "Ledeng"} },
+                            212: { name: "Coblong", villages: {2121: "Cipaganti", 2122: "Dago"} }
+                        }},
+                        22: { name: "Bekasi", districts: {
+                            221: { name: "Bekasi Timur", villages: {2211: "Bekasi Jaya", 2212: "Margahayu"} }
+                        }}
+                    }},
+                    3: { name: "Jawa Tengah", regencies: {
+                        31: { name: "Semarang", districts: {
+                            311: { name: "Semarang Tengah", villages: {3111: "Kauman", 3112: "Kranggan"} }
+                        }}
+                    }}
+                }
+            };
+
+            // Initialize Personal Chart
+            const ctx = document.getElementById('personalChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep'],
+                    datasets: [{
+                        label: 'Penjualan',
+                        data: [12, 15, 18, 14, 16, 17],
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Target',
+                        data: [15, 15, 15, 15, 15, 20],
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' sales';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Location dropdown functionality
+            const provinceSelect = document.getElementById('province');
+            const regencySelect = document.getElementById('regency');
+            const districtSelect = document.getElementById('district');
+            const villageSelect = document.getElementById('village');
+
+            provinceSelect.addEventListener('change', function() {
+                const provinceId = this.value;
+                regencySelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+                districtSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                villageSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+
+                if (provinceId && locationData.provinces[provinceId]) {
+                    const regencies = locationData.provinces[provinceId].regencies;
+                    for (const [id, regency] of Object.entries(regencies)) {
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = regency.name;
+                        regencySelect.appendChild(option);
+                    }
+                }
+            });
+
+            regencySelect.addEventListener('change', function() {
+                const provinceId = provinceSelect.value;
+                const regencyId = this.value;
+                districtSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                villageSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+
+                if (provinceId && regencyId && locationData.provinces[provinceId].regencies[regencyId]) {
+                    const districts = locationData.provinces[provinceId].regencies[regencyId].districts;
+                    for (const [id, district] of Object.entries(districts)) {
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = district.name;
+                        districtSelect.appendChild(option);
+                    }
+                }
+            });
+
+            districtSelect.addEventListener('change', function() {
+                const provinceId = provinceSelect.value;
+                const regencyId = regencySelect.value;
+                const districtId = this.value;
+                villageSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+
+                if (provinceId && regencyId && districtId && 
+                    locationData.provinces[provinceId].regencies[regencyId].districts[districtId]) {
+                    const villages = locationData.provinces[provinceId].regencies[regencyId].districts[districtId].villages;
+                    for (const [id, village] of Object.entries(villages)) {
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = village;
+                        villageSelect.appendChild(option);
+                    }
+                }
+            });
+
+            // Profile modal functionality
+            const profileToggle = document.getElementById('profileToggle');
+            const profileModal = document.getElementById('profileModal');
+            const profileContent = document.getElementById('profileContent');
+            const closeProfileX = document.getElementById('closeProfileX');
+
+            profileToggle.addEventListener('click', () => {
+                profileModal.classList.remove('hidden');
+                setTimeout(() => {
+                    profileContent.classList.remove('scale-95', 'opacity-0');
+                    profileContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+
+            const closeProfile = () => {
+                profileContent.classList.add('scale-95', 'opacity-0');
+                profileContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    profileModal.classList.add('hidden');
+                }, 300);
+            };
+
+            closeProfileX.addEventListener('click', closeProfile);
+            profileModal.addEventListener('click', (e) => {
+                if (e.target === profileModal) {
+                    closeProfile();
+                }
+            });
+
+            // Sale modal functionality
+            const addSaleBtn = document.getElementById('addSaleBtn');
+            const saleModal = document.getElementById('saleModal');
+            const saleModalContent = document.getElementById('saleModalContent');
+            const closeSaleModal = document.getElementById('closeSaleModal');
+            const cancelSaleBtn = document.getElementById('cancelSaleBtn');
+            const saveSaleBtn = document.getElementById('saveSaleBtn');
+
+            const openSaleModal = () => {
+                saleModal.classList.remove('hidden');
+                setTimeout(() => {
+                    saleModalContent.classList.remove('scale-95', 'opacity-0');
+                    saleModalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            };
+
+            const closeSaleModalFunc = () => {
+                saleModalContent.classList.add('scale-95', 'opacity-0');
+                saleModalContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    saleModal.classList.add('hidden');
+                }, 300);
+            };
+
+            addSaleBtn.addEventListener('click', openSaleModal);
+            closeSaleModal.addEventListener('click', closeSaleModalFunc);
+            cancelSaleBtn.addEventListener('click', closeSaleModalFunc);
+            
+            saleModal.addEventListener('click', (e) => {
+                if (e.target === saleModal) {
+                    closeSaleModalFunc();
+                }
+            });
+
+            // Save sale data
+            saveSaleBtn.addEventListener('click', () => {
+                alert('Data penjualan berhasil disimpan!');
+                closeSaleModalFunc();
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    if (!profileModal.classList.contains('hidden')) {
+                        closeProfile();
+                    }
+                    if (!saleModal.classList.contains('hidden')) {
+                        closeSaleModalFunc();
+                    }
+                }
+            });
+
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.target-progress').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+
+            // Add interactivity to action buttons
+            document.querySelectorAll('.fa-eye').forEach(btn => {
+                btn.parentElement.addEventListener('click', () => {
+                    alert('Melihat detail penjualan...');
+                });
+            });
+
+            document.querySelectorAll('.fa-edit').forEach(btn => {
+                btn.parentElement.addEventListener('click', () => {
+                    openSaleModal();
+                    // Change modal title for editing
+                    document.querySelector('#saleModal h3').textContent = 'Edit Data Penjualan';
+                });
+            });
+
+            document.querySelectorAll('.fa-trash').forEach(btn => {
+                btn.parentElement.addEventListener('click', () => {
+                    if (confirm('Apakah Anda yakin ingin menghapus data penjualan ini?')) {
+                        alert('Data penjualan berhasil dihapus!');
+                        // Remove the row from table
+                        btn.closest('tr').remove();
+                    }
+                });
+            });
+
+            // Status badge click functionality
+            document.querySelectorAll('.status-badge').forEach(badge => {
+                badge.addEventListener('click', () => {
+                    const currentStatus = badge.textContent;
+                    const statuses = ['Pending', 'Processing', 'Completed'];
+                    const currentIndex = statuses.indexOf(currentStatus);
+                    const nextIndex = (currentIndex + 1) % statuses.length;
+                    
+                    badge.textContent = statuses[nextIndex];
+                    badge.className = 'status-badge px-3 py-1 rounded-full text-sm cursor-pointer transition-all';
+                    
+                    if (statuses[nextIndex] === 'Pending') {
+                        badge.classList.add('bg-blue-100', 'text-blue-800');
+                    } else if (statuses[nextIndex] === 'Processing') {
+                        badge.classList.add('bg-yellow-100', 'text-yellow-800');
+                    } else {
+                        badge.classList.add('bg-green-100', 'text-green-800');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

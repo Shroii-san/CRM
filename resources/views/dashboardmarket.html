@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Penjualan - Marketing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .profile-modal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .modal-backdrop {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .sidebar-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .status-badge {
+            transition: all 0.2s ease;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .data-card:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .target-progress {
+            transition: width 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="text-white font-bold text-xl">LIXEN</div>
+                    <div class="text-white text-sm opacity-75">/ Marketing / Data Penjualan</div>
+                </div>
+                
+                <!-- Profile Button -->
+                <button id="profileToggle" class="flex items-center space-x-2 text-white hover:text-indigo-300 focus:outline-none transition-colors">
+                    <img class="h-8 w-8 rounded-full border-2 border-white" 
+                        src="https://via.placeholder.com/32x32/667eea/ffffff?text=M" 
+                        alt="Profile">
+                    <div>
+                        <span class="text-white font-medium block">marketing_admin</span>
+                        <span class="text-blue-200 text-xs block">marketing</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-sm ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1 pt-16 p-6 bg-gray-50 min-h-screen">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Data Penjualan Marketing</h1>
+                    <p class="text-gray-600">Monitor, kelola, dan tetapkan target penjualan untuk tim sales</p>
+                </div>
+                <button id="addSaleBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Input Data Penjualan
+                </button>
+            </div>
+        </div>
+
+        <!-- Performance Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Total Penjualan Bulan Ini</p>
+                        <p class="text-gray-800 text-2xl font-bold">152</p>
+                        <p class="text-green-600 text-sm">↑ 18% dari bulan lalu</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Revenue Bulan Ini</p>
+                        <p class="text-gray-800 text-2xl font-bold">2.4M</p>
+                        <p class="text-green-600 text-sm">↑ 24% dari target</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Target Achievement</p>
+                        <p class="text-gray-800 text-2xl font-bold">89%</p>
+                        <p class="text-yellow-600 text-sm">152/170 target</p>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <i class="fas fa-target text-yellow-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 data-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">Tim Sales Aktif</p>
+                        <p class="text-gray-800 text-2xl font-bold">8</p>
+                        <p class="text-blue-600 text-sm">Semua aktif</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-users text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Performance Chart & Target Setting -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Performance Chart -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-gray-800 text-lg font-semibold mb-4">
+                    <i class="fas fa-chart-bar mr-2 text-indigo-600"></i>
+                    Performance Sales Team
+                </h3>
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Target Setting -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-gray-800 text-lg font-semibold mb-4">
+                    <i class="fas fa-bullseye mr-2 text-indigo-600"></i>
+                    Set Target Penjualan
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Target Bulan Depan</label>
+                        <input type="number" value="180" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Target Revenue (Juta)</label>
+                        <input type="number" value="2.8" step="0.1" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Assign Target untuk Sales</label>
+                        <select class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option>Semua Sales Team</option>
+                            <option>Ahmad Rahman (Sales 1)</option>
+                            <option>Siti Nurhaliza (Sales 2)</option>
+                            <option>Budi Santoso (Sales 3)</option>
+                        </select>
+                    </div>
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-save mr-2"></i>Update Target
+                    </button>
+
+                    <!-- Current Progress -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-gray-700 font-medium mb-3">Progress Target Saat Ini</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Penjualan (152/170)</span>
+                                    <span>89%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="target-progress bg-green-500 h-2 rounded-full" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Revenue (2.4M/2.8M)</span>
+                                    <span>86%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="target-progress bg-blue-500 h-2 rounded-full" style="width: 86%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Data Table -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-gray-800 text-lg font-semibold">
+                    <i class="fas fa-table mr-2 text-indigo-600"></i>
+                    Data Penjualan Terbaru
+                </h3>
+                <div class="flex space-x-2">
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                        <option>Semua Sales</option>
+                        <option>Ahmad Rahman</option>
+                        <option>Siti Nurhaliza</option>
+                        <option>Budi Santoso</option>
+                    </select>
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                        <option>Bulan Ini</option>
+                        <option>Bulan Lalu</option>
+                        <option>3 Bulan Terakhir</option>
+                        <option>Tahun Ini</option>
+                    </select>
+                    <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors text-sm">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">ID</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Customer</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Sales Person</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Produk/Layanan</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Nilai</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Tanggal</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Status</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-medium">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#SAL-001</td>
+                            <td class="py-3 px-4">PT. Teknologi Maju</td>
+                            <td class="py-3 px-4">Ahmad Rahman</td>
+                            <td class="py-3 px-4">Website E-commerce</td>
+                            <td class="py-3 px-4 font-semibold">Rp 45.000.000</td>
+                            <td class="py-3 px-4">26 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm cursor-pointer">Completed</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#SAL-002</td>
+                            <td class="py-3 px-4">CV. Digital Solution</td>
+                            <td class="py-3 px-4">Siti Nurhaliza</td>
+                            <td class="py-3 px-4">Sistem Management</td>
+                            <td class="py-3 px-4 font-semibold">Rp 32.000.000</td>
+                            <td class="py-3 px-4">25 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm cursor-pointer">Processing</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#SAL-003</td>
+                            <td class="py-3 px-4">UD. Berkah Jaya</td>
+                            <td class="py-3 px-4">Budi Santoso</td>
+                            <td class="py-3 px-4">Mobile Application</td>
+                            <td class="py-3 px-4 font-semibold">Rp 28.500.000</td>
+                            <td class="py-3 px-4">24 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm cursor-pointer">Completed</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#SAL-004</td>
+                            <td class="py-3 px-4">PT. Global Sejahtera</td>
+                            <td class="py-3 px-4">Ahmad Rahman</td>
+                            <td class="py-3 px-4">Digital Marketing</td>
+                            <td class="py-3 px-4 font-semibold">Rp 15.750.000</td>
+                            <td class="py-3 px-4">23 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm cursor-pointer">Pending</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">#SAL-005</td>
+                            <td class="py-3 px-4">CV. Inovasi Mandiri</td>
+                            <td class="py-3 px-4">Siti Nurhaliza</td>
+                            <td class="py-3 px-4">Cloud Solutions</td>
+                            <td class="py-3 px-4 font-semibold">Rp 52.000.000</td>
+                            <td class="py-3 px-4">22 Sep 2025</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm cursor-pointer">Completed</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-600 hover:text-blue-700 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                <button class="text-green-600 hover:text-green-700 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="text-red-600 hover:text-red-700" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+                <div class="text-sm text-gray-600">
+                    Menampilkan 1-5 dari 52 data penjualan
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">Previous</button>
+                    <button class="px-3 py-1 rounded-lg bg-indigo-600 text-white">1</button>
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">3</button>
+                    <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Sale Modal -->
+    <div id="saleModal" class="fixed inset-0 z-50 modal-backdrop hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300 max-h-[90vh] overflow-y-auto" id="saleModalContent">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Input Data Penjualan Baru</h3>
+                        <button id="closeSaleModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Customer</label>
+                            <input type="text" placeholder="Nama Customer" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Sales Person</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option>Pilih Sales</option>
+                                <option>Ahmad Rahman</option>
+                                <option>Siti Nurhaliza</option>
+                                <option>Budi Santoso</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Produk/Layanan</label>
+                            <input type="text" placeholder="Nama Produk/Layanan" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Nilai Penjualan</label>
+                            <input type="number" placeholder="0" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal</label>
+                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Status</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option>Pending</option>
+                                <option>Processing</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Keterangan</label>
+                            <textarea placeholder="Deskripsi atau catatan penjualan..." rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 mt-6">
+                        <button id="saveSaleBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-save mr-2"></i>Simpan Data
+                        </button>
+                        <button id="cancelSaleBtn" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-50 modal-backdrop hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="profile-modal rounded-xl max-w-md w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300 max-h-[90vh] overflow-y-auto relative" id="profileContent">
+                <button id="closeProfileX" class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="p-8">
+                    <div class="text-center">
+                        <div class="mb-6">
+                            <img class="h-20 w-20 rounded-full border-4 border-white mx-auto mb-4" 
+                                src="https://via.placeholder.com/80x80/667eea/ffffff?text=MA" 
+                                alt="Profile">
+                            <h2 class="text-white text-xl font-bold">marketing_admin</h2>
+                            <p class="text-blue-200 text-sm">Marketing Manager</p>
+                        </div>
+                        <div class="space-y-4 text-left mb-6">
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Email</label>
+                                <p class="text-white">marketing@lixen.com</p>
+                            </div>
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Departemen</label>
+                                <p class="text-white">Marketing & Sales Management</p>
+                            </div>
+                            <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                                <label class="text-blue-200 text-xs uppercase tracking-wide">Team Performance</label>
+                                <p class="text-white">152/170 Sales (89%)</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <a href="dashboard-marketing.html" class="w-full bg-indigo-600 bg-opacity-80 text-white py-3 px-4 rounded-lg font-medium hover:bg-opacity-90 transition-all block text-center">
+                                <i class="fas fa-chart-line mr-2"></i>Dashboard Marketing
+                            </a>
+                            <a href="data-penjualan-marketing.html" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all block text-center">
+                                <i class="fas fa-chart-bar mr-2"></i>Data Penjualan
+                            </a>
+                            <a href="performance-sales.html" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all block text-center">
+                                <i class="fas fa-trophy mr-2"></i>Performance Sales
+                            </a>
+                            <a href="edit-profile.html" class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all block text-center">
+                                <i class="fas fa-edit mr-2"></i>Edit Profile
+                            </a>
+                            <button class="w-full bg-white bg-opacity-20 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-30 transition-all">
+                                <i class="fas fa-cog mr-2"></i>Pengaturan
+                            </button>
+                            <button class="w-full bg-red-500 bg-opacity-30 text-white py-2 px-4 rounded-lg font-medium hover:bg-opacity-50 transition-all">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Chart
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Ahmad Rahman', 'Siti Nurhaliza', 'Budi Santoso', 'Diana Putri', 'Agus Setiawan'],
+                    datasets: [{
+                        label: 'Penjualan (Juta)',
+                        data: [45.5, 38.2, 42.1, 29.8, 35.6],
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(118, 75, 162, 0.8)',
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(251, 191, 36, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(102, 126, 234, 1)',
+                            'rgba(118, 75, 162, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(251, 191, 36, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + value + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Profile modal functionality
+            const profileToggle = document.getElementById('profileToggle');
+            const profileModal = document.getElementById('profileModal');
+            const profileContent = document.getElementById('profileContent');
+            const closeProfileX = document.getElementById('closeProfileX');
+
+            profileToggle.addEventListener('click', () => {
+                profileModal.classList.remove('hidden');
+                setTimeout(() => {
+                    profileContent.classList.remove('scale-95', 'opacity-0');
+                    profileContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+
+            const closeProfile = () => {
+                profileContent.classList.add('scale-95', 'opacity-0');
+                profileContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    profileModal.classList.add('hidden');
+                }, 300);
+            };
+
+            closeProfileX.addEventListener('click', closeProfile);
+            profileModal.addEventListener('click', (e) => {
+                if (e.target === profileModal) {
+                    closeProfile();
+                }
+            });
+
+            // Sale modal functionality
+            const addSaleBtn = document.getElementById('addSaleBtn');
+            const saleModal = document.getElementById('saleModal');
+            const saleModalContent = document.getElementById('saleModalContent');
+            const closeSaleModal = document.getElementById('closeSaleModal');
+            const cancelSaleBtn = document.getElementById('cancelSaleBtn');
+            const saveSaleBtn = document.getElementById('saveSaleBtn');
+
+            const openSaleModal = () => {
+                saleModal.classList.remove('hidden');
+                setTimeout(() => {
+                    saleModalContent.classList.remove('scale-95', 'opacity-0');
+                    saleModalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            };
+
+            const closeSaleModalFunc = () => {
+                saleModalContent.classList.add('scale-95', 'opacity-0');
+                saleModalContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    saleModal.classList.add('hidden');
+                }, 300);
+            };
+
+            addSaleBtn.addEventListener('click', openSaleModal);
+            closeSaleModal.addEventListener('click', closeSaleModalFunc);
+            cancelSaleBtn.addEventListener('click', closeSaleModalFunc);
+            
+            saleModal.addEventListener('click', (e) => {
+                if (e.target === saleModal) {
+                    closeSaleModalFunc();
+                }
+            });
+
+            // Save sale data
+            saveSaleBtn.addEventListener('click', () => {
+                alert('Data penjualan berhasil disimpan!');
+                closeSaleModalFunc();
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    if (!profileModal.classList.contains('hidden')) {
+                        closeProfile();
+                    }
+                    if (!saleModal.classList.contains('hidden')) {
+                        closeSaleModalFunc();
+                    }
+                }
+            });
+
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.target-progress').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+
+            // Add interactivity to action buttons
+            document.querySelectorAll('.fa-eye').forEach(btn => {
+                btn.parentElement.addEventListener('click', () => {
+                    alert('Melihat detail penjualan...');
+                });
+            });
+
+            document.querySelectorAll('.fa-edit').forEach(btn => {
+                btn.parentElement.addEventListener('click', () => {
+                    openSaleModal();
+                });
+            });
+
+            document.querySelectorAll('.fa-trash').forEach(btn => {
+                btn.parentElement.addEventListener('click', () => {
+                    if (confirm('Apakah Anda yakin ingin menghapus data penjualan ini?')) {
+                        alert('Data penjualan berhasil dihapus!');
+                    }
+                });
+            });
+
+            // Status badge click
+            document.querySelectorAll('.status-badge').forEach(badge => {
+                badge.addEventListener('click', () => {
+                    const currentStatus = badge.textContent;
+                    const statuses = ['Pending', 'Processing', 'Completed'];
+                    const currentIndex = statuses.indexOf(currentStatus);
+                    const nextIndex = (currentIndex + 1) % statuses.length;
+                    
+                    badge.textContent = statuses[nextIndex];
+                    badge.className = 'status-badge px-3 py-1 rounded-full text-sm cursor-pointer transition-all';
+                    
+                    if (statuses[nextIndex] === 'Pending') {
+                        badge.classList.add('bg-blue-100', 'text-blue-800');
+                    } else if (statuses[nextIndex] === 'Processing') {
+                        badge.classList.add('bg-yellow-100', 'text-yellow-800');
+                    } else {
+                        badge.classList.add('bg-green-100', 'text-green-800');
+                    }
+                });
+            });
+
+            // Update target functionality
+            document.querySelector('button:has(.fa-save)').addEventListener('click', () => {
+                alert('Target penjualan berhasil diupdate!');
+            });
+        });
+    </script>
+</body>
+</html>

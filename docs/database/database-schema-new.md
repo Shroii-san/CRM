@@ -300,14 +300,14 @@ abandoned
 
 ## `deal_stage_histories`
 
-| Column          | Type Data            | NULLABLE | Default | Constraints | Description |
-| --------------- | -------------------- | -------- | ------- | ----------- | ----------- |
-| `id`            | Primary key          |
-| `deal_id`       | FK to `deals.id`     |
-| `from_stage_id` | Previous stage       |
-| `to_stage_id`   | New stage            |
-| `changed_by`    | FK to `users.id`     |
-| `changed_at`    | Transition timestamp |
+| Column          | Type Data   | NULLABLE | Default           | Constraints | Description                |
+| --------------- | ----------- | -------- | ----------------- | ----------- | -------------------------- |
+| `id`            | INT         | NOT NULL | A_I               | PRIMARY KEY | Primary key                |
+| `deal_id`       | INT         | NOT NULL | -                 | FOREIGN KEY | FK to `deals.id`           |
+| `from_stage_id` | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `pipeline_stages.id` |
+| `to_stage_id`   | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `pipeline_stages.id` |
+| `changed_by`    | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `users.id`           |
+| `changed_at`    | TIMESTAMPTZ | NOT NULL | CURRENT_TIMESTAMP | -           | Transition timestamp       |
 
 ---
 

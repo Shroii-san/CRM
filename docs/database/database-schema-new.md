@@ -326,7 +326,7 @@ abandoned
 | `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY                  | FK to `stage_task_templates.id`, nullable |
 | `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                  | FK to `users.id`                          |
 | `due_at`                 | DATE         | NOT NULL | -                 | -                            | Task deadline                             |
-| `completed_at`           | TIMESTAMPTZ  | NULL     | -                 | -                            | Completion timestamp, nullable            |
+| `completed_at`           | TIMESTAMPTZ  | NULL     | NULL              | -                            | Completion timestamp, nullable            |
 | `status`                 | VARCHAR(20)  | NOT NULL | 'planned'         | CHECK('p', 'ip', 'cp', 'cl') | Task status                               |
 | `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')    | Task priority                             |
 | `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                            | Creation timestamp                        |
@@ -349,7 +349,7 @@ cancelled
 | `task_id`    | INT         | NOT NULL | -                 | FOREIGN KEY | FK to `tasks.id`         |
 | `remind_at`  | TIMESTAMPTZ | NOT NULL | -                 | -           | Reminder timestamp       |
 | `is_active`  | BOOL        | NOT NULL | TRUE              | -           | Reminder status          |
-| `sent_at`    | TIMESTAMPTZ | NULL     | -                 | -           | Sent timestamp, nullable |
+| `sent_at`    | TIMESTAMPTZ | NULL     | NULL              | -           | Sent timestamp, nullable |
 | `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp       |
 | `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp    |
 
@@ -419,16 +419,16 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `notes`
 
-| Column       | Type Data                    | NULLABLE | Default | Constraints | Description |
-| ------------ | ---------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key                  |
-| `client_id`  | FK to `clients.id`, nullable |
-| `deal_id`    | FK to `deals.id`, nullable   |
-| `content`    | Note content                 |
-| `note_type`  | Note category                |
-| `created_by` | FK to `users.id`             |
-| `created_at` | Creation timestamp           |
-| `updated_at` | Last update timestamp        |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description                  |
+| ------------ | ----------- | -------- | ----------------- | ----------- | ---------------------------- |
+| `id`         | INT         | NOT NULL | -                 | PRIMARY KEY | Primary key                  |
+| `client_id`  | INT         | NULL     | -                 | FOREIGN KEY | FK to `clients.id`, nullable |
+| `deal_id`    | INT         | NULL     | -                 | FOREIGN KEY | FK to `deals.id`, nullable   |
+| `content`    | TEXT        | NOT NULL | -                 | -           | Note content                 |
+| `note_type`  | VARCHAR(50) | NOT NULL | -                 | -           | Note category                |
+| `created_by` | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `users.id`             |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp           |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp        |
 
 ---
 

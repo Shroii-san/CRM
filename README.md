@@ -31,7 +31,7 @@ composer install
 # Install dependensi JavaScript
 npm install
 
-# Perbaiki jika ada vulnerability dependensi javascript
+# Perbaiki jika ada vulnerability dependensi JavaScript
 npm audit fix
 ```
 

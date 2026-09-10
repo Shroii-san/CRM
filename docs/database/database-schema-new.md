@@ -326,7 +326,7 @@ abandoned
 | `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY                  | FK to `stage_task_templates.id`, nullable |
 | `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                  | FK to `users.id`                          |
 | `due_at`                 | DATE         | NOT NULL | -                 | -                            | Task deadline                             |
-| `completed_at`           | DATE         | NULL     | -                 | -                            | Completion timestamp, nullable            |
+| `completed_at`           | TIMESTAMPTZ  | NULL     | -                 | -                            | Completion timestamp, nullable            |
 | `status`                 | VARCHAR(20)  | NOT NULL | 'planned'         | CHECK('p', 'ip', 'cp', 'cl') | Task status                               |
 | `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')    | Task priority                             |
 | `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                            | Creation timestamp                        |
@@ -343,15 +343,15 @@ cancelled
 
 ## `task_reminders`
 
-| Column       | Type Data                | NULLABLE | Default | Constraints | Description |
-| ------------ | ------------------------ | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key              |
-| `task_id`    | FK to `tasks.id`         |
-| `remind_at`  | Reminder timestamp       |
-| `status`     | Reminder status          |
-| `sent_at`    | Sent timestamp, nullable |
-| `created_at` | Creation timestamp       |
-| `updated_at` | Last update timestamp    |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description              |
+| ------------ | ----------- | -------- | ----------------- | ----------- | ------------------------ |
+| `id`         | INT         | NOT NULL | -                 | PRIMARY KEY | Primary key              |
+| `task_id`    | INT         | NOT NULL | -                 | FOREIGN KEY | FK to `tasks.id`         |
+| `remind_at`  | TIMESTAMPTZ | NOT NULL | -                 | -           | Reminder timestamp       |
+| `is_active`  | BOOL        | NOT NULL | TRUE              | -           | Reminder status          |
+| `sent_at`    | TIMESTAMPTZ | NULL     | -                 | -           | Sent timestamp, nullable |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp       |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp    |
 
 ## `notifications`
 

@@ -30,6 +30,9 @@ composer install
 
 # Install dependensi JavaScript
 npm install
+
+# Perbaiki jika ada vulnerability dependensi javascript
+npm audit fix
 ```
 
 ### 3. Konfigurasi Environment (`.env`)

@@ -272,7 +272,7 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 | Column              | Type Data             | NULLABLE | Default           | Constraints                    | Description                |
 | ------------------- | --------------------- | -------- | ----------------- | ------------------------------ | -------------------------- |
-| `id`                | INT                   | NOT NULL | -                 | PRIMARY KEY                    | Primary key                |
+| `id`                | INT                   | NOT NULL | A_I               | PRIMARY KEY                    | Primary key                |
 | `name`              | VARCHAR(255)          | NOT NULL | -                 | -                              | Deal name                  |
 | `client_id`         | INT                   | NOT NULL | -                 | FOREIGN KEY                    | FK to `clients.id`         |
 | `pipeline_id`       | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `pipelines.id`       |
@@ -345,7 +345,7 @@ cancelled
 
 | Column       | Type Data   | NULLABLE | Default           | Constraints | Description              |
 | ------------ | ----------- | -------- | ----------------- | ----------- | ------------------------ |
-| `id`         | INT         | NOT NULL | -                 | PRIMARY KEY | Primary key              |
+| `id`         | INT         | NOT NULL | A_I               | PRIMARY KEY | Primary key              |
 | `task_id`    | INT         | NOT NULL | -                 | FOREIGN KEY | FK to `tasks.id`         |
 | `remind_at`  | TIMESTAMPTZ | NOT NULL | -                 | -           | Reminder timestamp       |
 | `is_active`  | BOOL        | NOT NULL | TRUE              | -           | Reminder status          |
@@ -382,7 +382,7 @@ read_at != NULL
 
 | Column                    | Type Data    | NULLABLE | Default           | Constraints                 | Description                                |
 | ------------------------- | ------------ | -------- | ----------------- | --------------------------- | ------------------------------------------ |
-| `id`                      | INT          | NOT NULL | -                 | PRIMARY KEY                 | Primary key                                |
+| `id`                      | INT          | NOT NULL | A_I               | PRIMARY KEY                 | Primary key                                |
 | `client_id`               | INT          | NOT NULL | -                 | FOREIGN KEY                 | FK to `clients.id`                         |
 | `deal_id`                 | INT          | NULL     | -                 | FOREIGN KEY                 | FK to `deals.id`, nullable                 |
 | `organization_contact_id` | INT          | NULL     | -                 | FOREIGN KEY                 | FK to `organization_contacts.id`, nullable |
@@ -421,7 +421,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 | Column       | Type Data   | NULLABLE | Default           | Constraints | Description                  |
 | ------------ | ----------- | -------- | ----------------- | ----------- | ---------------------------- |
-| `id`         | INT         | NOT NULL | -                 | PRIMARY KEY | Primary key                  |
+| `id`         | INT         | NOT NULL | A_I               | PRIMARY KEY | Primary key                  |
 | `client_id`  | INT         | NULL     | -                 | FOREIGN KEY | FK to `clients.id`, nullable |
 | `deal_id`    | INT         | NULL     | -                 | FOREIGN KEY | FK to `deals.id`, nullable   |
 | `content`    | TEXT        | NOT NULL | -                 | -           | Note content                 |
@@ -436,32 +436,31 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `external_conversations`
 
-| Column                     | Type Data                  | NULLABLE | Default | Constraints | Description |
-| -------------------------- | -------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`                       | Primary key                |
-| `platform`                 | External platform          |
-| `external_conversation_id` | External conversation ID   |
-| `client_id`                | FK to `clients.id`         |
-| `status`                   | Conversation status        |
-| `last_interaction_at`      | Last interaction timestamp |
-| `metadata`                 | Additional metadata        |
-| `created_at`               | Creation timestamp         |
-| `updated_at`               | Last update timestamp      |
+| Column                     | Type Data    | NULLABLE | Default           | Constraints | Description                |
+| -------------------------- | ------------ | -------- | ----------------- | ----------- | -------------------------- |
+| `id`                       | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key                |
+| `platform`                 | VARCHAR(50)  | NOT NULL | -                 | -           | External platform          |
+| `external_conversation_id` | VARCHAR(255) | NOT NULL | -                 | -           | External conversation ID   |
+| `client_id`                | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `clients.id`         |
+| `last_interaction_at`      | TIMESTAMPTZ  | NULL     | NULL              | -           | Last interaction timestamp |
+| `metadata`                 | JSONB        | NULL     | NULL              | -           | Additional metadata        |
+| `created_at`               | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp         |
+| `updated_at`               | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp      |
 
 ## `attachments`
 
-| Column              | Type Data                | NULLABLE | Default | Constraints | Description |
-| ------------------- | ------------------------ | -------- | ------- | ----------- | ----------- |
-| `id`                | Primary key              |
-| `file_name`         | File name                |
-| `description`       | File description         |
-| `mime_type`         | MIME type                |
-| `file_size`         | File size                |
-| `storage_reference` | Storage/object reference |
-| `uploaded_by`       | FK to `users.id`         |
-| `uploaded_at`       | Upload timestamp         |
-| `related_type`      | Related entity type      |
-| `related_id`        | Related entity ID        |
+| Column              | Type Data    | NULLABLE | Default | Constraints            | Description              |
+| ------------------- | ------------ | -------- | ------- | ---------------------- | ------------------------ |
+| `id`                | INT          | NOT NULL | A_I     | PRIMARY KEY            | Primary key              |
+| `file_name`         | VARCHAR(255) | NOT NULL | -       | -                      | File name                |
+| `description`       | TEXT         | NULL     | -       | -                      | File description         |
+| `mime_type`         | VARCHAR(100) | NOT NULL | -       | -                      | MIME type                |
+| `file_size`         | BIGINT       | NOT NULL | -       | CHECK (file_size >= 0) | File size                |
+| `storage_reference` | VARCHAR(255) | NOT NULL | -       | -                      | Storage/object reference |
+| `uploaded_by`       | SMALLINT     | NOT NULL | -       | FOREIGN KEY            | FK to `users.id`         |
+| `created_at`        | TIMESTAMPTZ  | NULL     | -       | -                      | Upload timestamp         |
+| `attachable_type`   | VARCHAR(50)  | NOT NULL | -       | -                      | Related entity type      |
+| `attachable_id`     | INT          | NOT NULL | -       | -                      | Related entity ID        |
 
 ---
 

@@ -74,7 +74,7 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 | `slug`       | VARCHAR(100) | NULL     | NULL              | UNIQUE      | Menu identifier             |
 | `route`      | VARCHAR(50)  | NULL     | -                 | -           | Application route           |
 | `position`   | SMALLINT     | NOT NULL | 0                 | -           | Display order               |
-| `is_active`  | BOOL         | NOT NULL | FALSE             | -           | Menu status                 |
+| `is_active`  | BOOL         | NOT NULL | TRUE              | -           | Menu status                 |
 | `created_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp          |
 | `updated_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp       |
 

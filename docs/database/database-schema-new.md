@@ -459,7 +459,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 | `storage_reference` | VARCHAR(255) | NOT NULL | -       | -                      | Storage/object reference |
 | `uploaded_by`       | SMALLINT     | NOT NULL | -       | FOREIGN KEY            | FK to `users.id`         |
 | `created_at`        | TIMESTAMPTZ  | NULL     | -       | -                      | Upload timestamp         |
-| `attachable_type`   | VARCHAR(50)  | NOT NULL | -       | -                      | Related entity type      |
+| `attachable_type`   | VARCHAR(255) | NOT NULL | -       | -                      | Related entity type      |
 | `attachable_id`     | INT          | NOT NULL | -       | -                      | Related entity ID        |
 
 ---
@@ -468,15 +468,15 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `activity_logs`
 
-| Column        | Type Data                  | NULLABLE | Default | Constraints | Description |
-| ------------- | -------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key                |
-| `user_id`     | FK to `users.id`, nullable |
-| `action`      | Action performed           |
-| `target_type` | Target entity type         |
-| `target_id`   | Target entity ID           |
-| `metadata`    | Additional event data      |
-| `created_at`  | Activity timestamp         |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description                |
+| ------------- | ------------ | -------- | ------- | ----------- | -------------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key                |
+| `user_id`     | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `users.id`, nullable |
+| `action`      | VARCHAR(255) | NOT NULL | -       | -           | Action performed           |
+| `target_type` | VARCHAR(255) | NOT NULL | -       | -           | Target entity type         |
+| `target_id`   | INT          | NOT NULL | -       | -           | Target entity ID           |
+| `metadata`    | JSONB        | NULL     | -       | -           | Additional event data      |
+| `created_at`  | TIMESTAMPTZ  | NULL     | -       | -           | Activity timestamp         |
 
 ---
 

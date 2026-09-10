@@ -169,15 +169,15 @@ Tabel penghubung antara organizations dan persons.
 
 ## `organization_social_profiles`
 
-| Column            | Type Data                | NULLABLE | Default | Constraints | Description |
-| ----------------- | ------------------------ | -------- | ------- | ----------- | ----------- |
-| `id`              | Primary key              |
-| `organization_id` | FK to `organizations.id` |
-| `platform`        | Social platform          |
-| `username`        | Account username         |
-| `url`             | Profile URL              |
-| `created_at`      | Creation timestamp       |
-| `updated_at`      | Last update timestamp    |
+| Column            | Type Data    | NULLABLE | Default           | Constraints | Description              |
+| ----------------- | ------------ | -------- | ----------------- | ----------- | ------------------------ |
+| `id`              | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key              |
+| `organization_id` | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `organizations.id` |
+| `platform`        | VARCHAR(50)  | NOT NULL | -                 | -           | Social platform          |
+| `username`        | VARCHAR(255) | NOT NULL | -                 | -           | Account username         |
+| `url`             | VARCHAR(255) | NULL     | NULL              | UNIQUE      | Profile URL              |
+| `created_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp       |
+| `updated_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp    |
 
 ## `client_sources`
 

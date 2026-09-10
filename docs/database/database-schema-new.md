@@ -155,17 +155,17 @@ contoh :
 
 Tabel penghubung antara organizations dan persons.
 
-| Column            | Type Data                           | NULLABLE | Default | Constraints | Description |
-| ----------------- | ----------------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`              | Primary key                         |
-| `organization_id` | FK to `organizations.id`            |
-| `person_id`       | FK to `persons.id`                  |
-| `job_title`       | Job title in the organization       |
-| `is_primary`      | Whether this is the primary contact |
-| `started_at`      | Relationship start date             |
-| `ended_at`        | Relationship end date, nullable     |
-| `created_at`      | Creation timestamp                  |
-| `updated_at`      | Last update timestamp               |
+| Column            | Type Data    | NULLABLE | Default           | Constraints | Description                         |
+| ----------------- | ------------ | -------- | ----------------- | ----------- | ----------------------------------- |
+| `id`              | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key                         |
+| `organization_id` | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `organizations.id`            |
+| `person_id`       | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `persons.id`                  |
+| `job_title`       | VARCHAR(255) | NULL     | NULL              | -           | Job title in the organization       |
+| `is_primary`      | BOOL         | NOT NULL | TRUE              | -           | Whether this is the primary contact |
+| `started_at`      | DATE         | NULL     | NULL              | -           | Relationship start date             |
+| `ended_at`        | DATE         | NULL     | NULL              | -           | Relationship end date, nullable     |
+| `created_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp                  |
+| `updated_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp               |
 
 ## `organization_social_profiles`
 

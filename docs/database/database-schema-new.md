@@ -80,13 +80,13 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `menu_icons`
 
-| Column       | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------ | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key           |
-| `name`       | Icon name             |
-| `class_name` | Class library name    |
-| `created_at` | Creation timestamp    |
-| `updated_at` | Last update timestamp |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description           |
+| ------------ | ----------- | -------- | ----------------- | ----------- | --------------------- |
+| `id`         | SMALLINT    | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`       | VARCHAR(50) | NOT NULL | -                 | UNIQUE      | Icon name             |
+| `class_name` | VARCHAR(50) | NOT NULL | -                 | -           | Class library name    |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `role_menus`
 

@@ -103,14 +103,14 @@ Tabel penghubung untuk roles dan menus.
 
 ## `persons`
 
-| Column       | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------ | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key           |
-| `name`       | Full name             |
-| `email`      | Email                 |
-| `phone`      | Phone number          |
-| `created_at` | Creation timestamp    |
-| `updated_at` | Last update timestamp |
+| Column       | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------ | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`         | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`       | VARCHAR(255) | NOT NULL | -                 | -           | Full name             |
+| `email`      | VARCHAR(255) | NULL     | NULL              | UNIQUE      | Email                 |
+| `phone`      | VARCHAR(20)  | NULL     | NULL              | UNIQUE      | Phone number          |
+| `created_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `industries`
 

@@ -32,7 +32,7 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 | `email`            | VARCHAR(255) | NULL     | NULL              | UNIQUE      | User email              |
 | `phone`            | VARCHAR(20)  | NULL     | NULL              | UNIQUE      | User phone              |
 | `password_hash`    | VARCHAR(255) | NOT NULL | -                 | -           | Password hash           |
-| `is_active`        | BOOL         | NOT NULL | FALSE             | -           | User status             |
+| `is_active`        | BOOL         | NOT NULL | TRUE              | -           | User status             |
 | `remember_token`   | VARCHAR(100) | NULL     | NULL              | -           | User cookie token       |
 | `last_activity_at` | TIMESTAMPTZ  | NULL     | NULL              | -           | Last activity timestamp |
 | `created_at`       | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp      |

@@ -484,50 +484,50 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `countries`
 
-| Column | Type Data    | NULLABLE | Default | Constraints | Description |
-| ------ | ------------ | -------- | ------- | ----------- | ----------- |
-| `id`   | Primary key  |
-| `name` | Country name |
+| Column | Type Data    | NULLABLE | Default | Constraints | Description  |
+| ------ | ------------ | -------- | ------- | ----------- | ------------ |
+| `id`   | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key  |
+| `name` | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Country name |
 
 ## `provinces`
 
-| Column       | Type Data            | NULLABLE | Default | Constraints | Description |
-| ------------ | -------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key          |
-| `country_id` | FK to `countries.id` |
-| `name`       | Province name        |
+| Column       | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------ | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`         | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `country_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `countries.id` |
+| `name`       | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Province name        |
 
 ## `regencies`
 
-| Column        | Type Data            | NULLABLE | Default | Constraints | Description |
-| ------------- | -------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key          |
-| `province_id` | FK to `provinces.id` |
-| `name`        | Regency/city name    |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------- | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `province_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `provinces.id` |
+| `name`        | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Regency/city name    |
 
 ## `districts`
 
-| Column       | Type Data            | NULLABLE | Default | Constraints | Description |
-| ------------ | -------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key          |
-| `regency_id` | FK to `regencies.id` |
-| `name`       | District name        |
+| Column       | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------ | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`         | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `regency_id` | INT          | NOT NULL | -       | FOREIGN KEY | FK to `regencies.id` |
+| `name`       | VARCHAR(100) | NOT NULL | -       | UNIQUE      | District name        |
 
 ## `villages`
 
-| Column        | Type Data            | NULLABLE | Default | Constraints | Description |
-| ------------- | -------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key          |
-| `district_id` | FK to `districts.id` |
-| `name`        | Village name         |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------- | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `district_id` | INT          | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
+| `name`        | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Village name         |
 
 ## `postal_codes`
 
-| Column        | Type Data            | NULLABLE | Default | Constraints | Description |
-| ------------- | -------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key          |
-| `district_id` | FK to `districts.id` |
-| `postal_code` | Postal code          |
+| Column        | Type Data | NULLABLE | Default | Constraints | Description          |
+| ------------- | --------- | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT       | NOT NULL | A_I     | PRIMAY KEY  | Primary key          |
+| `district_id` | INT       | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
+| `postal_code` | SMALLINT  | NOT NULL | -       | UNIQUE      | Postal code          |
 
 ---
 

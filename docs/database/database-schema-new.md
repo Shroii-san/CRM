@@ -24,76 +24,78 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `users`
 
-| Column             | Description             |
-| ------------------ | ----------------------- |
-| `id`               | Primary key             |
-| `role_id`          | FK to `roles.id`        |
-| `name`             | User name               |
-| `email`            | User email              |
-| `password_hash`    | Password hash           |
-| `status`           | User status             |
-| `last_activity_at` | Last activity timestamp |
-| `created_at`       | Creation timestamp      |
-| `updated_at`       | Last update timestamp   |
+| Column             | Type Data    | NULLABLE | Default           | Constraints | Description             |
+| ------------------ | ------------ | -------- | ----------------- | ----------- | ----------------------- |
+| `id`               | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key             |
+| `role_id`          | SMALLINT     | NOT NULL | -                 | FOREIGN KEY | FK to `roles.id`        |
+| `name`             | VARCHAR(255) | NOT NULL | -                 | -           | User name               |
+| `email`            | VARCHAR(255) | NULL     | NULL              | UNIQUE      | User email              |
+| `phone`            | VARCHAR(20)  | NULL     | NULL              | UNIQUE      | User phone              |
+| `password_hash`    | VARCHAR(255) | NOT NULL | -                 | -           | Password hash           |
+| `is_active`        | BOOL         | NOT NULL | TRUE              | -           | User status             |
+| `remember_token`   | VARCHAR(100) | NULL     | NULL              | -           | User cookie token       |
+| `last_activity_at` | TIMESTAMPTZ  | NULL     | NULL              | -           | Last activity timestamp |
+| `created_at`       | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp      |
+| `updated_at`       | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp   |
 
 ## `roles`
 
-| Column        | Description           |
-| ------------- | --------------------- |
-| `id`          | Primary key           |
-| `name`        | Role name             |
-| `description` | Role description      |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default | Constraints       | Description           |
+| ------------- | ------------ | -------- | ------- | ----------------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY       | Primary key           |
+| `name`        | VARCHAR(50)  | NOT NULL | -       | UNIQUE            | Role name             |
+| `description` | VARCHAR(255) | NULL     | NULLL   | -                 | Role description      |
+| `created_at`  | TIMESTAMPTZ  | NULL     | NULL    | CURRENT_TIMESTAMP | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | NULL    | CURRENT_TIMESTAMP | Last update timestamp |
 
 ## `role_permissions`
 
-| Column       | Description                 |
-| ------------ | --------------------------- |
-| `id`         | Primary key                 |
-| `role_id`    | FK to `roles.id`            |
-| `resource`   | Application resource/module |
-| `can_view`   | View permission             |
-| `can_create` | Create permission           |
-| `can_update` | Update permission           |
-| `can_delete` | Delete permission           |
-| `can_assign` | Assignment permission       |
-| `created_at` | Creation timestamp          |
-| `updated_at` | Last update timestamp       |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description           |
+| ------------ | ----------- | -------- | ----------------- | ----------- | --------------------- |
+| `id`         | SMALLINT    | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `role_id`    | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `roles.id`      |
+| `menu_id`    | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `menus.id`      |
+| `can_view`   | BOOL        | NULL     | FALSE             | -           | View permission       |
+| `can_create` | BOOL        | NULL     | FALSE             | -           | Create permission     |
+| `can_update` | BOOL        | NULL     | FALSE             | -           | Update permission     |
+| `can_delete` | BOOL        | NULL     | FALSE             | -           | Delete permission     |
+| `can_assign` | BOOL        | NULL     | FALSE             | -           | Assignment permission |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `menus`
 
-| Column       | Description           |
-| ------------ | --------------------- |
-| `id`         | Primary key           |
-| `parent_id`  | Parent menu, nullable |
-| `name`       | Menu name             |
-| `slug`       | Menu identifier       |
-| `route`      | Application route     |
-| `icon`       | FK to `menu_icons.id` |
-| `position`   | Display order         |
-| `status`     | Menu status           |
-| `created_at` | Creation timestamp    |
-| `updated_at` | Last update timestamp |
+| Column       | Type Data    | NULLABLE | Default           | Constraints | Description                 |
+| ------------ | ------------ | -------- | ----------------- | ----------- | --------------------------- |
+| `id`         | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key                 |
+| `parent_id`  | SMALLINT     | NULL     | -                 | FOREIGN KEY | Parent menu, FK to menus.id |
+| `icon_id`    | SMALLINT     | NULL     | -                 | FOREIGN KEY | FK to `menu_icons.id`       |
+| `name`       | VARCHAR(50)  | NOT NULL | -                 | UNIQUE      | Menu name                   |
+| `slug`       | VARCHAR(100) | NULL     | NULL              | UNIQUE      | Menu identifier             |
+| `route`      | VARCHAR(50)  | NULL     | -                 | -           | Application route           |
+| `position`   | SMALLINT     | NOT NULL | 0                 | -           | Display order               |
+| `is_active`  | BOOL         | NOT NULL | TRUE              | -           | Menu status                 |
+| `created_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp          |
+| `updated_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp       |
 
 ## `menu_icons`
 
-| Column       | Description           |
-| ------------ | --------------------- |
-| `id`         | Primary key           |
-| `name`       | Icon name             |
-| `class_name` | Class library name    |
-| `created_at` | Creation timestamp    |
-| `updated_at` | Last update timestamp |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description           |
+| ------------ | ----------- | -------- | ----------------- | ----------- | --------------------- |
+| `id`         | SMALLINT    | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`       | VARCHAR(50) | NOT NULL | -                 | UNIQUE      | Icon name             |
+| `class_name` | VARCHAR(50) | NOT NULL | -                 | -           | Class library name    |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `role_menus`
 
 Tabel penghubung untuk roles dan menus.
 
-| Column    | Description      |
-| --------- | ---------------- |
-| `role_id` | FK to `roles.id` |
-| `menu_id` | FK to `menus.id` |
+| Column    | Type Data | NULLABLE | Default | Constraints | Description      |
+| --------- | --------- | -------- | ------- | ----------- | ---------------- |
+| `role_id` | SMALLINT  | NOT NULL | -       | FOREIGN KEY | FK to `roles.id` |
+| `menu_id` | SMALLINT  | NOT NULL | -       | FOREIGN KEY | FK to `menus.id` |
 
 ---
 
@@ -101,14 +103,14 @@ Tabel penghubung untuk roles dan menus.
 
 ## `persons`
 
-| Column       | Description           |
-| ------------ | --------------------- |
-| `id`         | Primary key           |
-| `name`       | Full name             |
-| `email`      | Email                 |
-| `phone`      | Phone number          |
-| `created_at` | Creation timestamp    |
-| `updated_at` | Last update timestamp |
+| Column       | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------ | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`         | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`       | VARCHAR(255) | NOT NULL | -                 | -           | Full name             |
+| `email`      | VARCHAR(255) | NULL     | NULL              | UNIQUE      | Email                 |
+| `phone`      | VARCHAR(20)  | NULL     | NULL              | UNIQUE      | Phone number          |
+| `created_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `industries`
 
@@ -122,60 +124,60 @@ contoh :
 - Healthcare
 - Finance
 
-| Column        | Description           |
-| ------------- | --------------------- |
-| `id`          | Primary key           |
-| `name`        | Industry name         |
-| `description` | Industry description  |
-| `status`      | Industry status       |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------- | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(100) | NOT NULL | -                 | UNIQUE      | Industry name         |
+| `description` | VARCHAR(255) | NULL     | NULL              | -           | Industry description  |
+| `is_active`   | BOOL         | NOT NULL | TRUE              | -           | Industry status       |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `organizations`
 
-| Column        | Description           |
-| ------------- | --------------------- |
-| `id`          | Primary key           |
-| `industry_id` | FK to `industries.id` |
-| `name`        | Organization name     |
-| `phone`       | Organization phone    |
-| `email`       | Organization email    |
-| `website`     | Organization website  |
-| `address`     | Organization address  |
-| `province_id` | FK to `provinces.id`  |
-| `regency_id`  | FK to `regencies.id`  |
-| `district_id` | FK to `districts.id`  |
-| `village_id`  | FK to `villages.id`   |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description           |
+| ------------- | ------------ | -------- | ------- | ----------- | --------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key           |
+| `industry_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `industries.id` |
+| `name`        | VARCHAR(255) | NOT NULL | -       | UNIQUE      | Organization name     |
+| `email`       | VARCHAR(255) | NULL     | NULL    | -           | Organization email    |
+| `phone`       | VARCHAR(20)  | NULL     | NULL    | -           | Organization phone    |
+| `website`     | VARCHAR(255) | NULL     | NULL    | -           | Organization website  |
+| `address`     | TEXT         | NULL     | NULL    | -           | Organization address  |
+| `province_id` | SMALLINT     | NULL     | NULL    | FOREIGN KEY | FK to `provinces.id`  |
+| `regency_id`  | SMALLINT     | NULL     | NULL    | FOREIGN KEY | FK to `regencies.id`  |
+| `district_id` | INT          | NULL     | NULL    | FOREIGN KEY | FK to `districts.id`  |
+| `village_id`  | INT          | NULL     | NULL    | FOREIGN KEY | FK to `villages.id`   |
+| `created_at`  | TIMESTAMPTZ  | NULL     | NULL    | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | NULL    | -           | Last update timestamp |
 
 ## `organization_contacts`
 
 Tabel penghubung antara organizations dan persons.
 
-| Column            | Description                         |
-| ----------------- | ----------------------------------- |
-| `id`              | Primary key                         |
-| `organization_id` | FK to `organizations.id`            |
-| `person_id`       | FK to `persons.id`                  |
-| `job_title`       | Job title in the organization       |
-| `is_primary`      | Whether this is the primary contact |
-| `started_at`      | Relationship start date             |
-| `ended_at`        | Relationship end date, nullable     |
-| `created_at`      | Creation timestamp                  |
-| `updated_at`      | Last update timestamp               |
+| Column            | Type Data    | NULLABLE | Default           | Constraints | Description                         |
+| ----------------- | ------------ | -------- | ----------------- | ----------- | ----------------------------------- |
+| `id`              | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key                         |
+| `organization_id` | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `organizations.id`            |
+| `person_id`       | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `persons.id`                  |
+| `job_title`       | VARCHAR(255) | NULL     | NULL              | -           | Job title in the organization       |
+| `is_primary`      | BOOL         | NOT NULL | TRUE              | -           | Whether this is the primary contact |
+| `started_at`      | DATE         | NULL     | NULL              | -           | Relationship start date             |
+| `ended_at`        | DATE         | NULL     | NULL              | -           | Relationship end date, nullable     |
+| `created_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp                  |
+| `updated_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp               |
 
 ## `organization_social_profiles`
 
-| Column            | Description              |
-| ----------------- | ------------------------ |
-| `id`              | Primary key              |
-| `organization_id` | FK to `organizations.id` |
-| `platform`        | Social platform          |
-| `username`        | Account username         |
-| `url`             | Profile URL              |
-| `created_at`      | Creation timestamp       |
-| `updated_at`      | Last update timestamp    |
+| Column            | Type Data    | NULLABLE | Default           | Constraints | Description              |
+| ----------------- | ------------ | -------- | ----------------- | ----------- | ------------------------ |
+| `id`              | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key              |
+| `organization_id` | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `organizations.id` |
+| `platform`        | VARCHAR(50)  | NOT NULL | -                 | -           | Social platform          |
+| `username`        | VARCHAR(255) | NOT NULL | -                 | -           | Account username         |
+| `url`             | VARCHAR(255) | NULL     | NULL              | UNIQUE      | Profile URL              |
+| `created_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp       |
+| `updated_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp    |
 
 ## `client_sources`
 
@@ -189,28 +191,28 @@ contoh :
 - Event
 - Advertisement
 
-| Column        | Description           |
-| ------------- | --------------------- |
-| `id`          | Primary key           |
-| `name`        | Source name           |
-| `description` | Source description    |
-| `status`      | Source status         |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------- | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(50)  | NOT NULL | -                 | UNIQUE      | Source name           |
+| `description` | VARCHAR(255) | NULL     | -                 | NULL        | Source description    |
+| `is_active`   | BOOL         | NOT NULL | TRUE              | -           | Source status         |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `clients`
 
 Merepresentasikan entah itu individu ataupun organisasi yang menjadi client/prospect
 
-| Column            | Description                         |
-| ----------------- | ----------------------------------- |
-| `id`              | Primary key                         |
-| `person_id`       | FK to `persons.id`, nullable        |
-| `organization_id` | FK to `organizations.id`, nullable  |
-| `source_id`       | FK to `client_sources.id`, nullable |
-| `status`          | Client status                       |
-| `created_at`      | Creation timestamp                  |
-| `updated_at`      | Last update timestamp               |
+| Column            | Type Data  | NULLABLE | Default           | Constraints | Description                         |
+| ----------------- | ---------- | -------- | ----------------- | ----------- | ----------------------------------- |
+| `id`              | INT        | NOT NULL | A_I               | PRIMARY KEY | Primary key                         |
+| `person_id`       | INT        | NULL     | -                 | FOREIGN KEY | FK to `persons.id`, nullable        |
+| `organization_id` | INT        | NULL     | -                 | FOREIGN KEY | FK to `organizations.id`, nullable  |
+| `source_id`       | SMALLINT   | NOT NULL | -                 | FOREIGN KEY | FK to `client_sources.id`, nullable |
+| `is_active`       | BOOL       | NOT NULL | TRUE              | -           | Client status                       |
+| `created_at`      | TIMESTAMPZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp                  |
+| `updated_at`      | TIMESTAMPZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp               |
 
 Seorang client harus merepresentasikan hanya satu tipe, yaitu `person` atau `organization`.
 
@@ -220,29 +222,29 @@ Seorang client harus merepresentasikan hanya satu tipe, yaitu `person` atau `org
 
 ## `pipelines`
 
-| Column        | Description           |
-| ------------- | --------------------- |
-| `id`          | Primary key           |
-| `name`        | Pipeline name         |
-| `description` | Pipeline description  |
-| `status`      | Pipeline status       |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------- | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(50)  | NOT NULL | -                 | UNIQUE      | Pipeline name         |
+| `description` | VARCHAR(255) | NULL     | NULL              | -           | Pipeline description  |
+| `is_active`   | BOOL         | NOT NULL | TRUE              | -           | Pipeline status       |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `pipeline_stages`
 
-| Column        | Description                      |
-| ------------- | -------------------------------- |
-| `id`          | Primary key                      |
-| `pipeline_id` | FK to `pipelines.id`             |
-| `name`        | Stage name                       |
-| `slug`        | Stage identifier                 |
-| `description` | Stage description                |
-| `position`    | Stage order                      |
-| `is_terminal` | Whether this is a terminal stage |
-| `status`      | Stage status                     |
-| `created_at`  | Creation timestamp               |
-| `updated_at`  | Last update timestamp            |
+| Column        | Type Data    | NULLABLE | Default           | Constraints | Description                      |
+| ------------- | ------------ | -------- | ----------------- | ----------- | -------------------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key                      |
+| `pipeline_id` | SMALLINT     | NOT NULL | -                 | FOREIGN KEY | FK to `pipelines.id`             |
+| `name`        | VARCHAR(50)  | NOT NULL | -                 | -           | Stage name                       |
+| `slug`        | VARCHAR(255) | NULL     | NULL              | -           | Stage identifier                 |
+| `description` | VARCHAR(255) | NULL     | NULL              | -           | Stage description                |
+| `position`    | SMALLINT     | NOT NULL | 0                 | -           | Stage order                      |
+| `is_terminal` | BOOL         | NOT NULL | FALSE             | -           | Whether this is a terminal stage |
+| `is_active`   | BOOL         | NOT NULL | TRUE              | -           | Stage status                     |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp               |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp            |
 
 contoh stages :
 
@@ -253,38 +255,39 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 ## `stage_task_templates`
 
-| Column            | Description                      |
-| ----------------- | -------------------------------- |
-| `id`              | Primary key                      |
-| `stage_id`        | FK to `pipeline_stages.id`       |
-| `name`            | Task template name               |
-| `description`     | Task template description        |
-| `priority`        | Default priority                 |
-| `due_offset_days` | Deadline offset from stage event |
-| `is_required`     | Whether the task is required     |
-| `is_active`       | Whether the template is active   |
-| `created_at`      | Creation timestamp               |
-| `updated_at`      | Last update timestamp            |
+| Column            | Type Data    | NULLABLE | Default           | Constraints               | Description                      |
+| ----------------- | ------------ | -------- | ----------------- | ------------------------- | -------------------------------- |
+| `id`              | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY               | Primary key                      |
+| `stage_id`        | SMALLINT     | NOT NULL | -                 | FOREIGN KEY               | FK to `pipeline_stages.id`       |
+| `name`            | VARCHAR(255) | NOT NULL | -                 |                           | Task template name               |
+| `description`     | VARCHAR(255) | NULL     | -                 | -                         | Task template description        |
+| `priority`        | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U') | Default priority                 |
+| `due_offset_days` | SMALLINT     | NULL     | -                 | -                         | Deadline offset from stage event |
+| `is_required`     | BOOL         | NOT NULL | FALSE             | -                         | Whether the task is required     |
+| `is_active`       | BOOL         | NOT NULL | TRUE              | -                         | Whether the template is active   |
+| `created_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                         | Creation timestamp               |
+| `updated_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                         | Last update timestamp            |
 
 ## `deals`
 
-| Column              | Description                |
-| ------------------- | -------------------------- |
-| `id`                | Primary key                |
-| `name`              | Deal name                  |
-| `client_id`         | FK to `clients.id`         |
-| `pipeline_id`       | FK to `pipelines.id`       |
-| `current_stage_id`  | FK to `pipeline_stages.id` |
-| `currency`          | Deal currency              |
-| `value`             | Deal value                 |
-| `status`            | Deal status                |
-| `priority`          | Deal priority              |
-| `expected_close_at` | Expected closing date      |
-| `actual_close_at`   | Actual closing date        |
-| `description`       | Deal description           |
-| `assigned_user_id`  | FK to `users.id`           |
-| `created_at`        | Creation timestamp         |
-| `updated_at`        | Last update timestamp      |
+| Column              | Type Data             | NULLABLE | Default           | Constraints                    | Description                |
+| ------------------- | --------------------- | -------- | ----------------- | ------------------------------ | -------------------------- |
+| `id`                | INT                   | NOT NULL | A_I               | PRIMARY KEY                    | Primary key                |
+| `name`              | VARCHAR(255)          | NOT NULL | -                 | -                              | Deal name                  |
+| `client_id`         | INT                   | NOT NULL | -                 | FOREIGN KEY                    | FK to `clients.id`         |
+| `pipeline_id`       | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `pipelines.id`       |
+| `current_stage_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `pipeline_stages.id` |
+| `currency`          | CHAR(3)               | NOT NULL | 'IDR'             | -                              | Deal currency              |
+| `value`             | DECIMAL/NUMERIC(15,2) | NOT NULL | -                 | -                              | Deal value                 |
+| `is_active`         | BOOL                  | NOT NULL | TRUE              | -                              | Deal status                |
+| `status`            | VARCHAR(20)           | NOT NULL | 'open'            | CHECK('O', 'W', 'L', 'C', 'A') | Deal priority              |
+| `priority`          | VARCHAR(10)           | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')      | Deal priority              |
+| `expected_close_at` | DATE                  | NOT NULL | -                 | -                              | Expected closing date      |
+| `actual_close_at`   | DATE                  | NULL     | -                 | -                              | Actual closing date        |
+| `description`       | VARCHAR(255)          | NULL     | -                 | -                              | Deal description           |
+| `assigned_user_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `users.id`           |
+| `created_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                              | Creation timestamp         |
+| `updated_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                              | Last update timestamp      |
 
 status yang akan dipakai :
 
@@ -298,14 +301,14 @@ abandoned
 
 ## `deal_stage_histories`
 
-| Column          | Description          |
-| --------------- | -------------------- |
-| `id`            | Primary key          |
-| `deal_id`       | FK to `deals.id`     |
-| `from_stage_id` | Previous stage       |
-| `to_stage_id`   | New stage            |
-| `changed_by`    | FK to `users.id`     |
-| `changed_at`    | Transition timestamp |
+| Column          | Type Data   | NULLABLE | Default           | Constraints | Description                |
+| --------------- | ----------- | -------- | ----------------- | ----------- | -------------------------- |
+| `id`            | INT         | NOT NULL | A_I               | PRIMARY KEY | Primary key                |
+| `deal_id`       | INT         | NOT NULL | -                 | FOREIGN KEY | FK to `deals.id`           |
+| `from_stage_id` | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `pipeline_stages.id` |
+| `to_stage_id`   | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `pipeline_stages.id` |
+| `changed_by`    | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `users.id`           |
+| `changed_at`    | TIMESTAMPTZ | NOT NULL | CURRENT_TIMESTAMP | -           | Transition timestamp       |
 
 ---
 
@@ -313,21 +316,21 @@ abandoned
 
 ## `tasks`
 
-| Column                   | Description                               |
-| ------------------------ | ----------------------------------------- |
-| `id`                     | Primary key                               |
-| `name`                   | Task name                                 |
-| `description`            | Task description                          |
-| `client_id`              | FK to `clients.id`, nullable              |
-| `deal_id`                | FK to `deals.id`, nullable                |
-| `stage_task_template_id` | FK to `stage_task_templates.id`, nullable |
-| `assigned_user_id`       | FK to `users.id`                          |
-| `due_at`                 | Task deadline                             |
-| `completed_at`           | Completion timestamp, nullable            |
-| `status`                 | Task status                               |
-| `priority`               | Task priority                             |
-| `created_at`             | Creation timestamp                        |
-| `updated_at`             | Last update timestamp                     |
+| Column                   | Type Data    | NULLABLE | Default           | Constraints                  | Description                               |
+| ------------------------ | ------------ | -------- | ----------------- | ---------------------------- | ----------------------------------------- |
+| `id`                     | INT          | NOT NULL | A_I               | PRIMARY KEY                  | Primary key                               |
+| `name`                   | VARCHAR(255) | NOT NULL | -                 | -                            | Task name                                 |
+| `description`            | VARCHAR(255) | NULL     | -                 | -                            | Task description                          |
+| `client_id`              | INT          | NULL     | -                 | FOREIGN KEY                  | FK to `clients.id`, nullable              |
+| `deal_id`                | INT          | NULL     | -                 | FOREIGN KEY                  | FK to `deals.id`, nullable                |
+| `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY                  | FK to `stage_task_templates.id`, nullable |
+| `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                  | FK to `users.id`                          |
+| `due_at`                 | DATE         | NOT NULL | -                 | -                            | Task deadline                             |
+| `completed_at`           | TIMESTAMPTZ  | NULL     | NULL              | -                            | Completion timestamp, nullable            |
+| `status`                 | VARCHAR(20)  | NOT NULL | 'planned'         | CHECK('p', 'ip', 'cp', 'cl') | Task status                               |
+| `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')    | Task priority                             |
+| `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                            | Creation timestamp                        |
+| `updated_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                            | Last update timestamp                     |
 
 status yang akan dipakai :
 
@@ -340,29 +343,30 @@ cancelled
 
 ## `task_reminders`
 
-| Column       | Description              |
-| ------------ | ------------------------ |
-| `id`         | Primary key              |
-| `task_id`    | FK to `tasks.id`         |
-| `remind_at`  | Reminder timestamp       |
-| `status`     | Reminder status          |
-| `sent_at`    | Sent timestamp, nullable |
-| `created_at` | Creation timestamp       |
-| `updated_at` | Last update timestamp    |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description              |
+| ------------ | ----------- | -------- | ----------------- | ----------- | ------------------------ |
+| `id`         | INT         | NOT NULL | A_I               | PRIMARY KEY | Primary key              |
+| `task_id`    | INT         | NOT NULL | -                 | FOREIGN KEY | FK to `tasks.id`         |
+| `remind_at`  | TIMESTAMPTZ | NOT NULL | -                 | -           | Reminder timestamp       |
+| `is_active`  | BOOL        | NOT NULL | TRUE              | -           | Reminder status          |
+| `sent_at`    | TIMESTAMPTZ | NULL     | NULL              | -           | Sent timestamp, nullable |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp       |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp    |
 
 ## `notifications`
 
-| Column            | Description                    |
-| ----------------- | ------------------------------ |
-| `id`              | Primary key                    |
-| `user_id`         | FK to `users.id`               |
-| `type`            | Notification type              |
-| `title`           | Notification title             |
-| `message`         | Notification message           |
-| `notifiable_type` | Referenced entity type         |
-| `notifiable_id`   | Referenced entity ID           |
-| `read_at`         | First-read timestamp, nullable |
-| `created_at`      | Creation timestamp             |
+| Column            | Type Data    | NULLABLE | Default | Constraints | Description                             |
+| ----------------- | ------------ | -------- | ------- | ----------- | --------------------------------------- |
+| `id`              | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key                             |
+| `user_id`         | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `users.id`                        |
+| `type`            | VARCHAR(100) | NOT NULL | -       | -           | Notification type                       |
+| `title`           | VARCHAR(255) | NOT NULL | -       | -           | Notification title                      |
+| `message`         | VARCHAR(255) | NOT NULL | -       | -           | Notification message                    |
+| `notifiable_type` | VARCHAR(255) | NULL     | -       | -           | Referenced entity type                  |
+| `notifiable_id`   | INT          | NULL     | -       | -           | Referenced entity ID                    |
+| `metadata`        | JSONB        | NULL     | -       | -           | Data/payload tambahan dalam format JSON |
+| `read_at`         | TIMESTAMPTZ  | NULL     | -       | -           | First-read timestamp, nullable          |
+| `created_at`      | TIMESTAMPTZ  | NULL     | -       | -           | Creation timestamp                      |
 
 Read state:
 
@@ -376,23 +380,23 @@ read_at != NULL
 
 ## `interactions`
 
-| Column                    | Description                                |
-| ------------------------- | ------------------------------------------ |
-| `id`                      | Primary key                                |
-| `client_id`               | FK to `clients.id`                         |
-| `deal_id`                 | FK to `deals.id`, nullable                 |
-| `organization_contact_id` | FK to `organization_contacts.id`, nullable |
-| `type`                    | Interaction type                           |
-| `subject`                 | Interaction subject                        |
-| `description`             | Planned/detail information                 |
-| `summary`                 | Result summary, nullable                   |
-| `status`                  | Interaction status                         |
-| `start_at`                | Start timestamp                            |
-| `end_at`                  | End timestamp                              |
-| `performed_by`            | FK to `users.id`                           |
-| `external_reference`      | External system reference, nullable        |
-| `created_at`              | Creation timestamp                         |
-| `updated_at`              | Last update timestamp                      |
+| Column                    | Type Data    | NULLABLE | Default           | Constraints                 | Description                                |
+| ------------------------- | ------------ | -------- | ----------------- | --------------------------- | ------------------------------------------ |
+| `id`                      | INT          | NOT NULL | A_I               | PRIMARY KEY                 | Primary key                                |
+| `client_id`               | INT          | NOT NULL | -                 | FOREIGN KEY                 | FK to `clients.id`                         |
+| `deal_id`                 | INT          | NULL     | -                 | FOREIGN KEY                 | FK to `deals.id`, nullable                 |
+| `organization_contact_id` | INT          | NULL     | -                 | FOREIGN KEY                 | FK to `organization_contacts.id`, nullable |
+| `type`                    | VARCHAR(20)  | NOT NULL | 'chat'            | CHECK('cl', 'm', 'e', 'ct') | Interaction type                           |
+| `subject`                 | VARCHAR(255) | NOT NULL | -                 | -                           | Interaction subject                        |
+| `description`             | VARCHAR(255) | NULL     | -                 | -                           | Planned/detail information                 |
+| `summary`                 | TEXT         | NULL     | -                 | -                           | Result summary, nullable                   |
+| `status`                  | VARCHAR(20)  | NOT NULL | 'scheduled'       | CHECK('sc', 'cp', 'cl')     | Interaction status                         |
+| `start_at`                | TIMESTAMPTZ  | NULL     | -                 | -                           | Start timestamp                            |
+| `end_at`                  | TIMESTAMPTZ  | NULL     | -                 | -                           | End timestamp                              |
+| `performed_by`            | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                 | FK to `users.id`                           |
+| `external_reference`      | VARCHAR(255) | NULL     | -                 | -                           | External system reference, nullable        |
+| `created_at`              | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                           | Creation timestamp                         |
+| `updated_at`              | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                           | Last update timestamp                      |
 
 type yang akan dipakai :
 
@@ -415,16 +419,16 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `notes`
 
-| Column       | Description                  |
-| ------------ | ---------------------------- |
-| `id`         | Primary key                  |
-| `client_id`  | FK to `clients.id`, nullable |
-| `deal_id`    | FK to `deals.id`, nullable   |
-| `content`    | Note content                 |
-| `note_type`  | Note category                |
-| `created_by` | FK to `users.id`             |
-| `created_at` | Creation timestamp           |
-| `updated_at` | Last update timestamp        |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description                  |
+| ------------ | ----------- | -------- | ----------------- | ----------- | ---------------------------- |
+| `id`         | INT         | NOT NULL | A_I               | PRIMARY KEY | Primary key                  |
+| `client_id`  | INT         | NULL     | -                 | FOREIGN KEY | FK to `clients.id`, nullable |
+| `deal_id`    | INT         | NULL     | -                 | FOREIGN KEY | FK to `deals.id`, nullable   |
+| `content`    | TEXT        | NOT NULL | -                 | -           | Note content                 |
+| `note_type`  | VARCHAR(50) | NOT NULL | -                 | -           | Note category                |
+| `created_by` | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `users.id`             |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp           |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp        |
 
 ---
 
@@ -432,32 +436,31 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `external_conversations`
 
-| Column                     | Description                |
-| -------------------------- | -------------------------- |
-| `id`                       | Primary key                |
-| `platform`                 | External platform          |
-| `external_conversation_id` | External conversation ID   |
-| `client_id`                | FK to `clients.id`         |
-| `status`                   | Conversation status        |
-| `last_interaction_at`      | Last interaction timestamp |
-| `metadata`                 | Additional metadata        |
-| `created_at`               | Creation timestamp         |
-| `updated_at`               | Last update timestamp      |
+| Column                     | Type Data    | NULLABLE | Default           | Constraints | Description                |
+| -------------------------- | ------------ | -------- | ----------------- | ----------- | -------------------------- |
+| `id`                       | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key                |
+| `platform`                 | VARCHAR(50)  | NOT NULL | -                 | -           | External platform          |
+| `external_conversation_id` | VARCHAR(255) | NOT NULL | -                 | -           | External conversation ID   |
+| `client_id`                | INT          | NOT NULL | -                 | FOREIGN KEY | FK to `clients.id`         |
+| `last_interaction_at`      | TIMESTAMPTZ  | NULL     | NULL              | -           | Last interaction timestamp |
+| `metadata`                 | JSONB        | NULL     | NULL              | -           | Additional metadata        |
+| `created_at`               | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp         |
+| `updated_at`               | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp      |
 
 ## `attachments`
 
-| Column              | Description              |
-| ------------------- | ------------------------ |
-| `id`                | Primary key              |
-| `file_name`         | File name                |
-| `description`       | File description         |
-| `mime_type`         | MIME type                |
-| `file_size`         | File size                |
-| `storage_reference` | Storage/object reference |
-| `uploaded_by`       | FK to `users.id`         |
-| `uploaded_at`       | Upload timestamp         |
-| `related_type`      | Related entity type      |
-| `related_id`        | Related entity ID        |
+| Column              | Type Data    | NULLABLE | Default | Constraints            | Description              |
+| ------------------- | ------------ | -------- | ------- | ---------------------- | ------------------------ |
+| `id`                | INT          | NOT NULL | A_I     | PRIMARY KEY            | Primary key              |
+| `file_name`         | VARCHAR(255) | NOT NULL | -       | -                      | File name                |
+| `description`       | TEXT         | NULL     | -       | -                      | File description         |
+| `mime_type`         | VARCHAR(100) | NOT NULL | -       | -                      | MIME type                |
+| `file_size`         | BIGINT       | NOT NULL | -       | CHECK (file_size >= 0) | File size                |
+| `storage_reference` | VARCHAR(255) | NOT NULL | -       | -                      | Storage/object reference |
+| `uploaded_by`       | SMALLINT     | NOT NULL | -       | FOREIGN KEY            | FK to `users.id`         |
+| `created_at`        | TIMESTAMPTZ  | NULL     | -       | -                      | Upload timestamp         |
+| `attachable_type`   | VARCHAR(255) | NOT NULL | -       | -                      | Related entity type      |
+| `attachable_id`     | INT          | NOT NULL | -       | -                      | Related entity ID        |
 
 ---
 
@@ -465,15 +468,15 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `activity_logs`
 
-| Column        | Description                |
-| ------------- | -------------------------- |
-| `id`          | Primary key                |
-| `user_id`     | FK to `users.id`, nullable |
-| `action`      | Action performed           |
-| `target_type` | Target entity type         |
-| `target_id`   | Target entity ID           |
-| `metadata`    | Additional event data      |
-| `created_at`  | Activity timestamp         |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description                |
+| ------------- | ------------ | -------- | ------- | ----------- | -------------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key                |
+| `user_id`     | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `users.id`, nullable |
+| `action`      | VARCHAR(255) | NOT NULL | -       | -           | Action performed           |
+| `target_type` | VARCHAR(255) | NOT NULL | -       | -           | Target entity type         |
+| `target_id`   | INT          | NOT NULL | -       | -           | Target entity ID           |
+| `metadata`    | JSONB        | NULL     | -       | -           | Additional event data      |
+| `created_at`  | TIMESTAMPTZ  | NULL     | -       | -           | Activity timestamp         |
 
 ---
 
@@ -481,50 +484,50 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `countries`
 
-| Column | Description  |
-| ------ | ------------ |
-| `id`   | Primary key  |
-| `name` | Country name |
+| Column | Type Data    | NULLABLE | Default | Constraints | Description  |
+| ------ | ------------ | -------- | ------- | ----------- | ------------ |
+| `id`   | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key  |
+| `name` | VARCHAR(100) | NOT NULL | -       | -           | Country name |
 
 ## `provinces`
 
-| Column       | Description          |
-| ------------ | -------------------- |
-| `id`         | Primary key          |
-| `country_id` | FK to `countries.id` |
-| `name`       | Province name        |
+| Column       | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------ | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`         | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `country_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `countries.id` |
+| `name`       | VARCHAR(100) | NOT NULL | -       | -           | Province name        |
 
 ## `regencies`
 
-| Column        | Description          |
-| ------------- | -------------------- |
-| `id`          | Primary key          |
-| `province_id` | FK to `provinces.id` |
-| `name`        | Regency/city name    |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------- | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `province_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `provinces.id` |
+| `name`        | VARCHAR(100) | NOT NULL | -       | -           | Regency/city name    |
 
 ## `districts`
 
-| Column       | Description          |
-| ------------ | -------------------- |
-| `id`         | Primary key          |
-| `regency_id` | FK to `regencies.id` |
-| `name`       | District name        |
+| Column       | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------ | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`         | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `regency_id` | INT          | NOT NULL | -       | FOREIGN KEY | FK to `regencies.id` |
+| `name`       | VARCHAR(100) | NOT NULL | -       | -           | District name        |
 
 ## `villages`
 
-| Column        | Description          |
-| ------------- | -------------------- |
-| `id`          | Primary key          |
-| `district_id` | FK to `districts.id` |
-| `name`        | Village name         |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description          |
+| ------------- | ------------ | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
+| `district_id` | INT          | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
+| `name`        | VARCHAR(100) | NOT NULL | -       | -           | Village name         |
 
 ## `postal_codes`
 
-| Column        | Description          |
-| ------------- | -------------------- |
-| `id`          | Primary key          |
-| `district_id` | FK to `districts.id` |
-| `postal_code` | Postal code          |
+| Column        | Type Data   | NULLABLE | Default | Constraints | Description          |
+| ------------- | ----------- | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT         | NOT NULL | A_I     | PRIMAY KEY  | Primary key          |
+| `district_id` | INT         | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
+| `postal_code` | VARCHAR(10) | NOT NULL | -       | -           | Postal code          |
 
 ---
 
@@ -563,7 +566,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 # 10. Framework / Infrastructure
 
-Tabel-tabel berikut akan ada di database tapi bukan entitas kebutuhan untuk CRMs.
+Tabel-tabel berikut akan ada di database tapi bukan entitas kebutuhan untuk CRM.
 
 ## `migrations`
 

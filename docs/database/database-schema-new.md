@@ -26,7 +26,7 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 | Column             | Type Data    | NULLABLE | Default           | Constraints | Description             |
 | ------------------ | ------------ | -------- | ----------------- | ----------- | ----------------------- |
-| `id`               | INT          | NOT NULL | A_I               | PRIMARY KEY | Primary key             |
+| `id`               | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key             |
 | `role_id`          | SMALLINT     | NOT NULL | -                 | FOREIGN KEY | FK to `roles.id`        |
 | `name`             | VARCHAR(255) | NOT NULL | -                 | -           | User name               |
 | `email`            | VARCHAR(255) | NULL     | NULL              | UNIQUE      | User email              |
@@ -270,23 +270,23 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 ## `deals`
 
-| Column              | Type Data                  | NULLABLE | Default | Constraints | Description |
-| ------------------- | -------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`                | Primary key                |
-| `name`              | Deal name                  |
-| `client_id`         | FK to `clients.id`         |
-| `pipeline_id`       | FK to `pipelines.id`       |
-| `current_stage_id`  | FK to `pipeline_stages.id` |
-| `currency`          | Deal currency              |
-| `value`             | Deal value                 |
-| `status`            | Deal status                |
-| `priority`          | Deal priority              |
-| `expected_close_at` | Expected closing date      |
-| `actual_close_at`   | Actual closing date        |
-| `description`       | Deal description           |
-| `assigned_user_id`  | FK to `users.id`           |
-| `created_at`        | Creation timestamp         |
-| `updated_at`        | Last update timestamp      |
+| Column              | Type Data             | NULLABLE | Default           | Constraints               | Description                |
+| ------------------- | --------------------- | -------- | ----------------- | ------------------------- | -------------------------- |
+| `id`                | INT                   | NOT NULL | -                 | PRIMARY KEY               | Primary key                |
+| `name`              | VARCHAR(255)          | NOT NULL | -                 | -                         | Deal name                  |
+| `client_id`         | INT                   | NOT NULL | -                 | FOREIGN KEY               | FK to `clients.id`         |
+| `pipeline_id`       | SMALLINT              | NOT NULL | -                 | FOREIGN KEY               | FK to `pipelines.id`       |
+| `current_stage_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY               | FK to `pipeline_stages.id` |
+| `currency`          | CHAR(3)               | NOT NULL | 'IDR'             | -                         | Deal currency              |
+| `value`             | DECIMAL/NUMERIC(15,2) | NOT NULL | -                 | -                         | Deal value                 |
+| `is_active`         | BOOL                  | NOT NULL | TRUE              | -                         | Deal status                |
+| `priority`          | VARCHAR(10)           | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U') | Deal priority              |
+| `expected_close_at` | DATE                  | NOT NULL | -                 | -                         | Expected closing date      |
+| `actual_close_at`   | DATE                  | NULL     | -                 | -                         | Actual closing date        |
+| `description`       | VARCHAR(255)          | NULL     | -                 | -                         | Deal description           |
+| `assigned_user_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY               | FK to `users.id`           |
+| `created_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                         | Creation timestamp         |
+| `updated_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                         | Last update timestamp      |
 
 status yang akan dipakai :
 

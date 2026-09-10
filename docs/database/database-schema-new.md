@@ -50,18 +50,18 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `role_permissions`
 
-| Column       | Type Data                   | NULLABLE | Default | Constraints | Description |
-| ------------ | --------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key                 |
-| `role_id`    | FK to `roles.id`            |
-| `resource`   | Application resource/module |
-| `can_view`   | View permission             |
-| `can_create` | Create permission           |
-| `can_update` | Update permission           |
-| `can_delete` | Delete permission           |
-| `can_assign` | Assignment permission       |
-| `created_at` | Creation timestamp          |
-| `updated_at` | Last update timestamp       |
+| Column       | Type Data  | NULLABLE | Default | Constraints | Description           |
+| ------------ | ---------- | -------- | ------- | ----------- | --------------------- |
+| `id`         | SMALLINT   | NOT NULL | A_I     | PRIMARY KEY | Primary key           |
+| `role_id`    | SMALLINT   | NOT NULL | -       | FOREIGN KEY | FK to `roles.id`      |
+| `menu_id`    | SMALLINT   | NOT NULL | -       | FOREIGN KEY | FK to `menus.id`      |
+| `can_view`   | BOOL       | NULL     | FALSE   | -           | View permission       |
+| `can_create` | BOOL       | NULL     | FALSE   | -           | Create permission     |
+| `can_update` | BOOL       | NULL     | FALSE   | -           | Update permission     |
+| `can_delete` | BOOL       | NULL     | FALSE   | -           | Delete permission     |
+| `can_assign` | BOOL       | NULL     | FALSE   | -           | Assignment permission |
+| `created_at` | TIMESTAMPZ | NULL     | NULL    | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPZ | NULL     | NULL    | -           | Last update timestamp |
 
 ## `menus`
 

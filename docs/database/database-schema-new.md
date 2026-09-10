@@ -65,18 +65,18 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `menus`
 
-| Column       | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------ | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`         | Primary key           |
-| `parent_id`  | Parent menu, nullable |
-| `name`       | Menu name             |
-| `slug`       | Menu identifier       |
-| `route`      | Application route     |
-| `icon`       | FK to `menu_icons.id` |
-| `position`   | Display order         |
-| `status`     | Menu status           |
-| `created_at` | Creation timestamp    |
-| `updated_at` | Last update timestamp |
+| Column       | Type Data    | NULLABLE | Default           | Constraints | Description                 |
+| ------------ | ------------ | -------- | ----------------- | ----------- | --------------------------- |
+| `id`         | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key                 |
+| `parent_id`  | SMALLINT     | NULL     | -                 | FOREIGN KEY | Parent menu, FK to menus.id |
+| `icon_id`    | SMALLINT     | NULL     | -                 | FOREIGN KEY | FK to `menu_icons.id`       |
+| `name`       | VARCHAR(50)  | NOT NULL | -                 | UNIQUE      | Menu name                   |
+| `slug`       | VARCHAR(100) | NULL     | NULL              | UNIQUE      | Menu identifier             |
+| `route`      | VARCHAR(50)  | NULL     | -                 | -           | Application route           |
+| `position`   | SMALLINT     | NOT NULL | 0                 | -           | Display order               |
+| `is_active`  | BOOL         | NOT NULL | FALSE             | -           | Menu status                 |
+| `created_at` | TIMESTAMPZ   | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp          |
+| `updated_at` | TIMESTAMPZ   | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp       |
 
 ## `menu_icons`
 

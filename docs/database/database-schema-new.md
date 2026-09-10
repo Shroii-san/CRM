@@ -270,23 +270,24 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 ## `deals`
 
-| Column              | Type Data             | NULLABLE | Default           | Constraints               | Description                |
-| ------------------- | --------------------- | -------- | ----------------- | ------------------------- | -------------------------- |
-| `id`                | INT                   | NOT NULL | -                 | PRIMARY KEY               | Primary key                |
-| `name`              | VARCHAR(255)          | NOT NULL | -                 | -                         | Deal name                  |
-| `client_id`         | INT                   | NOT NULL | -                 | FOREIGN KEY               | FK to `clients.id`         |
-| `pipeline_id`       | SMALLINT              | NOT NULL | -                 | FOREIGN KEY               | FK to `pipelines.id`       |
-| `current_stage_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY               | FK to `pipeline_stages.id` |
-| `currency`          | CHAR(3)               | NOT NULL | 'IDR'             | -                         | Deal currency              |
-| `value`             | DECIMAL/NUMERIC(15,2) | NOT NULL | -                 | -                         | Deal value                 |
-| `is_active`         | BOOL                  | NOT NULL | TRUE              | -                         | Deal status                |
-| `priority`          | VARCHAR(10)           | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U') | Deal priority              |
-| `expected_close_at` | DATE                  | NOT NULL | -                 | -                         | Expected closing date      |
-| `actual_close_at`   | DATE                  | NULL     | -                 | -                         | Actual closing date        |
-| `description`       | VARCHAR(255)          | NULL     | -                 | -                         | Deal description           |
-| `assigned_user_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY               | FK to `users.id`           |
-| `created_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                         | Creation timestamp         |
-| `updated_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                         | Last update timestamp      |
+| Column              | Type Data             | NULLABLE | Default           | Constraints                    | Description                |
+| ------------------- | --------------------- | -------- | ----------------- | ------------------------------ | -------------------------- |
+| `id`                | INT                   | NOT NULL | -                 | PRIMARY KEY                    | Primary key                |
+| `name`              | VARCHAR(255)          | NOT NULL | -                 | -                              | Deal name                  |
+| `client_id`         | INT                   | NOT NULL | -                 | FOREIGN KEY                    | FK to `clients.id`         |
+| `pipeline_id`       | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `pipelines.id`       |
+| `current_stage_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `pipeline_stages.id` |
+| `currency`          | CHAR(3)               | NOT NULL | 'IDR'             | -                              | Deal currency              |
+| `value`             | DECIMAL/NUMERIC(15,2) | NOT NULL | -                 | -                              | Deal value                 |
+| `is_active`         | BOOL                  | NOT NULL | TRUE              | -                              | Deal status                |
+| `status`            | VARCHAR(20)           | NOT NULL | 'open'            | CHECK('O', 'W', 'L', 'C', 'A') | Deal priority              |
+| `priority`          | VARCHAR(10)           | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')      | Deal priority              |
+| `expected_close_at` | DATE                  | NOT NULL | -                 | -                              | Expected closing date      |
+| `actual_close_at`   | DATE                  | NULL     | -                 | -                              | Actual closing date        |
+| `description`       | VARCHAR(255)          | NULL     | -                 | -                              | Deal description           |
+| `assigned_user_id`  | SMALLINT              | NOT NULL | -                 | FOREIGN KEY                    | FK to `users.id`           |
+| `created_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                              | Creation timestamp         |
+| `updated_at`        | TIMESTAMPTZ           | NULL     | CURRENT_TIMESTAMP | -                              | Last update timestamp      |
 
 status yang akan dipakai :
 
@@ -315,21 +316,21 @@ abandoned
 
 ## `tasks`
 
-| Column                   | Type Data    | NULLABLE | Default           | Constraints               | Description                               |
-| ------------------------ | ------------ | -------- | ----------------- | ------------------------- | ----------------------------------------- |
-| `id`                     | INT          | NOT NULL | A_I               | PRIMARY KEY               | Primary key                               |
-| `name`                   | VARCHAR(255) | NOT NULL | -                 | -                         | Task name                                 |
-| `description`            | VARCHAR(255) | NULL     | -                 | -                         | Task description                          |
-| `client_id`              | INT          | NULL     | -                 | FOREIGN KEY               | FK to `clients.id`, nullable              |
-| `deal_id`                | INT          | NULL     | -                 | FOREIGN KEY               | FK to `deals.id`, nullable                |
-| `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY               | FK to `stage_task_templates.id`, nullable |
-| `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY               | FK to `users.id`                          |
-| `due_at`                 | DATE         | NOT NULL | -                 | -                         | Task deadline                             |
-| `completed_at`           | DATE         | NULL     | -                 | -                         | Completion timestamp, nullable            |
-| `is_active`              | BOOL         | NOT NULL | TRUE              | -                         | Task status                               |
-| `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U') | Task priority                             |
-| `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                         | Creation timestamp                        |
-| `updated_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                         | Last update timestamp                     |
+| Column                   | Type Data    | NULLABLE | Default           | Constraints                                               | Description                               |
+| ------------------------ | ------------ | -------- | ----------------- | --------------------------------------------------------- | ----------------------------------------- |
+| `id`                     | INT          | NOT NULL | A_I               | PRIMARY KEY                                               | Primary key                               |
+| `name`                   | VARCHAR(255) | NOT NULL | -                 | -                                                         | Task name                                 |
+| `description`            | VARCHAR(255) | NULL     | -                 | -                                                         | Task description                          |
+| `client_id`              | INT          | NULL     | -                 | FOREIGN KEY                                               | FK to `clients.id`, nullable              |
+| `deal_id`                | INT          | NULL     | -                 | FOREIGN KEY                                               | FK to `deals.id`, nullable                |
+| `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY                                               | FK to `stage_task_templates.id`, nullable |
+| `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                                               | FK to `users.id`                          |
+| `due_at`                 | DATE         | NOT NULL | -                 | -                                                         | Task deadline                             |
+| `completed_at`           | DATE         | NULL     | -                 | -                                                         | Completion timestamp, nullable            |
+| `status`                 | VARCHAR(20)  | NOT NULL | 'planned'         | CHECK('planned', 'in_progress', 'completed', 'cancelled') | Task status                               |
+| `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')                                 | Task priority                             |
+| `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                                                         | Creation timestamp                        |
+| `updated_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                                                         | Last update timestamp                     |
 
 status yang akan dipakai :
 

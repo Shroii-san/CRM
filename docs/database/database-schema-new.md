@@ -40,13 +40,13 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `roles`
 
-| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key           |
-| `name`        | Role name             |
-| `description` | Role description      |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description           |
+| ------------- | ------------ | -------- | ------- | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(50)  | NOT NULL | -       | UNIQUE      | Role name             |
+| `description` | VARCHAR(255) | NULL     | NULLL   | -           | Role description      |
+| `created_at`  | TIMESTAMPZ   | NULL     | NULL    | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPZ   | NULL     | NULL    | -           | Last update timestamp |
 
 ## `role_permissions`
 

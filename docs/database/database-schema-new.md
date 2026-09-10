@@ -316,21 +316,21 @@ abandoned
 
 ## `tasks`
 
-| Column                   | Type Data    | NULLABLE | Default           | Constraints                                               | Description                               |
-| ------------------------ | ------------ | -------- | ----------------- | --------------------------------------------------------- | ----------------------------------------- |
-| `id`                     | INT          | NOT NULL | A_I               | PRIMARY KEY                                               | Primary key                               |
-| `name`                   | VARCHAR(255) | NOT NULL | -                 | -                                                         | Task name                                 |
-| `description`            | VARCHAR(255) | NULL     | -                 | -                                                         | Task description                          |
-| `client_id`              | INT          | NULL     | -                 | FOREIGN KEY                                               | FK to `clients.id`, nullable              |
-| `deal_id`                | INT          | NULL     | -                 | FOREIGN KEY                                               | FK to `deals.id`, nullable                |
-| `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY                                               | FK to `stage_task_templates.id`, nullable |
-| `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                                               | FK to `users.id`                          |
-| `due_at`                 | DATE         | NOT NULL | -                 | -                                                         | Task deadline                             |
-| `completed_at`           | DATE         | NULL     | -                 | -                                                         | Completion timestamp, nullable            |
-| `status`                 | VARCHAR(20)  | NOT NULL | 'planned'         | CHECK('planned', 'in_progress', 'completed', 'cancelled') | Task status                               |
-| `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')                                 | Task priority                             |
-| `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                                                         | Creation timestamp                        |
-| `updated_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                                                         | Last update timestamp                     |
+| Column                   | Type Data    | NULLABLE | Default           | Constraints                  | Description                               |
+| ------------------------ | ------------ | -------- | ----------------- | ---------------------------- | ----------------------------------------- |
+| `id`                     | INT          | NOT NULL | A_I               | PRIMARY KEY                  | Primary key                               |
+| `name`                   | VARCHAR(255) | NOT NULL | -                 | -                            | Task name                                 |
+| `description`            | VARCHAR(255) | NULL     | -                 | -                            | Task description                          |
+| `client_id`              | INT          | NULL     | -                 | FOREIGN KEY                  | FK to `clients.id`, nullable              |
+| `deal_id`                | INT          | NULL     | -                 | FOREIGN KEY                  | FK to `deals.id`, nullable                |
+| `stage_task_template_id` | SMALLINT     | NULL     | -                 | FOREIGN KEY                  | FK to `stage_task_templates.id`, nullable |
+| `assigned_user_id`       | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                  | FK to `users.id`                          |
+| `due_at`                 | DATE         | NOT NULL | -                 | -                            | Task deadline                             |
+| `completed_at`           | DATE         | NULL     | -                 | -                            | Completion timestamp, nullable            |
+| `status`                 | VARCHAR(20)  | NOT NULL | 'planned'         | CHECK('p', 'ip', 'cp', 'cl') | Task status                               |
+| `priority`               | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U')    | Task priority                             |
+| `created_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                            | Creation timestamp                        |
+| `updated_at`             | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                            | Last update timestamp                     |
 
 status yang akan dipakai :
 

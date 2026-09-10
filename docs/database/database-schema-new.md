@@ -204,15 +204,15 @@ contoh :
 
 Merepresentasikan entah itu individu ataupun organisasi yang menjadi client/prospect
 
-| Column            | Type Data                           | NULLABLE | Default | Constraints | Description |
-| ----------------- | ----------------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`              | Primary key                         |
-| `person_id`       | FK to `persons.id`, nullable        |
-| `organization_id` | FK to `organizations.id`, nullable  |
-| `source_id`       | FK to `client_sources.id`, nullable |
-| `status`          | Client status                       |
-| `created_at`      | Creation timestamp                  |
-| `updated_at`      | Last update timestamp               |
+| Column            | Type Data  | NULLABLE | Default           | Constraints | Description                         |
+| ----------------- | ---------- | -------- | ----------------- | ----------- | ----------------------------------- |
+| `id`              | INT        | NOT NULL | A_I               | PRIMARY KEY | Primary key                         |
+| `person_id`       | INT        | NULL     | -                 | FOREIGN KEY | FK to `persons.id`, nullable        |
+| `organization_id` | INT        | NULL     | -                 | FOREIGN KEY | FK to `organizations.id`, nullable  |
+| `source_id`       | SMALLINT   | NOT NULL | -                 | FOREIGN KEY | FK to `client_sources.id`, nullable |
+| `is_active`       | BOOL       | NOT NULL | TRUE              | -           | Client status                       |
+| `created_at`      | TIMESTAMPZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp                  |
+| `updated_at`      | TIMESTAMPZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp               |
 
 Seorang client harus merepresentasikan hanya satu tipe, yaitu `person` atau `organization`.
 

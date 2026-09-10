@@ -135,21 +135,21 @@ contoh :
 
 ## `organizations`
 
-| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key           |
-| `industry_id` | FK to `industries.id` |
-| `name`        | Organization name     |
-| `phone`       | Organization phone    |
-| `email`       | Organization email    |
-| `website`     | Organization website  |
-| `address`     | Organization address  |
-| `province_id` | FK to `provinces.id`  |
-| `regency_id`  | FK to `regencies.id`  |
-| `district_id` | FK to `districts.id`  |
-| `village_id`  | FK to `villages.id`   |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default | Constraints | Description           |
+| ------------- | ------------ | -------- | ------- | ----------- | --------------------- |
+| `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key           |
+| `industry_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `industries.id` |
+| `name`        | VARCHAR(255) | NOT NULL | -       | UNIQUE      | Organization name     |
+| `email`       | VARCHAR(255) | NULL     | NULL    | -           | Organization email    |
+| `phone`       | VARCHAR(20)  | NULL     | NULL    | -           | Organization phone    |
+| `website`     | VARCHAR(255) | NULL     | NULL    | -           | Organization website  |
+| `address`     | TEXT         | NULL     | NULL    | -           | Organization address  |
+| `province_id` | SMALLINT     | NULL     | NULL    | FOREIGN KEY | FK to `provinces.id`  |
+| `regency_id`  | SMALLINT     | NULL     | NULL    | FOREIGN KEY | FK to `regencies.id`  |
+| `district_id` | INT          | NULL     | NULL    | FOREIGN KEY | FK to `districts.id`  |
+| `village_id`  | INT          | NULL     | NULL    | FOREIGN KEY | FK to `villages.id`   |
+| `created_at`  | TIMESTAMPTZ  | NULL     | NULL    | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | NULL    | -           | Last update timestamp |
 
 ## `organization_contacts`
 

@@ -355,17 +355,18 @@ cancelled
 
 ## `notifications`
 
-| Column            | Type Data                      | NULLABLE | Default | Constraints | Description |
-| ----------------- | ------------------------------ | -------- | ------- | ----------- | ----------- |
-| `id`              | Primary key                    |
-| `user_id`         | FK to `users.id`               |
-| `type`            | Notification type              |
-| `title`           | Notification title             |
-| `message`         | Notification message           |
-| `notifiable_type` | Referenced entity type         |
-| `notifiable_id`   | Referenced entity ID           |
-| `read_at`         | First-read timestamp, nullable |
-| `created_at`      | Creation timestamp             |
+| Column            | Type Data    | NULLABLE | Default | Constraints | Description                             |
+| ----------------- | ------------ | -------- | ------- | ----------- | --------------------------------------- |
+| `id`              | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key                             |
+| `user_id`         | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `users.id`                        |
+| `type`            | VARCHAR(100) | NOT NULL | -       | -           | Notification type                       |
+| `title`           | VARCHAR(255) | NOT NULL | -       | -           | Notification title                      |
+| `message`         | VARCHAR(255) | NOT NULL | -       | -           | Notification message                    |
+| `notifiable_type` | VARCHAR(255) | NULL     | -       | -           | Referenced entity type                  |
+| `notifiable_id`   | INT          | NULL     | -       | -           | Referenced entity ID                    |
+| `metadata`        | JSONB        | NULL     | -       | -           | Data/payload tambahan dalam format JSON |
+| `read_at`         | TIMESTAMPTZ  | NULL     | -       | -           | First-read timestamp, nullable          |
+| `created_at`      | TIMESTAMPTZ  | NULL     | -       | -           | Creation timestamp                      |
 
 Read state:
 

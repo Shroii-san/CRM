@@ -535,8 +535,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `app_profiles`
 
-| Column         | Type Data                   | NULLABLE | Default | Constraints | Description |
-| -------------- | --------------------------- | -------- | ------- | ----------- | ----------- |
+| Column         | Description                 |
+| -------------- | --------------------------- |
 | `id`           | Primary key                 |
 | `app_name`     | Application name            |
 | `company_name` | Company name                |
@@ -552,8 +552,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `app_settings`
 
-| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
+| Column        | Description           |
+| ------------- | --------------------- |
 | `id`          | Primary key           |
 | `key`         | Setting key           |
 | `value`       | Setting value         |
@@ -566,28 +566,28 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 # 10. Framework / Infrastructure
 
-Tabel-tabel berikut akan ada di database tapi bukan entitas kebutuhan untuk CRMs.
+Tabel-tabel berikut akan ada di database tapi bukan entitas kebutuhan untuk CRM.
 
 ## `migrations`
 
-| Column      | Type Data              | NULLABLE | Default | Constraints | Description |
-| ----------- | ---------------------- | -------- | ------- | ----------- | ----------- |
+| Column      | Description            |
+| ----------- | ---------------------- |
 | `id`        | Primary key            |
 | `migration` | Migration name         |
 | `batch`     | Migration batch number |
 
 ## `password_reset_tokens`
 
-| Column       | Type Data                | NULLABLE | Default | Constraints | Description |
-| ------------ | ------------------------ | -------- | ------- | ----------- | ----------- |
+| Column       | Description              |
+| ------------ | ------------------------ |
 | `email`      | User email               |
 | `token`      | Password reset token     |
 | `created_at` | Token creation timestamp |
 
 ## `sessions`
 
-| Column          | Type Data               | NULLABLE | Default | Constraints | Description |
-| --------------- | ----------------------- | -------- | ------- | ----------- | ----------- |
+| Column          | Description             |
+| --------------- | ----------------------- |
 | `id`            | Session identifier      |
 | `user_id`       | Related user, nullable  |
 | `ip_address`    | Client IP address       |

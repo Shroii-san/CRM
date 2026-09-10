@@ -487,7 +487,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 | Column | Type Data    | NULLABLE | Default | Constraints | Description  |
 | ------ | ------------ | -------- | ------- | ----------- | ------------ |
 | `id`   | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key  |
-| `name` | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Country name |
+| `name` | VARCHAR(100) | NOT NULL | -       | -           | Country name |
 
 ## `provinces`
 
@@ -495,7 +495,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 | ------------ | ------------ | -------- | ------- | ----------- | -------------------- |
 | `id`         | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
 | `country_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `countries.id` |
-| `name`       | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Province name        |
+| `name`       | VARCHAR(100) | NOT NULL | -       | -           | Province name        |
 
 ## `regencies`
 
@@ -503,7 +503,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 | ------------- | ------------ | -------- | ------- | ----------- | -------------------- |
 | `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
 | `province_id` | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `provinces.id` |
-| `name`        | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Regency/city name    |
+| `name`        | VARCHAR(100) | NOT NULL | -       | -           | Regency/city name    |
 
 ## `districts`
 
@@ -511,7 +511,7 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 | ------------ | ------------ | -------- | ------- | ----------- | -------------------- |
 | `id`         | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
 | `regency_id` | INT          | NOT NULL | -       | FOREIGN KEY | FK to `regencies.id` |
-| `name`       | VARCHAR(100) | NOT NULL | -       | UNIQUE      | District name        |
+| `name`       | VARCHAR(100) | NOT NULL | -       | -           | District name        |
 
 ## `villages`
 
@@ -519,15 +519,15 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 | ------------- | ------------ | -------- | ------- | ----------- | -------------------- |
 | `id`          | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key          |
 | `district_id` | INT          | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
-| `name`        | VARCHAR(100) | NOT NULL | -       | UNIQUE      | Village name         |
+| `name`        | VARCHAR(100) | NOT NULL | -       | -           | Village name         |
 
 ## `postal_codes`
 
-| Column        | Type Data | NULLABLE | Default | Constraints | Description          |
-| ------------- | --------- | -------- | ------- | ----------- | -------------------- |
-| `id`          | INT       | NOT NULL | A_I     | PRIMAY KEY  | Primary key          |
-| `district_id` | INT       | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
-| `postal_code` | SMALLINT  | NOT NULL | -       | UNIQUE      | Postal code          |
+| Column        | Type Data   | NULLABLE | Default | Constraints | Description          |
+| ------------- | ----------- | -------- | ------- | ----------- | -------------------- |
+| `id`          | INT         | NOT NULL | A_I     | PRIMAY KEY  | Primary key          |
+| `district_id` | INT         | NOT NULL | -       | FOREIGN KEY | FK to `districts.id` |
+| `postal_code` | VARCHAR(10) | NOT NULL | -       | -           | Postal code          |
 
 ---
 

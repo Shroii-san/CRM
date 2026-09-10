@@ -24,22 +24,24 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `users`
 
-| Column             | Description             |
-| ------------------ | ----------------------- |
-| `id`               | Primary key             |
-| `role_id`          | FK to `roles.id`        |
-| `name`             | User name               |
-| `email`            | User email              |
-| `password_hash`    | Password hash           |
-| `status`           | User status             |
-| `last_activity_at` | Last activity timestamp |
-| `created_at`       | Creation timestamp      |
-| `updated_at`       | Last update timestamp   |
+| Column             | Type Data    | NULLABLE | Default | Constraints | Description             |
+| ------------------ | ------------ | -------- | ------- | ----------- | ----------------------- |
+| `id`               | INT          | NOT NULL | A_I     | PRIMARY KEY | Primary key             |
+| `role_id`          | SMALLINT     | NOT NULL | -       | FOREIGN KEY | FK to `roles.id`        |
+| `name`             | VARCHAR(255) | NOT NULL | -       | -           | User name               |
+| `email`            | VARCHAR(255) | NULL     | NULL    | UNIQUE      | User email              |
+| `phone`            | VARCHAR(20)  | NULL     | NULL    | UNIQUE      | User phone              |
+| `password_hash`    | VARCHAR(255) | NOT NULL | -       | -           | Password hash           |
+| `is_active`        | BOOL         | NOT NULL | FALSE   | -           | User status             |
+| `remember_token`   | VARCHAR(100) | NULL     | NULL    | -           | User cookie token       |
+| `last_activity_at` | TIMESTAMPZ   | NULL     | NULL    | -           | Last activity timestamp |
+| `created_at`       | TIMESTAMPZ   | NULL     | NULL    | -           | Creation timestamp      |
+| `updated_at`       | TIMESTAMPZ   | NULL     | NULL    | -           | Last update timestamp   |
 
 ## `roles`
 
-| Column        | Description           |
-| ------------- | --------------------- |
+| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key           |
 | `name`        | Role name             |
 | `description` | Role description      |
@@ -48,8 +50,8 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `role_permissions`
 
-| Column       | Description                 |
-| ------------ | --------------------------- |
+| Column       | Type Data                   | NULLABLE | Default | Constraints | Description |
+| ------------ | --------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key                 |
 | `role_id`    | FK to `roles.id`            |
 | `resource`   | Application resource/module |
@@ -63,8 +65,8 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `menus`
 
-| Column       | Description           |
-| ------------ | --------------------- |
+| Column       | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------ | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key           |
 | `parent_id`  | Parent menu, nullable |
 | `name`       | Menu name             |
@@ -78,8 +80,8 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 ## `menu_icons`
 
-| Column       | Description           |
-| ------------ | --------------------- |
+| Column       | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------ | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key           |
 | `name`       | Icon name             |
 | `class_name` | Class library name    |
@@ -90,8 +92,8 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 Tabel penghubung untuk roles dan menus.
 
-| Column    | Description      |
-| --------- | ---------------- |
+| Column    | Type Data        | NULLABLE | Default | Constraints | Description |
+| --------- | ---------------- | -------- | ------- | ----------- | ----------- |
 | `role_id` | FK to `roles.id` |
 | `menu_id` | FK to `menus.id` |
 
@@ -101,8 +103,8 @@ Tabel penghubung untuk roles dan menus.
 
 ## `persons`
 
-| Column       | Description           |
-| ------------ | --------------------- |
+| Column       | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------ | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key           |
 | `name`       | Full name             |
 | `email`      | Email                 |
@@ -122,8 +124,8 @@ contoh :
 - Healthcare
 - Finance
 
-| Column        | Description           |
-| ------------- | --------------------- |
+| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key           |
 | `name`        | Industry name         |
 | `description` | Industry description  |
@@ -133,8 +135,8 @@ contoh :
 
 ## `organizations`
 
-| Column        | Description           |
-| ------------- | --------------------- |
+| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key           |
 | `industry_id` | FK to `industries.id` |
 | `name`        | Organization name     |
@@ -153,8 +155,8 @@ contoh :
 
 Tabel penghubung antara organizations dan persons.
 
-| Column            | Description                         |
-| ----------------- | ----------------------------------- |
+| Column            | Type Data                           | NULLABLE | Default | Constraints | Description |
+| ----------------- | ----------------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`              | Primary key                         |
 | `organization_id` | FK to `organizations.id`            |
 | `person_id`       | FK to `persons.id`                  |
@@ -167,8 +169,8 @@ Tabel penghubung antara organizations dan persons.
 
 ## `organization_social_profiles`
 
-| Column            | Description              |
-| ----------------- | ------------------------ |
+| Column            | Type Data                | NULLABLE | Default | Constraints | Description |
+| ----------------- | ------------------------ | -------- | ------- | ----------- | ----------- |
 | `id`              | Primary key              |
 | `organization_id` | FK to `organizations.id` |
 | `platform`        | Social platform          |
@@ -189,8 +191,8 @@ contoh :
 - Event
 - Advertisement
 
-| Column        | Description           |
-| ------------- | --------------------- |
+| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key           |
 | `name`        | Source name           |
 | `description` | Source description    |
@@ -202,8 +204,8 @@ contoh :
 
 Merepresentasikan entah itu individu ataupun organisasi yang menjadi client/prospect
 
-| Column            | Description                         |
-| ----------------- | ----------------------------------- |
+| Column            | Type Data                           | NULLABLE | Default | Constraints | Description |
+| ----------------- | ----------------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`              | Primary key                         |
 | `person_id`       | FK to `persons.id`, nullable        |
 | `organization_id` | FK to `organizations.id`, nullable  |
@@ -220,8 +222,8 @@ Seorang client harus merepresentasikan hanya satu tipe, yaitu `person` atau `org
 
 ## `pipelines`
 
-| Column        | Description           |
-| ------------- | --------------------- |
+| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key           |
 | `name`        | Pipeline name         |
 | `description` | Pipeline description  |
@@ -231,8 +233,8 @@ Seorang client harus merepresentasikan hanya satu tipe, yaitu `person` atau `org
 
 ## `pipeline_stages`
 
-| Column        | Description                      |
-| ------------- | -------------------------------- |
+| Column        | Type Data                        | NULLABLE | Default | Constraints | Description |
+| ------------- | -------------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key                      |
 | `pipeline_id` | FK to `pipelines.id`             |
 | `name`        | Stage name                       |
@@ -253,8 +255,8 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 ## `stage_task_templates`
 
-| Column            | Description                      |
-| ----------------- | -------------------------------- |
+| Column            | Type Data                        | NULLABLE | Default | Constraints | Description |
+| ----------------- | -------------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`              | Primary key                      |
 | `stage_id`        | FK to `pipeline_stages.id`       |
 | `name`            | Task template name               |
@@ -268,8 +270,8 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 ## `deals`
 
-| Column              | Description                |
-| ------------------- | -------------------------- |
+| Column              | Type Data                  | NULLABLE | Default | Constraints | Description |
+| ------------------- | -------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`                | Primary key                |
 | `name`              | Deal name                  |
 | `client_id`         | FK to `clients.id`         |
@@ -298,8 +300,8 @@ abandoned
 
 ## `deal_stage_histories`
 
-| Column          | Description          |
-| --------------- | -------------------- |
+| Column          | Type Data            | NULLABLE | Default | Constraints | Description |
+| --------------- | -------------------- | -------- | ------- | ----------- | ----------- |
 | `id`            | Primary key          |
 | `deal_id`       | FK to `deals.id`     |
 | `from_stage_id` | Previous stage       |
@@ -313,8 +315,8 @@ abandoned
 
 ## `tasks`
 
-| Column                   | Description                               |
-| ------------------------ | ----------------------------------------- |
+| Column                   | Type Data                                 | NULLABLE | Default | Constraints | Description |
+| ------------------------ | ----------------------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`                     | Primary key                               |
 | `name`                   | Task name                                 |
 | `description`            | Task description                          |
@@ -340,8 +342,8 @@ cancelled
 
 ## `task_reminders`
 
-| Column       | Description              |
-| ------------ | ------------------------ |
+| Column       | Type Data                | NULLABLE | Default | Constraints | Description |
+| ------------ | ------------------------ | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key              |
 | `task_id`    | FK to `tasks.id`         |
 | `remind_at`  | Reminder timestamp       |
@@ -352,8 +354,8 @@ cancelled
 
 ## `notifications`
 
-| Column            | Description                    |
-| ----------------- | ------------------------------ |
+| Column            | Type Data                      | NULLABLE | Default | Constraints | Description |
+| ----------------- | ------------------------------ | -------- | ------- | ----------- | ----------- |
 | `id`              | Primary key                    |
 | `user_id`         | FK to `users.id`               |
 | `type`            | Notification type              |
@@ -376,8 +378,8 @@ read_at != NULL
 
 ## `interactions`
 
-| Column                    | Description                                |
-| ------------------------- | ------------------------------------------ |
+| Column                    | Type Data                                  | NULLABLE | Default | Constraints | Description |
+| ------------------------- | ------------------------------------------ | -------- | ------- | ----------- | ----------- |
 | `id`                      | Primary key                                |
 | `client_id`               | FK to `clients.id`                         |
 | `deal_id`                 | FK to `deals.id`, nullable                 |
@@ -415,8 +417,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `notes`
 
-| Column       | Description                  |
-| ------------ | ---------------------------- |
+| Column       | Type Data                    | NULLABLE | Default | Constraints | Description |
+| ------------ | ---------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key                  |
 | `client_id`  | FK to `clients.id`, nullable |
 | `deal_id`    | FK to `deals.id`, nullable   |
@@ -432,8 +434,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `external_conversations`
 
-| Column                     | Description                |
-| -------------------------- | -------------------------- |
+| Column                     | Type Data                  | NULLABLE | Default | Constraints | Description |
+| -------------------------- | -------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`                       | Primary key                |
 | `platform`                 | External platform          |
 | `external_conversation_id` | External conversation ID   |
@@ -446,8 +448,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `attachments`
 
-| Column              | Description              |
-| ------------------- | ------------------------ |
+| Column              | Type Data                | NULLABLE | Default | Constraints | Description |
+| ------------------- | ------------------------ | -------- | ------- | ----------- | ----------- |
 | `id`                | Primary key              |
 | `file_name`         | File name                |
 | `description`       | File description         |
@@ -465,8 +467,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `activity_logs`
 
-| Column        | Description                |
-| ------------- | -------------------------- |
+| Column        | Type Data                  | NULLABLE | Default | Constraints | Description |
+| ------------- | -------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key                |
 | `user_id`     | FK to `users.id`, nullable |
 | `action`      | Action performed           |
@@ -481,47 +483,47 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `countries`
 
-| Column | Description  |
-| ------ | ------------ |
+| Column | Type Data    | NULLABLE | Default | Constraints | Description |
+| ------ | ------------ | -------- | ------- | ----------- | ----------- |
 | `id`   | Primary key  |
 | `name` | Country name |
 
 ## `provinces`
 
-| Column       | Description          |
-| ------------ | -------------------- |
+| Column       | Type Data            | NULLABLE | Default | Constraints | Description |
+| ------------ | -------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key          |
 | `country_id` | FK to `countries.id` |
 | `name`       | Province name        |
 
 ## `regencies`
 
-| Column        | Description          |
-| ------------- | -------------------- |
+| Column        | Type Data            | NULLABLE | Default | Constraints | Description |
+| ------------- | -------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key          |
 | `province_id` | FK to `provinces.id` |
 | `name`        | Regency/city name    |
 
 ## `districts`
 
-| Column       | Description          |
-| ------------ | -------------------- |
+| Column       | Type Data            | NULLABLE | Default | Constraints | Description |
+| ------------ | -------------------- | -------- | ------- | ----------- | ----------- |
 | `id`         | Primary key          |
 | `regency_id` | FK to `regencies.id` |
 | `name`       | District name        |
 
 ## `villages`
 
-| Column        | Description          |
-| ------------- | -------------------- |
+| Column        | Type Data            | NULLABLE | Default | Constraints | Description |
+| ------------- | -------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key          |
 | `district_id` | FK to `districts.id` |
 | `name`        | Village name         |
 
 ## `postal_codes`
 
-| Column        | Description          |
-| ------------- | -------------------- |
+| Column        | Type Data            | NULLABLE | Default | Constraints | Description |
+| ------------- | -------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key          |
 | `district_id` | FK to `districts.id` |
 | `postal_code` | Postal code          |
@@ -532,8 +534,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `app_profiles`
 
-| Column         | Description                 |
-| -------------- | --------------------------- |
+| Column         | Type Data                   | NULLABLE | Default | Constraints | Description |
+| -------------- | --------------------------- | -------- | ------- | ----------- | ----------- |
 | `id`           | Primary key                 |
 | `app_name`     | Application name            |
 | `company_name` | Company name                |
@@ -549,8 +551,8 @@ Untuk client organization, `organization_contact_id` menjadi contact person.
 
 ## `app_settings`
 
-| Column        | Description           |
-| ------------- | --------------------- |
+| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
+| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
 | `id`          | Primary key           |
 | `key`         | Setting key           |
 | `value`       | Setting value         |
@@ -567,24 +569,24 @@ Tabel-tabel berikut akan ada di database tapi bukan entitas kebutuhan untuk CRMs
 
 ## `migrations`
 
-| Column      | Description            |
-| ----------- | ---------------------- |
+| Column      | Type Data              | NULLABLE | Default | Constraints | Description |
+| ----------- | ---------------------- | -------- | ------- | ----------- | ----------- |
 | `id`        | Primary key            |
 | `migration` | Migration name         |
 | `batch`     | Migration batch number |
 
 ## `password_reset_tokens`
 
-| Column       | Description              |
-| ------------ | ------------------------ |
+| Column       | Type Data                | NULLABLE | Default | Constraints | Description |
+| ------------ | ------------------------ | -------- | ------- | ----------- | ----------- |
 | `email`      | User email               |
 | `token`      | Password reset token     |
 | `created_at` | Token creation timestamp |
 
 ## `sessions`
 
-| Column          | Description             |
-| --------------- | ----------------------- |
+| Column          | Type Data               | NULLABLE | Default | Constraints | Description |
+| --------------- | ----------------------- | -------- | ------- | ----------- | ----------- |
 | `id`            | Session identifier      |
 | `user_id`       | Related user, nullable  |
 | `ip_address`    | Client IP address       |

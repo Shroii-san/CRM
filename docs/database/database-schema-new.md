@@ -222,14 +222,14 @@ Seorang client harus merepresentasikan hanya satu tipe, yaitu `person` atau `org
 
 ## `pipelines`
 
-| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key           |
-| `name`        | Pipeline name         |
-| `description` | Pipeline description  |
-| `status`      | Pipeline status       |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------- | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(100) | NOT NULL | -                 | UNIQUE      | Pipeline name         |
+| `description` | VARCHAR(255) | NULL     | NULL              | -           | Pipeline description  |
+| `is_active`   | BOOL         | NOT NULL | TRUE              | -           | Pipeline status       |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `pipeline_stages`
 

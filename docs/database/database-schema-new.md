@@ -191,14 +191,14 @@ contoh :
 - Event
 - Advertisement
 
-| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key           |
-| `name`        | Source name           |
-| `description` | Source description    |
-| `status`      | Source status         |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default           | Constraints | Description           |
+| ------------- | ------------ | -------- | ----------------- | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(50)  | NOT NULL | -                 | UNIQUE      | Source name           |
+| `description` | VARCHAR(255) | NULL     | -                 | NULL        | Source description    |
+| `is_active`   | BOOL         | NOT NULL | TRUE              | -           | Source status         |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `clients`
 

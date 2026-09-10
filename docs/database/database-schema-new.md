@@ -92,10 +92,10 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 
 Tabel penghubung untuk roles dan menus.
 
-| Column    | Type Data        | NULLABLE | Default | Constraints | Description |
-| --------- | ---------------- | -------- | ------- | ----------- | ----------- |
-| `role_id` | FK to `roles.id` |
-| `menu_id` | FK to `menus.id` |
+| Column    | Type Data | NULLABLE | Default | Constraints | Description      |
+| --------- | --------- | -------- | ------- | ----------- | ---------------- |
+| `role_id` | SMALLINT  | NOT NULL | -       | FOREIGN KEY | FK to `roles.id` |
+| `menu_id` | SMALLINT  | NOT NULL | -       | FOREIGN KEY | FK to `menus.id` |
 
 ---
 

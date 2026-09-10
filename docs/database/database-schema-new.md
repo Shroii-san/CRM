@@ -255,18 +255,18 @@ Lead -> Contacted -> Negotiation -> Proposal -> Demo -> Payment -> Closed Won / 
 
 ## `stage_task_templates`
 
-| Column            | Type Data                        | NULLABLE | Default | Constraints | Description |
-| ----------------- | -------------------------------- | -------- | ------- | ----------- | ----------- |
-| `id`              | Primary key                      |
-| `stage_id`        | FK to `pipeline_stages.id`       |
-| `name`            | Task template name               |
-| `description`     | Task template description        |
-| `priority`        | Default priority                 |
-| `due_offset_days` | Deadline offset from stage event |
-| `is_required`     | Whether the task is required     |
-| `is_active`       | Whether the template is active   |
-| `created_at`      | Creation timestamp               |
-| `updated_at`      | Last update timestamp            |
+| Column            | Type Data    | NULLABLE | Default           | Constraints               | Description                      |
+| ----------------- | ------------ | -------- | ----------------- | ------------------------- | -------------------------------- |
+| `id`              | SMALLINT     | NOT NULL | A_I               | PRIMARY KEY               | Primary key                      |
+| `stage_id`        | SMALLINT     | NOT NULL | -                 | FOREIGN KEY               | FK to `pipeline_stages.id`       |
+| `name`            | VARCHAR(255) | NOT NULL | -                 |                           | Task template name               |
+| `description`     | VARCHAR(255) | NULL     | -                 | -                         | Task template description        |
+| `priority`        | VARCHAR(10)  | NOT NULL | 'L'               | CHECK('L', 'M', 'H', 'U') | Default priority                 |
+| `due_offset_days` | SMALLINT     | NULL     | -                 | -                         | Deadline offset from stage event |
+| `is_required`     | BOOL         | NOT NULL | FALSE             | -                         | Whether the task is required     |
+| `is_active`       | BOOL         | NOT NULL | TRUE              | -                         | Whether the template is active   |
+| `created_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                         | Creation timestamp               |
+| `updated_at`      | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                         | Last update timestamp            |
 
 ## `deals`
 

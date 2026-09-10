@@ -380,23 +380,23 @@ read_at != NULL
 
 ## `interactions`
 
-| Column                    | Type Data                                  | NULLABLE | Default | Constraints | Description |
-| ------------------------- | ------------------------------------------ | -------- | ------- | ----------- | ----------- |
-| `id`                      | Primary key                                |
-| `client_id`               | FK to `clients.id`                         |
-| `deal_id`                 | FK to `deals.id`, nullable                 |
-| `organization_contact_id` | FK to `organization_contacts.id`, nullable |
-| `type`                    | Interaction type                           |
-| `subject`                 | Interaction subject                        |
-| `description`             | Planned/detail information                 |
-| `summary`                 | Result summary, nullable                   |
-| `status`                  | Interaction status                         |
-| `start_at`                | Start timestamp                            |
-| `end_at`                  | End timestamp                              |
-| `performed_by`            | FK to `users.id`                           |
-| `external_reference`      | External system reference, nullable        |
-| `created_at`              | Creation timestamp                         |
-| `updated_at`              | Last update timestamp                      |
+| Column                    | Type Data    | NULLABLE | Default           | Constraints                 | Description                                |
+| ------------------------- | ------------ | -------- | ----------------- | --------------------------- | ------------------------------------------ |
+| `id`                      | INT          | NOT NULL | -                 | PRIMARY KEY                 | Primary key                                |
+| `client_id`               | INT          | NOT NULL | -                 | FOREIGN KEY                 | FK to `clients.id`                         |
+| `deal_id`                 | INT          | NULL     | -                 | FOREIGN KEY                 | FK to `deals.id`, nullable                 |
+| `organization_contact_id` | INT          | NULL     | -                 | FOREIGN KEY                 | FK to `organization_contacts.id`, nullable |
+| `type`                    | VARCHAR(20)  | NOT NULL | 'chat'            | CHECK('cl', 'm', 'e', 'ct') | Interaction type                           |
+| `subject`                 | VARCHAR(255) | NOT NULL | -                 | -                           | Interaction subject                        |
+| `description`             | VARCHAR(255) | NULL     | -                 | -                           | Planned/detail information                 |
+| `summary`                 | TEXT         | NULL     | -                 | -                           | Result summary, nullable                   |
+| `status`                  | VARCHAR(20)  | NOT NULL | 'scheduled'       | CHECK('sc', 'cp', 'cl')     | Interaction status                         |
+| `start_at`                | TIMESTAMPTZ  | NULL     | -                 | -                           | Start timestamp                            |
+| `end_at`                  | TIMESTAMPTZ  | NULL     | -                 | -                           | End timestamp                              |
+| `performed_by`            | SMALLINT     | NOT NULL | -                 | FOREIGN KEY                 | FK to `users.id`                           |
+| `external_reference`      | VARCHAR(255) | NULL     | -                 | -                           | External system reference, nullable        |
+| `created_at`              | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                           | Creation timestamp                         |
+| `updated_at`              | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -                           | Last update timestamp                      |
 
 type yang akan dipakai :
 

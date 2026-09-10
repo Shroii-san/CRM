@@ -124,14 +124,14 @@ contoh :
 - Healthcare
 - Finance
 
-| Column        | Type Data             | NULLABLE | Default | Constraints | Description |
-| ------------- | --------------------- | -------- | ------- | ----------- | ----------- |
-| `id`          | Primary key           |
-| `name`        | Industry name         |
-| `description` | Industry description  |
-| `status`      | Industry status       |
-| `created_at`  | Creation timestamp    |
-| `updated_at`  | Last update timestamp |
+| Column        | Type Data    | NULLABLE | Default            | Constraints | Description           |
+| ------------- | ------------ | -------- | ------------------ | ----------- | --------------------- |
+| `id`          | SMALLINT     | NOT NULL | A_I                | PRIMARY KEY | Primary key           |
+| `name`        | VARCHAR(100) | NOT NULL | -                  | UNIQUE      | Industry name         |
+| `description` | VARCHAR(255) | NULL     | NULL               | -           | Industry description  |
+| `is_active`   | BOOL         | NOT NULL | FALSE              | -           | Industry status       |
+| `created_at`  | TIMESTAMPTZ  | NULL     | CURRENCT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | CURRENCT_TIMESTAMP | -           | Last update timestamp |
 
 ## `organizations`
 

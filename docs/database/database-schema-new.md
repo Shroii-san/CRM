@@ -34,9 +34,9 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 | `password_hash`    | VARCHAR(255) | NOT NULL | -                 | -           | Password hash           |
 | `is_active`        | BOOL         | NOT NULL | FALSE             | -           | User status             |
 | `remember_token`   | VARCHAR(100) | NULL     | NULL              | -           | User cookie token       |
-| `last_activity_at` | TIMESTAMPZ   | NULL     | NULL              | -           | Last activity timestamp |
-| `created_at`       | TIMESTAMPZ   | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp      |
-| `updated_at`       | TIMESTAMPZ   | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp   |
+| `last_activity_at` | TIMESTAMPTZ  | NULL     | NULL              | -           | Last activity timestamp |
+| `created_at`       | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp      |
+| `updated_at`       | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp   |
 
 ## `roles`
 
@@ -45,23 +45,23 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 | `id`          | SMALLINT     | NOT NULL | A_I     | PRIMARY KEY       | Primary key           |
 | `name`        | VARCHAR(50)  | NOT NULL | -       | UNIQUE            | Role name             |
 | `description` | VARCHAR(255) | NULL     | NULLL   | -                 | Role description      |
-| `created_at`  | TIMESTAMPZ   | NULL     | NULL    | CURRENT_TIMESTAMP | Creation timestamp    |
-| `updated_at`  | TIMESTAMPZ   | NULL     | NULL    | CURRENT_TIMESTAMP | Last update timestamp |
+| `created_at`  | TIMESTAMPTZ  | NULL     | NULL    | CURRENT_TIMESTAMP | Creation timestamp    |
+| `updated_at`  | TIMESTAMPTZ  | NULL     | NULL    | CURRENT_TIMESTAMP | Last update timestamp |
 
 ## `role_permissions`
 
-| Column       | Type Data  | NULLABLE | Default           | Constraints | Description           |
-| ------------ | ---------- | -------- | ----------------- | ----------- | --------------------- |
-| `id`         | SMALLINT   | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
-| `role_id`    | SMALLINT   | NOT NULL | -                 | FOREIGN KEY | FK to `roles.id`      |
-| `menu_id`    | SMALLINT   | NOT NULL | -                 | FOREIGN KEY | FK to `menus.id`      |
-| `can_view`   | BOOL       | NULL     | FALSE             | -           | View permission       |
-| `can_create` | BOOL       | NULL     | FALSE             | -           | Create permission     |
-| `can_update` | BOOL       | NULL     | FALSE             | -           | Update permission     |
-| `can_delete` | BOOL       | NULL     | FALSE             | -           | Delete permission     |
-| `can_assign` | BOOL       | NULL     | FALSE             | -           | Assignment permission |
-| `created_at` | TIMESTAMPZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
-| `updated_at` | TIMESTAMPZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
+| Column       | Type Data   | NULLABLE | Default           | Constraints | Description           |
+| ------------ | ----------- | -------- | ----------------- | ----------- | --------------------- |
+| `id`         | SMALLINT    | NOT NULL | A_I               | PRIMARY KEY | Primary key           |
+| `role_id`    | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `roles.id`      |
+| `menu_id`    | SMALLINT    | NOT NULL | -                 | FOREIGN KEY | FK to `menus.id`      |
+| `can_view`   | BOOL        | NULL     | FALSE             | -           | View permission       |
+| `can_create` | BOOL        | NULL     | FALSE             | -           | Create permission     |
+| `can_update` | BOOL        | NULL     | FALSE             | -           | Update permission     |
+| `can_delete` | BOOL        | NULL     | FALSE             | -           | Delete permission     |
+| `can_assign` | BOOL        | NULL     | FALSE             | -           | Assignment permission |
+| `created_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp    |
+| `updated_at` | TIMESTAMPTZ | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp |
 
 ## `menus`
 
@@ -75,8 +75,8 @@ Dokumen ini menggambarkan tabel database yang digunakan aplikasi.
 | `route`      | VARCHAR(50)  | NULL     | -                 | -           | Application route           |
 | `position`   | SMALLINT     | NOT NULL | 0                 | -           | Display order               |
 | `is_active`  | BOOL         | NOT NULL | FALSE             | -           | Menu status                 |
-| `created_at` | TIMESTAMPZ   | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp          |
-| `updated_at` | TIMESTAMPZ   | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp       |
+| `created_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Creation timestamp          |
+| `updated_at` | TIMESTAMPTZ  | NULL     | CURRENT_TIMESTAMP | -           | Last update timestamp       |
 
 ## `menu_icons`
 

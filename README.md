@@ -83,10 +83,10 @@ Seluruh dokumentasi teknis, hasil audit sistem, arsitektur backend/frontend, ser
 Silakan buka [Dokumentasi Indeks (`docs/INDEX.md`)](./docs/INDEX.md) untuk membaca spesifikasi lengkap:
 
 - [01 - Laporan Audit Sistem](./docs/01-system-audit.md): Analisis 27 temuan masalah pada kode terdahulu.
-- [02 - Roadmap & Fase Implementasi](./docs/02-roadmap-and-phases.md): Urutan pengerjaan berbasis dependency dan prioritas SLA (P0–P4).
-- [03 - Spesifikasi Domain & Database](./docs/03-domain-and-database.md): Cetak biru skema database dan relasi entitas baru.
-- [04 - Arsitektur Backend & API](./docs/04-architecture-and-api.md): Standar Form Request, JSON response, Service Layer, dan Query pattern.
-- [05 - Arsitektur Frontend & Components](./docs/05-ui-and-components.md): Standar Vite, AJAX state handling, dan komponen reusable.
+- [02 - Roadmap & Fase Implementasi](./docs/02-roadmap-phases.md): Urutan pengerjaan berbasis dependency dan prioritas SLA (P0–P4).
+- [03 - Spesifikasi Domain & Database](./docs/03-domain-database.md): Cetak biru skema database dan relasi entitas baru.
+- [04 - Arsitektur Backend & API](./docs/04-architecture-api.md): Standar Form Request, JSON response, Service Layer, dan Query pattern.
+- [05 - Arsitektur Frontend & Components](./docs/05-ui-components.md): Standar Vite, AJAX state handling, dan komponen reusable.
 
 ---
 

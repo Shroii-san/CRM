@@ -37,7 +37,7 @@ npm audit fix
 
 ### 3. Konfigurasi Environment (`.env`)
 
-Salin file `.env.example` menjadi `.env`, lalu atur konfigurasi database sesuai dengan server lokal Anda:
+Salin file `.env.example` menjadi `.env`, lalu atur konfigurasi database.
 
 ```bash
 cp .env.example .env
@@ -51,10 +51,16 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=crm_db
 DB_USERNAME=postgres
-DB_PASSWORD=
+DB_PASSWORD=password_database
 ```
 
-### 4. Jalankan Server Pengembangan
+### 4. Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+### 5. Jalankan Server Pengembangan
 
 Jalankan server Laravel dan bundler Vite secara bersamaan (bisa gunakan 2 tab terminal terpisah):
 

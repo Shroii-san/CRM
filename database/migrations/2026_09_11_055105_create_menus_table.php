@@ -14,10 +14,10 @@ return new class extends Migration {
             $table->smallIncrements('id');
 
             $table->unsignedSmallInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('menus');
+            $table->foreign('parent_id')->references('id')->on('menus')->onDelete('cascade');
 
             $table->unsignedSmallInteger('icon_id')->nullable();
-            $table->foreign('icon_id')->references('id')->on('menu_icons');
+            $table->foreign('icon_id')->references('id')->on('menu_icons')->onDelete('set null');
 
             $table->string('name', 50)->unique();
             $table->string('slug', 50)->unique()->nullable();

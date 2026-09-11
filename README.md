@@ -60,6 +60,14 @@ DB_PASSWORD=password_database
 php artisan key:generate
 ```
 
+### 5. Jalankan Migration Database
+
+Pastikan PostgreSQL sudah berjalan dan database crm_db sudah dibuat, lalu jalankan migration untuk membuat tabel-tabel database:
+
+```bash
+php artisan migrate
+```
+
 ### 5. Jalankan Server Pengembangan
 
 Jalankan server Laravel dan bundler Vite secara bersamaan (bisa gunakan 2 tab terminal terpisah):

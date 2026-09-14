@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('village', function (Blueprint $table) {
+        Schema::create('villages', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->unsignedInteger('district_id');
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('village');
+        Schema::dropIfExists('villages');
     }
 };

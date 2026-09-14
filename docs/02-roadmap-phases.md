@@ -10,11 +10,11 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 
 > **Definition of Done:** Arsitektur ERD, relasi tabel, dan aturan domain terdefinisi secara jelas di dokumen teknis sebelum eksekusi skema.
 
-- [ ] **Entity & Attribute Mapping** (Company, Customer, Contact/PIC, Sales, Deal, Pipeline, Stage)
-- [ ] **Relationship Design** (Foreign keys, cascade rules, referential integrity)
-- [ ] **Pipeline & Stage Business Logic** (Aturan transisi stage & lifecycle deal)
-- [ ] **Attachment Architecture** (Tabel metadata & pola penyimpanan file)
-- [ ] **Timeline & Audit Trail Design** (Skema pencatatan riwayat aktivitas & perubahan data)
+- [x] **Entity & Attribute Mapping** (Company, Customer, Contact/PIC, Sales, Deal, Pipeline, Stage)
+- [x] **Relationship Design** (Foreign keys, cascade rules, referential integrity)
+- [x] **Pipeline & Stage Business Logic** (Aturan transisi stage & lifecycle deal)
+- [x] **Attachment Architecture** (Tabel metadata & pola penyimpanan file)
+- [x] **Timeline & Audit Trail Design** (Skema pencatatan riwayat aktivitas & perubahan data)
 
 ---
 
@@ -22,8 +22,8 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 
 > **Definition of Done:** Database dapat di-recreate dari nol hanya dengan menjalankan `php artisan migrate:fresh --seed` tanpa error.
 
-- [ ] **Migration Scripts** (Seluruh tabel utama, pivot, dan foreign key constraints)
-- [ ] **Master Data Seeders** (Data wilayah Indonesia, default pipeline & stage, role/permission)
+- [x] **Migration Scripts** (Seluruh tabel utama, pivot, dan foreign key constraints)
+- [x] **Master Data Seeders** (Data wilayah Indonesia, default pipeline & stage, role/permission)
 - [ ] **Dummy Data Seeders** (Data simulasi untuk kebutuhan testing pengembangan)
 
 ---

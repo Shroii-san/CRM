@@ -16,10 +16,13 @@ return new class extends Migration {
             $table->unsignedSmallInteger('industry_id');
             $table->foreign('industry_id')->references('id')->on('industries');
 
+            $table->char('tier', 1)->default('A');
             $table->string('name', 255)->unique();
             $table->string('email', 255)->nullable()->unique();
             $table->string('phone', 20)->nullable()->unique();
             $table->string('website', 255)->nullable();
+            $table->string('description', 255)->nullable();
+            $table->boolean('is_active')->default(true);
             $table->text('address')->nullable();
 
             $table->unsignedSmallInteger('province_id')->nullable();

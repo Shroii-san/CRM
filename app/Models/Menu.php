@@ -9,60 +9,62 @@ class Menu extends Model
 {
     use HasFactory;
 
-    protected $table = 'menu'; 
-    protected $primaryKey = 'menu_id'; 
-    public $timestamps = false; 
+    protected $table = 'menu';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
 
     protected $fillable = [
-        'nama_menu',
-        'route',
-        'icon',
-        'order',
         'parent_id',
+        'icon_id',
+        'name',
+        'slug',
+        'route',
+        'position',
+        'is_active',
     ];
 
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_menu', 'menu_id', 'role_id')
-                    ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign');
+        return $this->belongsToMany(Role::class, 'role_permissions', 'menu_id', 'role_id')
+            ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign');
     }
 
     public function parent()
     {
-        return $this->belongsTo(Menu::class, 'parent_id', 'menu_id');
+        return $this->belongsTo(Menu::class, 'parent_id', 'id');
     }
 
-   
+
     public function children()
     {
-        return $this->hasMany(Menu::class, 'parent_id', 'menu_id')->orderBy('order');
+        return $this->hasMany(Menu::class, 'parent_id', 'id')->orderBy('order');
     }
 
-   
+
     public function scopeParentOnly($query)
     {
         return $query->whereNull('parent_id');
     }
 
-     public function scopeChildrenOnly($query)
+    public function scopeChildrenOnly($query)
     {
         return $query->whereNotNull('parent_id');
     }
 
-    
+
     public function hasChildren()
     {
         return $this->children()->count() > 0;
     }
 
-    
+
     public function getActiveChildren()
     {
         return $this->children()->where('is_active', true)->get();
     }
 
-     public function getFullPath()
+    public function getFullPath()
     {
         if ($this->parent) {
             return $this->parent->nama_menu . ' > ' . $this->nama_menu;
@@ -81,7 +83,7 @@ class Menu extends Model
         return $level;
     }
 
-    
+
     public function getAllDescendants()
     {
         $descendants = collect();
@@ -92,12 +94,12 @@ class Menu extends Model
         return $descendants;
     }
 
-    
+
     public static function getMenuTree()
     {
         return self::with('children')
-                   ->whereNull('parent_id')
-                   ->orderBy('order')
-                   ->get();
+            ->whereNull('parent_id')
+            ->orderBy('order')
+            ->get();
     }
 }

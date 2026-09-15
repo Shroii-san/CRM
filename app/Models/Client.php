@@ -30,4 +30,9 @@ class Client extends Model
     {
         return $this->belongsTo(ClientSource::class, 'source_id', 'id');
     }
+
+    public function deals()
+    {
+        return $this->hasMany(Deals::class, 'client_id', 'id');
+    }
 }

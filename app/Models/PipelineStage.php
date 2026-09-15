@@ -29,6 +29,22 @@ class PipelineStage extends Model
         return $this->hasMany(Deals::class, 'pipeline_stage_id', 'id');
     }
 
+    // FK relationships untuk task template yang terkait dengan stage ini
+    public function taskTemplates()
+    {
+        return $this->hasMany(StageTaskTemplate::class, 'stage_id', 'id');
+    }
+
+    // FK relationships untuk deal stage history yang terkait dengan stage ini
+    public function dealStageHistoriesFrom()
+    {
+        return $this->hasMany(DealStageHistory::class, 'from_stage_id', 'id');
+    }
+
+    public function dealStageHistoriesTo()
+    {
+        return $this->hasMany(DealStageHistory::class, 'to_stage_id', 'id');
+    }
 
     public function getStageColor(): string
     {

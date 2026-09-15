@@ -65,6 +65,16 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
+    public function deals()
+    {
+        return $this->hasMany(Deals::class, 'assigned_user_id', 'id');
+    }
+
+    public function changeStageHistories()
+    {
+        return $this->hasMany(DealStageHistory::class, 'changed_by_user_id', 'id');
+    }
+
     public function canAccess($menuId, $action)
     {
         if ($this->role && $this->role->role_name === 'superadmin') {

@@ -30,6 +30,11 @@ class Deals extends Model
         'is_active',
     ];
 
+    // FK relationships untuk client yang terkait dengan deals
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id', 'id');
+    }
 
     // FK relationshiops untuk pipeline yang terkait deals
     public function pipeline()
@@ -48,6 +53,14 @@ class Deals extends Model
     {
         return $this->belongsTo(User::class, 'assigned_user_id', 'id');
     }
+
+    // FK relationships untuk deal stage history yang terkait dengan deals ini
+    public function dealStageHistories()
+    {
+        return $this->hasMany(DealStageHistory::class, 'deal_id', 'id');
+    }
+
+
 
     // ============= SCOPES =============
 

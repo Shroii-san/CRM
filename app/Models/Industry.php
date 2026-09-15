@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Industry extends Model
+{
+    protected $table = 'industries';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'is_active',
+    ];
+
+    // FK relationships untuk organisasi yang termasuk dalam jenis industri ini
+    public function organizations()
+    {
+        return $this->hasMany(Organization::class, 'industry_id', 'id');
+    }
+}

@@ -30,6 +30,11 @@ class Menu extends Model
             ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign');
     }
 
+    public function icon()
+    {
+        return $this->belongsTo(MenuIcon::class, 'icon_id', 'id');
+    }
+
     public function parent()
     {
         return $this->belongsTo(Menu::class, 'parent_id', 'id');

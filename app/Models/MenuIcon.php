@@ -16,4 +16,8 @@ class MenuIcon extends Model
         'is_active',
     ];
 
+    public function menus()
+    {
+        return $this->hasone(Menu::class, 'icon_id', 'id');
+    }
 }

@@ -1,3 +1,27 @@
+SET session_replication_role = replica;
+--
+-- Data for Name: industries; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.industries (id, name, description, is_active) FROM stdin;
+1	Hospital	Rumah sakit dan fasilitas kesehatan	t
+2	Manufacturing	Perusahaan yang bergerak di bidang produksi barang (pabrik, permesinan, tekstil, dll.)	t
+3	Construction	Perusahaan konstruksi, bangunan, dan infrastruktur	t
+4	Education	Institusi pendidikan seperti sekolah, universitas, dan lembaga pelatihan	t
+5	Finance	Lembaga keuangan, bank, dan asuransi	t
+6	Retail	Toko atau perusahaan yang menjual produk langsung ke konsumen	t
+7	Technology	Perusahaan di bidang teknologi informasi, software, dan hardware	t
+8	Agriculture	Perusahaan pertanian, perkebunan, dan peternakan	t
+9	Transportation	Perusahaan logistik, transportasi darat, laut, dan udara	t
+10	Energy	Perusahaan energi, listrik, minyak, gas, atau energi terbarukan	t
+11	Hospitality	Hotel, restoran, dan layanan pariwisata	t
+12	Government	Instansi pemerintahan dan badan publik	t
+13	Real Estate	Perusahaan properti dan pengembang perumahan	t
+14	Software Development	Perusahaan yang mengembangkan aplikasi dan sistem berbasis software	t
+15	IT Services	Perusahaan yang menyediakan layanan IT, infrastruktur, dan konsultasi teknologi	t
+16	Teknologi	\N	t
+\.
+
 COPY public.organizations (id, industry_id, tier, name, email, phone, website, description, address, is_active, province_id, regency_id, district_id, village_id) FROM stdin;
 1	1	A	RS Mata Cicendo	\N	\N	\N	\N	Rumah Sakit Mata Cicendo	t	\N	\N	\N	\N
 2	1	A	RSUP Dr. Hasan Sadikin Bandung	\N	\N	\N	\N	RSUP Dr. Hasan Sadikin Bandung	t	\N	\N	\N	\N
@@ -43,12 +67,12 @@ COPY public.organizations (id, industry_id, tier, name, email, phone, website, d
 42	1	D	Rumah Sakit Umum Avisena	\N	\N	\N	\N	\N	t	\N	\N	\N	\N
 43	1	D	Rumah Sakit Umum Baros	\N	\N	\N	\N	\N	t	\N	\N	\N	\N
 45	14	A	LIXEN	\N	\N	\N	\N	\N	f	\N	\N	\N	\N
-46	7	A	PT. Xiee	\N	08989898989	\N	\N	\N	t	41	\N	\N	\N
-47	7	B	PT. Yana Mas Abadi	\N	\N	\N	\N	\N	t	41	\N	\N	\N
-48	14	A	Lixen	\N	\N	\N	\N	\N	t	41	\N	\N	\N
-49	1	A	udu	\N	\N	\N	\N	\N	t	41	\N	\N	\N
-50	7	A	PT. Inotal Sistema Internasional	info@gmail.com	08657657657	\N	\N	\N	t	41	\N	\N	\N
-51	10	A	tirta	info@gmail.com	08657657657	https://qontak.com/	https://linkedin.com/company	@company_name	f	41	32	32.12	32.12.11.2007
+46	7	A	PT. Xiee	\N	08989898989	\N	\N	\N	t	32	\N	\N	\N
+47	7	B	PT. Yana Mas Abadi	\N	\N	\N	\N	\N	t	32	\N	\N	\N
+48	14	A	Lixen	\N	\N	\N	\N	\N	t	32	\N	\N	\N
+49	1	A	udu	\N	\N	\N	\N	\N	t	32	\N	\N	\N
+50	7	A	PT. Inotal Sistema Internasional	info@gmail.com	08657657657	\N	\N	\N	t	\N	\N	\N	\N
+51	10	A	tirta	info1@gmail.com	08657657651	https://qontak.com/	https://linkedin.com/company	\N	f	32	32.12	32.12.11	32.12.11.2007
 52	2	B	PT jadi jadian	\N	\N	\N	\N	\N	t	1	\N	\N	\N
 53	2	B	apsdjpoasd	\N	\N	\N	\N	\N	t	1	\N	\N	\N
 \.
@@ -66,9 +90,9 @@ COPY public.persons (id, name, email, phone, created_at, updated_at) FROM stdin;
 9	Rizki	rizkii@gmail.com	085794524976	\N	\N
 10	Asep	asep@gmail.com	089787876565	\N	\N
 11	Pipin	pipin@gmail.com	089889899898	\N	\N
-14	tirta	trt@gmail.com	087676256178	\N	\N
+14	tirta	trt@gmail.com	087676256177	\N	\N
 15	Arkan	arkan123@gmail.com	082817827823	\N	\N
-16	ihsan	ihsan123@gmail.com	082817827823	\N	\N
+16	ihsan	ihsan123@gmail.com	082817827821	\N	\N
 17	Putra	putra@gmail.com	086565657676	\N	\N
 18	Agus	agus@gmail.com	087676256178	\N	\N
 19	Xie	xiecihuyy@gmail.com	08526126812	\N	\N
@@ -100,30 +124,6 @@ COPY public.organization_contacts (id, organization_id, person_id, job_title, is
 \.
 
 
---
--- Data for Name: industries; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.industries (id, name, description, is_active) FROM stdin;
-1	Hospital	Rumah sakit dan fasilitas kesehatan	t
-2	Manufacturing	Perusahaan yang bergerak di bidang produksi barang (pabrik, permesinan, tekstil, dll.)	t
-3	Construction	Perusahaan konstruksi, bangunan, dan infrastruktur	t
-4	Education	Institusi pendidikan seperti sekolah, universitas, dan lembaga pelatihan	t
-5	Finance	Lembaga keuangan, bank, dan asuransi	t
-6	Retail	Toko atau perusahaan yang menjual produk langsung ke konsumen	t
-7	Technology	Perusahaan di bidang teknologi informasi, software, dan hardware	t
-8	Agriculture	Perusahaan pertanian, perkebunan, dan peternakan	t
-9	Transportation	Perusahaan logistik, transportasi darat, laut, dan udara	t
-10	Energy	Perusahaan energi, listrik, minyak, gas, atau energi terbarukan	t
-11	Hospitality	Hotel, restoran, dan layanan pariwisata	t
-12	Government	Instansi pemerintahan dan badan publik	t
-13	Real Estate	Perusahaan properti dan pengembang perumahan	t
-14	Software Development	Perusahaan yang mengembangkan aplikasi dan sistem berbasis software	t
-15	IT Services	Perusahaan yang menyediakan layanan IT, infrastruktur, dan konsultasi teknologi	t
-16	Teknologi	\N	t
-17	Retail	\N	t
-18	Manufacturing	\N	t
-\.
 
 
 --
@@ -91882,3 +91882,4 @@ COPY public.villages (id, district_id, name) FROM stdin;
 \.
 
 
+SET session_replication_role = DEFAULT;

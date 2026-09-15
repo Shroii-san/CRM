@@ -1,0 +1,512 @@
+[33mcommit b1fd171418453ca6dc06359b42cdca2415bc0548[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfix/seeder[m[33m, [m[1;31morigin/fix/migration[m[33m, [m[1;32mfix/migration[m[33m)[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Tue Sep 15 09:15:22 2026 +0700
+
+    fix: ubah tipe data id reference data alamat dari integer menjadi varchar agar sesuai BPS
+
+[33mcommit b8fe0f9bafdfb521fd57641e13931e05d0ee66b6[m
+Merge: 9676551 24af822
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:35:07 2026 +0700
+
+    Merge pull request #9 from Shroii-san/docs/update-roadmap
+    
+    docs: perbarui docs roadmap sesuai kondisi project saat ini
+
+[33mcommit 24af82231b850d1fc32eb86f167f12b28e13cab8[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:33:19 2026 +0700
+
+    docs: perbarui docs roadmap sesuai kondisi project saat ini
+
+[33mcommit 9676551f5ea6801a8839809b11c79ae53c56756f[m
+Merge: 7047d7a 37946e9
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:26:23 2026 +0700
+
+    Merge pull request #8 from Shroii-san/docs/update-readme
+    
+    docs: menambahkan step membuat database serta migrate sekaligus seede…
+
+[33mcommit 37946e96bbfffe6c72fa6deaedd859dd6a7b860f[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:24:34 2026 +0700
+
+    docs: menambahkan step membuat database serta migrate sekaligus seeder di README
+
+[33mcommit 7047d7a15065876bde05970a415df5dc185b062a[m
+Merge: de83ca0 b0228b4
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:16:19 2026 +0700
+
+    Merge pull request #7 from Shroii-san/feat/create-database
+    
+    feat: membuat file command untuk membuat database dengan laravel
+
+[33mcommit de83ca0302213bf4a4828f1b4da684e40aeef9ac[m
+Merge: 294e86f 9ff15a6
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:15:04 2026 +0700
+
+    Merge pull request #5 from Shroii-san/feat/migration
+    
+    Feat/migration
+
+[33mcommit b0228b43f2f6ccce6355567e29acc0abd8dc300c[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:14:02 2026 +0700
+
+    feat: membuat file command untuk membuat database dengan laravel
+
+[33mcommit 294e86f56a1e38a3953856e127c333b747ff28ac[m
+Merge: 489140d 6f446c6
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:08:00 2026 +0700
+
+    Merge pull request #6 from Shroii-san/feat/seeder
+    
+    feat: membuat seeder database dengan data dari dump postgres
+
+[33mcommit 6f446c68aee047a3a1e79fe66d2bf99b5a5553ab[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 21:02:06 2026 +0700
+
+    feat: membuat seeder database dengan data dari dump postgres
+
+[33mcommit 9ff15a67ae56f8a0bc177b7ba83b664c7c04d74c[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 20:56:05 2026 +0700
+
+    fix: memperbaiki urutan waktu pada nama file untuk mengatasi relasi foreign key
+
+[33mcommit ff1b334c6aea7c37a56d51ae22006ad2f442c48e[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 20:39:37 2026 +0700
+
+    feat: tambah file migrations yang kurang
+
+[33mcommit a80a3878e57c24dc97fa987e2dfaf05393a0f0ca[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Mon Sep 14 14:55:00 2026 +0700
+
+    feat: tambah kolom tier untuk tabel organisasi
+
+[33mcommit 489140dd66dc6a610bf5e907c9c271da2af20b24[m
+Merge: f596172 161a232
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Fri Sep 11 16:07:28 2026 +0700
+
+    Merge pull request #4 from Shroii-san/docs/update-readme
+    
+    docs: update panduan setup lokal di README
+
+[33mcommit 161a232ccb9a1fda1f0d37d813b53f1b941d93b2[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 16:04:26 2026 +0700
+
+    docs: update panduan setup lokal di README
+
+[33mcommit f5961728fa18384e13cfcfa03665ddf77f0e3d0e[m
+Merge: 933c67f 9e39dfc
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Fri Sep 11 15:59:11 2026 +0700
+
+    Merge pull request #3 from Shroii-san/feat/initial-db
+    
+    Feat/initial db
+
+[33mcommit 9e39dfc7ada81637094e98406f84bdeb1c418b3b[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 15:46:06 2026 +0700
+
+    feat: tambah reference data (alamat) migrations
+
+[33mcommit 6c3a396075c5f54fe78323cc41184353c15e2706[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 15:39:37 2026 +0700
+
+    feat: tambah audit migrations
+
+[33mcommit 9fc21a2091274afddaecf4db104bf2f8797e8852[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 15:26:33 2026 +0700
+
+    feat: tambah integration n files migrations
+
+[33mcommit b16d87488b30ca922e07ef2c72d79aedba45143c[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 15:18:30 2026 +0700
+
+    feat: tambah task n communication migrations
+
+[33mcommit 1a860620bdae2775c43f3a6c639bbbb3c23adb6f[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 14:34:48 2026 +0700
+
+    feat: tambah sales pipeline migrations
+
+[33mcommit 5baabe57422812867124a3cb6211dafe21614416[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 13:34:48 2026 +0700
+
+    feat: tambah client management migrations
+
+[33mcommit af07a3b03fe3d9be7994d5c759f2031bc572d8a3[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Fri Sep 11 13:04:23 2026 +0700
+
+    feat: tambah user management authentication authorization migrations
+
+[33mcommit 933c67fcaee7b0886f4280fec2efbf5325bb8682[m
+Merge: 74a4923 fd34a72
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Thu Sep 10 14:30:52 2026 +0700
+
+    Merge pull request #2 from Shroii-san/docs/design-system-database
+    
+    Docs/design system database
+
+[33mcommit fd34a722bcb7b88af38c779c4ea00866f55931fd[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 14:17:38 2026 +0700
+
+    docs: perbarui schema lokasi
+
+[33mcommit df8e45f54762ccd3d38a03ed51da925501a44202[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 14:12:20 2026 +0700
+
+    docs: perbarui tabel tabel tambahan yang bukan entitas aplikasi
+
+[33mcommit 07ba50fe402d4ef539d9360a87ffe2f99f7f4019[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 14:10:11 2026 +0700
+
+    docs: perbarui schema lokasi
+
+[33mcommit 45fe03b8d65e7194e69704bd98514c29389dcd84[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 14:02:38 2026 +0700
+
+    docs: perbarui schema audit
+
+[33mcommit 48300f7522d1e08ac2d9ec9f959f01e9bb5c7812[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:54:31 2026 +0700
+
+    docs: perbarui schema tabel bagian integration n files
+
+[33mcommit 80b57092bec6f3ff45c3c63c9c77d1a357a38217[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:39:03 2026 +0700
+
+    docs: perbarui schema tabel bagian task communication
+
+[33mcommit 8862610958c89305a916afb79c350eba426725ed[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:30:41 2026 +0700
+
+    docs: perbarui schema tabel interactions
+
+[33mcommit 4c9c899170c2e52e3ceb74390c72a4db994ccbfe[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:21:55 2026 +0700
+
+    docs: perbarui schema notifications
+
+[33mcommit 3fd112922db29f16623cdcac7bc74deae30a728b[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:21:15 2026 +0700
+
+    docs: perbarui schema task_reminders
+
+[33mcommit 707e9426eb351500cc768e3cb76f0ee3e33d2234[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:04:09 2026 +0700
+
+    docs: perbarui schema tabel tasks
+
+[33mcommit 123307144c2a0c4f0455f34d082bd8fabfc00c7d[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 13:03:23 2026 +0700
+
+    docs: perbarui schema tabel deals
+
+[33mcommit ec5168aa2158f4e769a05fa40864e966a6e3fd1c[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 12:58:40 2026 +0700
+
+    docs: perbarui schema tabel tasks
+
+[33mcommit 8b82831dd3f0f8f37770403a70d9e50e3fa77f7a[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:59:09 2026 +0700
+
+    docs: perbarui schema deal_stage_histories
+
+[33mcommit c7e61c73988377451861e87fa9b9169d4f8f71cd[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:55:10 2026 +0700
+
+    docs: perbarui schema tabel deals
+
+[33mcommit 2ce1367f9012615b21db2313e67486e2789ce456[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:46:37 2026 +0700
+
+    docs: perbarui schema tabel stage_task_templates
+
+[33mcommit 30428cc6a3271be7307ccdbe6bec3f2f7495c058[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:36:27 2026 +0700
+
+    docs: perbarui schema tabel pipelines_stages
+
+[33mcommit 24bf14cb278bb4cbc293f419b671037e45ef33ac[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:29:40 2026 +0700
+
+    docs: perbarui schema tabel pipelines
+
+[33mcommit 5568373c47b82200726aaffe578674bdfd68ff17[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:26:15 2026 +0700
+
+    docs: perbarui schema tabel clients
+
+[33mcommit 3923a1191fb8b054a1da20de7a9aff5a698026ca[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:20:30 2026 +0700
+
+    docs: perbarui schema tabel users
+
+[33mcommit f34d7e1e31cf5951fab1aeab21191dcee4120456[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:19:58 2026 +0700
+
+    docs: perbarui schema tabel menus
+
+[33mcommit 20cbc11ac87e2147fb3076272ba4c5aac28566b3[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:19:04 2026 +0700
+
+    docs: perbarui schema tabel industries
+
+[33mcommit 817f11113105d11c79c90255b3830a6631317273[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:18:26 2026 +0700
+
+    docs: perbarui schema tabel client_sources
+
+[33mcommit 19712c8e68d1ab480ab01ca4133adea357673517[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:14:13 2026 +0700
+
+    docs: perbarui schema tabel organization_social_profiles
+
+[33mcommit b9d5ad62231a0673a95d2693bc6a3d52ee468566[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:08:14 2026 +0700
+
+    docs: perbarui schema tabel organization_contacts
+
+[33mcommit 625decb16aa36007b15f8ebd1e3421356896a669[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 11:05:18 2026 +0700
+
+    docs: perbarui schema tabel organizations
+
+[33mcommit 30644816f7fbae849e1587cdfb0ef05032bde34d[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:52:47 2026 +0700
+
+    docs: perbarui schema tabel industries
+
+[33mcommit 69ca9c73bde4835d8a91041cd50f03b7e7922b23[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:50:08 2026 +0700
+
+    docs: perbarui schema tabel persons
+
+[33mcommit e3b22d92cab82490a5463ec61153acfec06b898a[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:47:16 2026 +0700
+
+    docs: perbarui schema tabel role_menus
+
+[33mcommit 6cac6d46d538923cbb25f84f31d5e16d2dace1c0[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:46:01 2026 +0700
+
+    docs: perbarui schema tabel menu_icons
+
+[33mcommit 9d9cd747fcb24dbaa7707d334334b76ecf7c2546[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:35:03 2026 +0700
+
+    docs: perbarui typo timestampz menjadi timestamptz
+
+[33mcommit 3ce46684f1cf953ac5306f105e7beddb54d7cb9b[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:34:11 2026 +0700
+
+    docs: perbarui schema tabel menus
+
+[33mcommit 7ffcad4515c09ad8f67b4885d09b3740dc72768e[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:16:15 2026 +0700
+
+    docs: perbarui default timestampz dari null jadi current_timestamp
+
+[33mcommit 9a2d721d095281cc28954785edb98f822901bfd5[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:14:15 2026 +0700
+
+    docs: perbarui schema tabel role_permissions
+
+[33mcommit ff8b74b96b3be96d0d29283af21cf6d442a057f4[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:08:10 2026 +0700
+
+    docs: perbarui schema tabel roles
+
+[33mcommit 7637cae6f5e1ee89f2b8ff4056bc13a06653d6d4[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 10:07:30 2026 +0700
+
+    docs: perbarui schema tabel users
+
+[33mcommit 74a492324f6c2a25a46c3e94680f06598bec9057[m
+Merge: 2d688c9 1e7d9e6
+Author: Rizal Wira Fadhillah <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:57:16 2026 +0700
+
+    Merge pull request #1 from Shroii-san/docs/system-documentation
+    
+    Docs/system documentation
+
+[33mcommit 1e7d9e6d678ba47e3c977898e34473b67446b283[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:52:56 2026 +0700
+
+    docs: mengganti istilah
+
+[33mcommit 7ec2505c299c6485c4ebdb41e7bfd56917c630fd[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:51:41 2026 +0700
+
+    docs: perbarui penamaan file agar konsisten
+
+[33mcommit 973aa69eb3dc47785d19efb3307cf47b5aa28814[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:50:13 2026 +0700
+
+    docs: perbarui penamaan pada alamat file markdown
+
+[33mcommit 0c88441bfe8d6ee0fe61a4ebf4581d7894784efd[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:45:37 2026 +0700
+
+    docs: penamaan yang konvensional
+
+[33mcommit cf4bc736faf3790271ff5b6400e2cb1d5a027e0b[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:37:47 2026 +0700
+
+    docs: menambahkan langkah membuat application key
+
+[33mcommit 3f580c769b9acd388c3b042553ee20fadf521aa8[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:30:06 2026 +0700
+
+    docs: perbarui langkah install dependensi
+
+[33mcommit ff2904e6b32b665e82ad0eb676fba7bd77a31c87[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Thu Sep 10 08:28:24 2026 +0700
+
+    fix: fix security vulnerabilites dependesi js
+
+[33mcommit 9a3550bcf038cf07da8a6a25a7985b289b4df0e5[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 23:15:02 2026 +0700
+
+    docs: perbarui dokumen domain database lama
+
+[33mcommit e079356311c471152b109090451a9c8cd044421e[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 23:09:05 2026 +0700
+
+    docs: tambah dokumen relasi database yang terbaru
+
+[33mcommit fe246d9b124ab47204ab7024222224e67b0ce640[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 22:58:35 2026 +0700
+
+    docs: tambah dokumen schema database yang terbaru
+
+[33mcommit 0f74436f404dae5a7570b4b0db2a5eeec0045027[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 22:25:04 2026 +0700
+
+    docs: sederhanakan dokumentasi
+
+[33mcommit 61e66032065b3ad7cd953fa1e26324cafa7fe91b[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:43:12 2026 +0700
+
+    docs: perbarui dokumen readme project
+
+[33mcommit f9cca506f4dedde3b527951996a2c6a5d4dfc296[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:40:06 2026 +0700
+
+    docs: tambah dokumen induk
+
+[33mcommit 1fe781fa91b0da58ec048513188e67d681b52a47[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:31:19 2026 +0700
+
+    docs: perbarui dokumen blueprint database (belum final)
+
+[33mcommit a3bc6f39112636f099c9879d31de58496cc35ac2[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:28:58 2026 +0700
+
+    docs: tambah dokumen utama
+
+[33mcommit 723ff3f088ce8b8acf60738339992f147ed13b54[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:22:15 2026 +0700
+
+    docs: tambah dokumen standar kode untuk ui
+
+[33mcommit 0afb86534ef8ce79c17cd992dcce89c05bc1e0e5[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:16:52 2026 +0700
+
+    docs: tambah dokumen standar kode dan interaksi data
+
+[33mcommit 7f1b5ee51cd11c1162d440a7a2ed0f0cb2a71643[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:10:18 2026 +0700
+
+    docs: tambah dokumen blueprint database kosong
+
+[33mcommit 88ba794684d253c917f2123378cda0386dd1435f[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 15:02:29 2026 +0700
+
+    docs: tambah dokumen breakdown fase eksekusi
+
+[33mcommit fe41b305b7b356a0ba3249608fc844a4a4c387d0[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 14:59:45 2026 +0700
+
+    docs: tambah dokumen analisis audit sistem
+
+[33mcommit 2d688c95f4ccb3c3ef4ef02811787bd1c8226101[m
+Author: Shroii-san <rzalwira23@gmail.com>
+Date:   Wed Sep 9 13:39:21 2026 +0700
+
+    initial commit: melanjutkan pengembangan project

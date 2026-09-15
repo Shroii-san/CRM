@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('countries', function (Blueprint $table) {
-            $table->smallIncrements('id');
+            $table->string('id', 20)->primary();
             $table->string('name', 100);
         });
     }

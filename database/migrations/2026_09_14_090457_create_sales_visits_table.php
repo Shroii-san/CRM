@@ -26,16 +26,16 @@ return new class extends Migration {
             $table->unsignedInteger('attachment_id')->nullable();
             $table->foreign('attachment_id')->references('id')->on('attachment');
 
-            $table->unsignedSmallInteger('province_id')->nullable();
+            $table->string('province_id', 20)->nullable();
             $table->foreign('province_id')->references('id')->on('provinces');
 
-            $table->unsignedSmallInteger('regency_id')->nullable();
+            $table->string('regency_id', 20)->nullable();
             $table->foreign('regency_id')->references('id')->on('regencies');
 
-            $table->unsignedInteger('district_id')->nullable();
+            $table->string('district_id', 20)->nullable();
             $table->foreign('district_id')->references('id')->on('districts');
 
-            $table->unsignedInteger('village_id')->nullable();
+            $table->string('village_id', 20)->nullable();
             $table->foreign('village_id')->references('id')->on('villages');
 
 

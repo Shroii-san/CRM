@@ -11,9 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('districts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('id', 20)->primary();
 
-            $table->unsignedInteger('regency_id');
+            $table->string('regency_id', 20);
             $table->foreign('regency_id')->references('id')->on('regencies')->onDelete('cascade');
 
             $table->string('name', 100);

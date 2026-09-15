@@ -3,36 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pipeline extends Model
 {
     protected $table = 'pipelines';
 
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'stage_id',
-        'customer_name',
-        'phone',
-        'email',
+        'name',
         'description',
-        'value',
-        'notes',
-        'created_by'
+        'is_active',
     ];
 
-    protected $casts = [
-        'value' => 'decimal:2',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    public function stage(): BelongsTo
+    // FK relationships untuk stage yang terkait dengan pipeline ini
+    public function stages()
     {
-        return $this->belongsTo(PipelineStage::class, 'stage_id');
+        return $this->hasMany(PipelineStage::class, 'pipeline_id', 'id');
     }
 
-    public function creator(): BelongsTo
+    // FK relationships untuk deals yang terkait dengan pipeline ini
+    public function deals()
     {
-        return $this->belongsTo(User::class, 'created_by', 'user_id');
+        return $this->hasMany(Deals::class, 'pipeline_id', 'id');
     }
+
 }

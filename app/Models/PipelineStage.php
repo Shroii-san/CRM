@@ -3,21 +3,36 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PipelineStage extends Model
 {
     protected $table = 'pipeline_stages';
-    protected $fillable = ['name', 'slug', 'description', 'order'];
+    protected $fillable = [
+        'pipeline_id',
+        'name',
+        'slug',
+        'description',
+        'position',
+        'is_terminal',
+        'is_active',
+    ];
 
-    public function pipelines(): HasMany
+    // FK relationships untuk pipeline yang memiliki stage ini
+    public function pipelines()
     {
-        return $this->hasMany(Pipeline::class, 'stage_id');
+        return $this->belongsTo(Pipeline::class, 'pipeline_id', 'id');
     }
+
+    // FK relationships untuk deals yang terkait dengan stage ini
+    public function deals()
+    {
+        return $this->hasMany(Deals::class, 'pipeline_stage_id', 'id');
+    }
+
 
     public function getStageColor(): string
     {
-        return match($this->slug) {
+        return match ($this->slug) {
             'leads' => 'info',
             'visit' => 'warning',
             'penawaran' => 'secondary',
@@ -28,7 +43,7 @@ class PipelineStage extends Model
 
     public function getStageIcon(): string
     {
-        return match($this->slug) {
+        return match ($this->slug) {
             'leads' => 'fas fa-bullseye',
             'visit' => 'fas fa-user-check',
             'penawaran' => 'fas fa-file-contract',

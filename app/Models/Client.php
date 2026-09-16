@@ -45,4 +45,14 @@ class Client extends Model
     {
         return $this->hasMany(Note::class, 'note_id', 'id');
     }
+
+    public function externalConversation()
+    {
+        return $this->hasMany(ExternalConversation::class, 'client_id', 'id');
+    }
+
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
 }

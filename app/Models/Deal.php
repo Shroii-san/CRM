@@ -70,6 +70,11 @@ class Deal extends Model
         return $this->hasMany(Note::class, 'deal_id', 'id');
     }
 
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
 
 
     // ============= SCOPES =============

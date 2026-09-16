@@ -85,6 +85,16 @@ class User extends Authenticatable
         return $this->hasMany(Note::class, 'created_by', 'id');
     }
 
+    public function attachment()
+    {
+        return $this->hasMany(Attachment::class, 'uploaded_by', 'id');
+    }
+
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     public function canAccess($menuId, $action)
     {
         if ($this->role && $this->role->role_name === 'superadmin') {

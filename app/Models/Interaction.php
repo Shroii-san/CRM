@@ -39,4 +39,9 @@ class Interaction extends Model
     {
         return $this->belongsTo(OrganizationContact::class, 'organizaton_contact_id', 'id');
     }
+
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
 }

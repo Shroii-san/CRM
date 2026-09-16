@@ -25,7 +25,7 @@ class Pipeline extends Model
     // FK relationships untuk deals yang terkait dengan pipeline ini
     public function deals()
     {
-        return $this->hasMany(Deals::class, 'pipeline_id', 'id');
+        return $this->hasMany(Deal::class, 'pipeline_id', 'id');
     }
 
 }

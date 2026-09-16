@@ -18,6 +18,6 @@ class MenuIcon extends Model
 
     public function menus()
     {
-        return $this->hasone(Menu::class, 'icon_id', 'id');
+        return $this->hasOne(Menu::class, 'icon_id', 'id');
     }
 }

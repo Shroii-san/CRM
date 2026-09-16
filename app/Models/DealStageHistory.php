@@ -20,7 +20,7 @@ class DealStageHistory extends Model
     // FK relationships untuk deal yang terkait dengan stage history ini
     public function deal()
     {
-        return $this->belongsTo(Deals::class, 'deal_id', 'id');
+        return $this->belongsTo(Deal::class, 'deal_id', 'id');
     }
 
     // FK relationships untuk stage yang terkait dengan stage history ini

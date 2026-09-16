@@ -51,7 +51,7 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=crm_db
 DB_USERNAME=postgres
-DB_PASSWORD=password_database
+DB_PASSWORD=password_database_lokal
 ```
 
 ### 4. Generate Application Key
@@ -77,8 +77,10 @@ php artisan migrate:fresh --seed
 Atau jalankan untuk membuat database sekaligus schema tabel beserta data-data nya :
 
 ```bash
-php php artisan db:create && php artisan migrate:fresh --seed
+php artisan db:create && php artisan migrate:fresh --seed
 ```
+
+> **PENTING:** dengan melakukan seeder akan mereset data yang ada ke data default
 
 ### 7. Jalankan Server
 

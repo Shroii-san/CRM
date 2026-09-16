@@ -80,7 +80,7 @@ Atau jalankan untuk membuat database sekaligus schema tabel beserta data-data ny
 php artisan db:create && php artisan migrate:fresh --seed
 ```
 
-> **PENTING:** dengan melakukan seeder akan mereset data yang ada ke data default
+**PENTING:** dengan melakukan seeder akan mereset data yang ada ke data default
 
 ### 7. Jalankan Server
 

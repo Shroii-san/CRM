@@ -33,6 +33,16 @@ class Client extends Model
 
     public function deals()
     {
-        return $this->hasMany(Deals::class, 'client_id', 'id');
+        return $this->hasMany(Deal::class, 'client_id', 'id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'client_id', 'id');
+    }
+
+    public function client()
+    {
+        return $this->hasMany(Note::class, 'note_id', 'id');
     }
 }

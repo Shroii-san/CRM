@@ -67,12 +67,22 @@ class User extends Authenticatable
 
     public function deals()
     {
-        return $this->hasMany(Deals::class, 'assigned_user_id', 'id');
+        return $this->hasMany(Deal::class, 'assigned_user_id', 'id');
+    }
+
+    public function task()
+    {
+        return $this->hasMany(Task::class, 'assigned_user_id', 'id');
     }
 
     public function changeStageHistories()
     {
         return $this->hasMany(DealStageHistory::class, 'changed_by_user_id', 'id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'created_by', 'id');
     }
 
     public function canAccess($menuId, $action)

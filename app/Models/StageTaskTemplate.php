@@ -25,4 +25,10 @@ class StageTaskTemplate extends Model
     {
         return $this->belongsTo(PipelineStage::class, 'stage_id', 'id');
     }
+
+    public function task()
+    {
+        return $this->hasMany(Task::class, 'stage_task_template_id', 'id');
+    }
+
 }

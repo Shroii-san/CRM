@@ -30,4 +30,9 @@ class OrganizationContact extends Model
     {
         return $this->belongsTo(Person::class, 'person_id', 'id');
     }
+
+    public function interaction()
+    {
+        return $this->hasMany(Interaction::class, 'organization_contact_id', 'id');
+    }
 }

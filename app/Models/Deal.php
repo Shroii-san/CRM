@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Deals extends Model
+class Deal extends Model
 {
     use SoftDeletes;
 
@@ -58,6 +58,16 @@ class Deals extends Model
     public function dealStageHistories()
     {
         return $this->hasMany(DealStageHistory::class, 'deal_id', 'id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'deal_id', 'id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'deal_id', 'id');
     }
 
 

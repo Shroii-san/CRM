@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Industry extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'industries';
     protected $primaryKey = 'id';
     public $timestamps = false;

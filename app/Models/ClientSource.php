@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class ClientSource extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'client_sources';
     protected $primaryKey = 'id';
     public $timestamps = false;

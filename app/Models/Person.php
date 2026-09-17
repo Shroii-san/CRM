@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'persons';
     protected $primaryKey = 'id';
     public $timestamps = false;

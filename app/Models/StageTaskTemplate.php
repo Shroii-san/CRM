@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class StageTaskTemplate extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'stage_task_templates';
 
     protected $primaryKey = 'id';

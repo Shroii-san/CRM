@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasActivityLogs, Notifiable;
 
     protected $table = 'users';
     protected $primaryKey = 'id';

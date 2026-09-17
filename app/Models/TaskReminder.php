@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class TaskReminder extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'task_reminders';
 
     protected $primaryKey = 'id';

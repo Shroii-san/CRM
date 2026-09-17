@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class ExternalConversation extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'external_conversations';
 
     protected $primaryKey = 'id';

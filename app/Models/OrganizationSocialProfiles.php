@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class OrganizationSocialProfiles extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'organization_social_profiles';
     protected $primaryKey = 'id';
     public $timestamps = false;

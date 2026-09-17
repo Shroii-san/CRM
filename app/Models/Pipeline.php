@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Pipeline extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'pipelines';
 
     protected $primaryKey = 'id';

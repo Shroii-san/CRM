@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+
+
+    use HasActivityLogs;
+
     protected $table = 'tasks';
     protected $primaryKey = 'id';
     public $timestamps = true;

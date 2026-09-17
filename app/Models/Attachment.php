@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Attachment extends Model
 {
+
+    use HasActivityLogs;
+
     const UPDATED_AT = null;
 
     protected $fillable = [

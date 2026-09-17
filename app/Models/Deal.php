@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deal extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasActivityLogs;
 
     protected $table = 'deals';
     protected $primaryKey = 'id';

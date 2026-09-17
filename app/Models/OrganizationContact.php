@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class OrganizationContact extends Model
 {
+
+    use HasActivityLogs;
+
     protected $table = 'organization_contacts';
     protected $primaryKey = 'id';
     public $timestamps = false;

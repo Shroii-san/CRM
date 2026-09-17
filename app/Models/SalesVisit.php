@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SalesVisit extends Model
 {
-    use HasFactory;
+    use HasFactory, HasActivityLogs;
 
     protected $table = 'sales_visits';
     protected $primaryKey = 'id';
@@ -15,20 +16,20 @@ class SalesVisit extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
-        'sales_id',
         'user_id',
-        'pic_name',  
-        'pic_id',  
-        'company_name',
-        'company_id',
+        'organization_id',
+        'organization_contact_id',
+        'attachment_id',
+        'visit_date',
+        'visit_purpose',
+        'is_follow_up',
+        'latitude',
+        'longitude',
+        'address',
         'province_id',
         'regency_id',
         'district_id',
         'village_id',
-        'address',
-        'visit_date',
-        'visit_purpose',
-        'is_follow_up',
     ];
 
     protected $casts = [
@@ -40,19 +41,14 @@ class SalesVisit extends Model
 
     // ============= RELATIONSHIPS =============
 
-    public function company()
+    public function organization()
     {
-        return $this->belongsTo(Company::class, 'company_id', 'company_id');
+        return $this->belongsTo(Organization::class, 'organization_id', 'id');
     }
 
-    public function pic()
+    public function contactPerson()
     {
-        return $this->belongsTo(CompanyPic::class, 'pic_id', 'pic_id');
-    }
-
-    public function sales()
-    {
-        return $this->belongsTo(User::class, 'sales_id', 'user_id');
+        return $this->belongsTo(OrganizationContact::class, 'organization_contact_id', 'id');
     }
 
     public function user()
@@ -60,24 +56,27 @@ class SalesVisit extends Model
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     public function getSalesName()
     {
-        if ($this->sales_id) {
-            return $this->sales?->username ?? 'N/A';
-        } elseif ($this->user_id) {
-            return $this->user?->username ?? 'N/A';
+        if ($this->user_id) {
+            return $this->user?->name ?? 'N/A';
         }
         return 'N/A';
     }
 
-    public function getCompanyName()
+    public function getOrganizationName()
     {
-        return $this->company?->nama ?? $this->company_name ?? 'N/A';
+        return $this->organization?->name ?? $this->name ?? 'N/A';
     }
 
     public function getSalesId()
     {
-        return $this->sales_id ?? $this->user_id ?? null;
+        return $this->user_id ?? null;
     }
 
     public function province()
@@ -104,7 +103,7 @@ class SalesVisit extends Model
 
     public function scopeFilterBySales($query, $salesId)
     {
-        return $salesId ? $query->where('sales_id', $salesId)->orWhere('user_id', $salesId) : $query;
+        return $salesId ? $query->Where('user_id', $salesId) : $query;
     }
 
     public function scopeFilterByFollowUp($query, $followUp)
@@ -126,26 +125,27 @@ class SalesVisit extends Model
         return $regencyId ? $query->where('regency_id', $regencyId) : $query;
     }
 
-    public function scopeSearch($query, $search)
-    {
-        if (!$search) return $query;
+    // public function scopeSearch($query, $search)
+    // {
+    //     if (!$search)
+    //         return $query;
 
-        $searchLower = strtolower($search);
+    //     $searchLower = strtolower($search);
 
-        return $query->where(function ($q) use ($searchLower) {
-            $q->whereRaw('LOWER(pic_name) LIKE ?', ["%{$searchLower}%"])
-              ->orWhereRaw('LOWER(company_name) LIKE ?', ["%{$searchLower}%"])
-              ->orWhereRaw('LOWER(visit_purpose) LIKE ?', ["%{$searchLower}%"])
-              ->orWhereRaw('LOWER(address) LIKE ?', ["%{$searchLower}%"])
-              ->orWhereHas('sales', function ($qt) use ($searchLower) {
-                  $qt->whereRaw('LOWER(username) LIKE ?', ["%{$searchLower}%"])
-                     ->orWhereRaw('LOWER(email) LIKE ?', ["%{$searchLower}%"]);
-              })
-              ->orWhereHas('user', function ($qt) use ($searchLower) {
-                  $qt->whereRaw('LOWER(username) LIKE ?', ["%{$searchLower}%"]);
-              })
-              ->orWhereHas('province', fn($qt) => $qt->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]))
-              ->orWhereHas('regency', fn($qt) => $qt->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]));
-        });
-    }
+    //     return $query->where(function ($q) use ($searchLower) {
+    //         $q->whereRaw('LOWER(organization_contact_id.name) LIKE ?', ["%{$searchLower}%"])
+    //             ->orWhereRaw('LOWER(organization.name) LIKE ?', ["%{$searchLower}%"])
+    //             ->orWhereRaw('LOWER(visit_purpose) LIKE ?', ["%{$searchLower}%"])
+    //             ->orWhereRaw('LOWER(address) LIKE ?', ["%{$searchLower}%"])
+    //             ->orWhereHas('user_id', function ($qt) use ($searchLower) {
+    //                 $qt->whereRaw('LOWER(username) LIKE ?', ["%{$searchLower}%"])
+    //                     ->orWhereRaw('LOWER(email) LIKE ?', ["%{$searchLower}%"]);
+    //             })
+    //             ->orWhereHas('user', function ($qt) use ($searchLower) {
+    //                 $qt->whereRaw('LOWER(username) LIKE ?', ["%{$searchLower}%"]);
+    //             })
+    //             ->orWhereHas('province', fn($qt) => $qt->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]))
+    //             ->orWhereHas('regency', fn($qt) => $qt->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]));
+    //     });
+    // }
 }

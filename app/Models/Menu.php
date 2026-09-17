@@ -2,67 +2,79 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    use HasFactory;
+    use HasFactory, HasActivityLogs;
 
-    protected $table = 'menu'; 
-    protected $primaryKey = 'menu_id'; 
-    public $timestamps = false; 
+    protected $table = 'menu';
 
     protected $fillable = [
-        'nama_menu',
-        'route',
-        'icon',
-        'order',
         'parent_id',
+        'icon_id',
+        'name',
+        'slug',
+        'route',
+        'position',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'position' => 'integer',
     ];
 
 
-    public function roles()
+    public function permissions()
     {
-        return $this->belongsToMany(Role::class, 'role_menu', 'menu_id', 'role_id')
-                    ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign');
+        return $this->belongsToMany(Menu::class, 'role_permissions', 'role_id', 'menu_id')
+            ->using(RolePermission::class)
+            ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign')
+            ->withTimestamps();
+    }
+    public function icon()
+    {
+        return $this->belongsTo(MenuIcon::class, 'icon_id', 'id');
     }
 
     public function parent()
     {
-        return $this->belongsTo(Menu::class, 'parent_id', 'menu_id');
+        return $this->belongsTo(Menu::class, 'parent_id', 'id');
     }
 
-   
+
     public function children()
     {
-        return $this->hasMany(Menu::class, 'parent_id', 'menu_id')->orderBy('order');
+        return $this->hasMany(Menu::class, 'parent_id', 'id')->orderBy('order');
     }
 
-   
+
     public function scopeParentOnly($query)
     {
         return $query->whereNull('parent_id');
     }
 
-     public function scopeChildrenOnly($query)
+    public function scopeChildrenOnly($query)
     {
         return $query->whereNotNull('parent_id');
     }
 
-    
+
     public function hasChildren()
     {
         return $this->children()->count() > 0;
     }
 
-    
+
     public function getActiveChildren()
     {
         return $this->children()->where('is_active', true)->get();
     }
 
-     public function getFullPath()
+    public function getFullPath()
     {
         if ($this->parent) {
             return $this->parent->nama_menu . ' > ' . $this->nama_menu;
@@ -81,7 +93,7 @@ class Menu extends Model
         return $level;
     }
 
-    
+
     public function getAllDescendants()
     {
         $descendants = collect();
@@ -92,12 +104,12 @@ class Menu extends Model
         return $descendants;
     }
 
-    
+
     public static function getMenuTree()
     {
         return self::with('children')
-                   ->whereNull('parent_id')
-                   ->orderBy('order')
-                   ->get();
+            ->whereNull('parent_id')
+            ->orderBy('order')
+            ->get();
     }
 }

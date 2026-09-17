@@ -18,6 +18,10 @@ class Industry extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     // FK relationships untuk organisasi yang termasuk dalam jenis industri ini
     public function organizations()
     {

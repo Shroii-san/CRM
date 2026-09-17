@@ -18,6 +18,10 @@ class Client extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     public function person()
     {
         return $this->belongsTo(Person::class, 'person_id', 'id');

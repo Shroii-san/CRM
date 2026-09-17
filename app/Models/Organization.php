@@ -28,6 +28,10 @@ class Organization extends Model
         'village_id',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     // FK relationships untuk jenis industri
     public function industry()
     {

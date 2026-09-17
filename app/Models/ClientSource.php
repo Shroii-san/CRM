@@ -18,6 +18,10 @@ class ClientSource extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     public function clients()
     {
         return $this->hasMany(Client::class, 'source_id', 'id');

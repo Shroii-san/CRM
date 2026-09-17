@@ -21,6 +21,12 @@ class OrganizationContact extends Model
         'ended_at',
     ];
 
+    protected $casts = [
+        'is_primary' => 'boolean',
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
+    ];
+
     //FK relationships untuk PIC/Contact Person organisasi
     public function organization()
     {

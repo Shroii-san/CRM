@@ -12,6 +12,9 @@ class DealStageHistory extends Model
 
     protected $table = 'deal_stage_histories';
 
+    const CREATED_AT = 'changed_at';
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'deal_id',
         'from_stage_id',

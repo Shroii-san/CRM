@@ -32,7 +32,7 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 
 > **Definition of Done:** Terbentuknya struktur kode backend yang composable, terpisah responsibility-nya, dan memiliki standar response API yang konsisten.
 
-- [ ] **Model & Relationships** (Setup Eloquent model, fillable, casts, & relationships)
+- [x] **Model & Relationships** (Setup Eloquent model, fillable, casts, & relationships)
 - [ ] **Form Requests** (Validasi terpusat untuk create/update pada setiap resource)
 - [ ] **Business Logic / Services** (Pemisahan logic dari Controller ke Service layer)
 - [ ] **Centralized Region API** (Endpoint terpusat Provinsi -> Kota -> Kec -> Kel)

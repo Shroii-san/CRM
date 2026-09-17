@@ -20,6 +20,11 @@ class ExternalConversation extends Model
         'metadata'
     ];
 
+    protected $casts = [
+        'last_interaction_at' => 'datetime',
+        'metadata' => 'array',
+    ];
+
     public function client()
     {
         return $this->belongsTo(Client::class, 'client_id', 'id');

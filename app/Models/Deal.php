@@ -11,9 +11,6 @@ class Deal extends Model
     use SoftDeletes, HasActivityLogs;
 
     protected $table = 'deals';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    protected $keyType = 'int';
 
     protected $fillable = [
         'client_id',

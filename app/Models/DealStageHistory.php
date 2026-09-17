@@ -11,8 +11,6 @@ class DealStageHistory extends Model
     use HasActivityLogs;
 
     protected $table = 'deal_stage_histories';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'deal_id',

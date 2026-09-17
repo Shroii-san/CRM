@@ -12,8 +12,6 @@ class Pipeline extends Model
 
     protected $table = 'pipelines';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
         'name',
         'description',

@@ -12,8 +12,6 @@ class StageTaskTemplate extends Model
 
     protected $table = 'stage_task_templates';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
         'stage_id',
         'name',

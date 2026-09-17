@@ -21,6 +21,12 @@ class PipelineStage extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'position' => 'integer',
+        'is_terminal' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+
     // FK relationships untuk pipeline yang memiliki stage ini
     public function pipelines()
     {

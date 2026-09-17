@@ -18,6 +18,10 @@ class Pipeline extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     // FK relationships untuk stage yang terkait dengan pipeline ini
     public function stages()
     {

@@ -22,6 +22,13 @@ class StageTaskTemplate extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'priority' => 'integer',
+        'due_offset_days' => 'integer',
+        'is_required' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+
     // FK template untuk stage terkait
     public function pipelineStage()
     {

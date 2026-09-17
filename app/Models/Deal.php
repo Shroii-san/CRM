@@ -28,6 +28,15 @@ class Deal extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'value' => 'decimal:2',
+        'status' => 'integer',
+        'priority' => 'integer',
+        'expected_close_at' => 'date',
+        'actual_close_at' => 'date',
+        'is_active' => 'boolean',
+    ];
+
     // FK relationships untuk client yang terkait dengan deals
     public function client()
     {

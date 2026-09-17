@@ -18,8 +18,8 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal A
 ### 1. Clone Repositori
 
 ```bash
-git clone <URL_REPOSITORY_KAMU>
-cd <NAMA_FOLDER_PROYEK>
+git clone https://github.com/Shroii-san/CRM.git
+cd CRM
 ```
 
 ### 2. Install Dependensi Backend & Frontend
@@ -51,7 +51,7 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=crm_db
 DB_USERNAME=postgres
-DB_PASSWORD=password_database
+DB_PASSWORD=password_database_lokal
 ```
 
 ### 4. Generate Application Key
@@ -60,7 +60,7 @@ DB_PASSWORD=password_database
 php artisan key:generate
 ```
 
-### 5. Jalankan Pembuatan database (jika database belum ada di komputer lokal)
+### 5. Jalankan Pembuatan database (jika database belum dibuat manual di komputer lokal)
 
 ```bash
 php artisan db:create
@@ -73,6 +73,14 @@ Pastikan PostgreSQL sudah berjalan dan database crm_db sudah dibuat, lalu jalank
 ```bash
 php artisan migrate:fresh --seed
 ```
+
+Atau jalankan untuk membuat database sekaligus schema tabel beserta data-data nya :
+
+```bash
+php artisan db:create && php artisan migrate:fresh --seed
+```
+
+**PENTING:** dengan melakukan seeder akan mereset data yang ada ke data default
 
 ### 7. Jalankan Server
 

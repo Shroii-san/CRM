@@ -27,6 +27,13 @@ class Interaction extends Model
         'external_reference'
     ];
 
+    protected $casts = [
+        'type' => 'integer',
+        'status' => 'integer',
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+    ];
+
     public function client()
     {
         return $this->belongsTo(Client::class, 'client_id', 'id');

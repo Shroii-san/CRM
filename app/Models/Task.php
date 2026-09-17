@@ -26,6 +26,13 @@ class Task extends Model
         'priority',
     ];
 
+    protected $casts = [
+        'due_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'status' => 'integer',
+        'priority' => 'integer',
+    ];
+
     // FK todo task untuk client
     public function client()
     {

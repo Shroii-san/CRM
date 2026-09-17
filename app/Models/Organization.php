@@ -44,7 +44,7 @@ class Organization extends Model
         return $this->hasMany(OrganizationSocialProfiles::class, 'organization_id', 'id');
     }
 
-    public function clients()
+    public function client()
     {
         return $this->hasOne(Client::class, 'organization_id', 'id');
     }

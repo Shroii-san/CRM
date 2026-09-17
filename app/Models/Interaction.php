@@ -35,7 +35,7 @@ class Interaction extends Model
         return $this->belongsTo(Deal::class, 'deal_id', 'id');
     }
 
-    public function organizationContact()
+    public function organizationContacts()
     {
         return $this->belongsTo(OrganizationContact::class, 'organizaton_contact_id', 'id');
     }

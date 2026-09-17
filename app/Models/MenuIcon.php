@@ -16,7 +16,7 @@ class MenuIcon extends Model
         'is_active',
     ];
 
-    public function menus()
+    public function menu()
     {
         return $this->hasOne(Menu::class, 'icon_id', 'id');
     }

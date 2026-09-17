@@ -70,7 +70,7 @@ class User extends Authenticatable
         return $this->hasMany(Deal::class, 'assigned_user_id', 'id');
     }
 
-    public function task()
+    public function tasks()
     {
         return $this->hasMany(Task::class, 'assigned_user_id', 'id');
     }

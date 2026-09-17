@@ -41,7 +41,7 @@ class Client extends Model
         return $this->hasMany(Task::class, 'client_id', 'id');
     }
 
-    public function client()
+    public function notes()
     {
         return $this->hasMany(Note::class, 'note_id', 'id');
     }

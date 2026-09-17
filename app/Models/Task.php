@@ -45,7 +45,7 @@ class Task extends Model
         return $this->belongsTo(User::class, 'assigned_user_id', 'id');
     }
 
-    public function reminder()
+    public function reminders()
     {
         return $this->hasMany(Task::class, 'task_id', 'id');
     }

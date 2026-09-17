@@ -121,9 +121,8 @@ class Deal extends Model
 
     public function getValueFormattedAttribute()
     {
-        return 'Rp' . number_format($this->value, 0, ',', '.');
+        return 'Rp' . number_format((float) ($this->value ?? 0), 0, ',', '.');
     }
-
     // public function getStatusBadgeAttribute()
     // {
     //     if ($this->status === 'Deals') {

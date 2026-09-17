@@ -11,8 +11,6 @@ class Role extends Model
     use HasActivityLogs;
 
     protected $table = 'roles';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = ['name', 'description'];
 

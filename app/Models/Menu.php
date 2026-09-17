@@ -11,8 +11,6 @@ class Menu extends Model
     use HasFactory, HasActivityLogs;
 
     protected $table = 'menu';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'parent_id',

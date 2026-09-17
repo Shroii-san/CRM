@@ -11,8 +11,6 @@ class MenuIcon extends Model
     use HasActivityLogs;
 
     protected $table = 'menu_icons';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'name',

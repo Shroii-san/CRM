@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use App\Traits\HasActivityLogs;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasActivityLogs, Notifiable;
+    use HasActivityLogs, Notifiable, HasFactory;
 
     protected $table = 'users';
-    protected $primaryKey = 'id';
-    public $timestamps = true;
-
     protected $fillable = [
         'role_id',
         'name',
@@ -21,9 +19,16 @@ class User extends Authenticatable
         'phone',
         'password_hash',
         'is_active',
+        'last_activity_at',
     ];
 
-    protected $hidden = ['password_hash'];
+    protected $casts = [
+        'is_active' => 'boolean',
+        'last_activity_at' => 'datetime',
+        'password_hash' => 'hashed',
+    ];
+
+    protected $hidden = ['password_hash', 'remember_token'];
 
     public function role()
     {
@@ -83,7 +88,7 @@ class User extends Authenticatable
 
     public function getAuthPassword()
     {
-        return $this->password_hash;
+        return 'password_hash';
     }
 
 

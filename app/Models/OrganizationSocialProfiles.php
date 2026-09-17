@@ -11,8 +11,6 @@ class OrganizationSocialProfiles extends Model
     use HasActivityLogs;
 
     protected $table = 'organization_social_profiles';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'organization_id',

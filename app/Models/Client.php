@@ -11,8 +11,6 @@ class Client extends Model
     use HasActivityLogs;
 
     protected $table = 'clients';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
     protected $fillable = [
         'person_id',
         'organization_id',

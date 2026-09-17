@@ -11,8 +11,6 @@ class Organization extends Model
     use HasActivityLogs;
 
     protected $table = 'organizations';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'industry_id',

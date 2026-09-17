@@ -11,8 +11,6 @@ class Person extends Model
     use HasActivityLogs;
 
     protected $table = 'persons';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'name',

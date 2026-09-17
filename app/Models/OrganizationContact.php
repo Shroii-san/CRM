@@ -11,8 +11,6 @@ class OrganizationContact extends Model
     use HasActivityLogs;
 
     protected $table = 'organization_contacts';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
     protected $fillable = [
         'organization_id',

@@ -25,42 +25,6 @@ class User extends Authenticatable
 
     protected $hidden = ['password_hash'];
 
-
-    public function setUsernameAttribute($value)
-    {
-        $this->attributes['username'] = strtolower(str_replace(' ', '_', $value));
-    }
-
-    public function getUsernameAttribute($value)
-    {
-        return strtoupper(str_replace('_', ' ', $value));
-    }
-
-    public function province()
-    {
-        return $this->belongsTo(Province::class, 'province_id', 'id');
-    }
-
-    public function regency()
-    {
-        return $this->belongsTo(Regency::class, 'regency_id', 'id');
-    }
-
-    public function district()
-    {
-        return $this->belongsTo(District::class, 'district_id', 'id');
-    }
-
-    public function village()
-    {
-        return $this->belongsTo(Village::class, 'village_id', 'id');
-    }
-
-    public function getAuthPassword()
-    {
-        return $this->password_hash;
-    }
-
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
@@ -94,6 +58,43 @@ class User extends Authenticatable
     public function attachable()
     {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_id', 'id');
+    }
+
+    public function regency()
+    {
+        return $this->belongsTo(Regency::class, 'regency_id', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id', 'id');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_id', 'id');
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+
+    public function setUsernameAttribute($value)
+    {
+        $this->attributes['username'] = strtolower(str_replace(' ', '_', $value));
+    }
+
+    public function getUsernameAttribute($value)
+    {
+        return strtoupper(str_replace('_', ' ', $value));
     }
 
     public function canAccess($menuId, $action)

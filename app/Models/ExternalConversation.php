@@ -12,8 +12,6 @@ class ExternalConversation extends Model
 
     protected $table = 'external_conversations';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
         'platform',
         'external_conversation_id',

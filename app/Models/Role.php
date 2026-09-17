@@ -21,9 +21,10 @@ class Role extends Model
         return $this->hasMany(User::class, 'role_id', 'id');
     }
 
-    public function menus()
+    public function permissions()
     {
         return $this->belongsToMany(Menu::class, 'role_permissions', 'role_id', 'menu_id')
+            ->using(RolePermission::class)
             ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign')
             ->withTimestamps();
     }

@@ -97,47 +97,57 @@ class User extends Authenticatable
         return strtoupper(str_replace('_', ' ', $value));
     }
 
-    public function canAccess($menuId, $action)
+    public function canAccess($menuId, string $action): bool
     {
-        if ($this->role && $this->role->role_name === 'superadmin') {
+        // 1. Superadmin Bypass
+        if ($this->role?->role_name === 'superadmin') {
             return true;
         }
 
-        if (!$this->role)
+        if (!$this->role) {
             return false;
+        }
 
-        // PERBAIKAN: Gunakan where() bukan wherePivot()
-        $roleMenu = $this->role->menus()
-            ->where('menu.menu_id', $menuId)
-            ->first();
+        $menu = $this->role->relationLoaded('menus')
+            ? $this->role->menus->firstWhere('id', $menuId)
+            : $this->role->menus()->where('menus.id', $menuId)->first();
 
-        if (!$roleMenu)
+        if (!$menu) {
             return false;
+        }
 
-        return match ($action) {
-            'view' => (bool) $roleMenu->pivot->can_view,
-            'create' => (bool) $roleMenu->pivot->can_create,
-            'edit' => (bool) $roleMenu->pivot->can_edit,
-            'delete' => (bool) $roleMenu->pivot->can_delete,
-            'assign' => (bool) $roleMenu->pivot->can_assign,
-            default => false
-        };
+        $pivotColumn = 'can_' . $action;
+
+        return $menu->pivot->{$pivotColumn} ?? false;
     }
 
-    public function canAccessCurrent($action)
+    public function canAccessCurrent(string $action): bool
     {
         $menuId = currentMenuId();
-        if (!$menuId)
-            return false;
-        return $this->canAccess($menuId, $action);
+
+        return $menuId ? $this->canAccess($menuId, $action) : false;
     }
 
-    // TAMBAHAN: Helper method untuk cek multiple permissions sekaligus
-    public function hasAnyAccess($menuId)
+    public function hasAnyAccess($menuId): bool
     {
-        return $this->canAccess($menuId, 'view') ||
-            $this->canAccess($menuId, 'create') ||
-            $this->canAccess($menuId, 'edit') ||
-            $this->canAccess($menuId, 'delete');
+        if ($this->role?->role_name === 'superadmin') {
+            return true;
+        }
+
+        if (!$this->role) {
+            return false;
+        }
+
+        $menu = $this->role->relationLoaded('menus')
+            ? $this->role->menus->firstWhere('id', $menuId)
+            : $this->role->menus()->where('menus.id', $menuId)->first();
+
+        if (!$menu) {
+            return false;
+        }
+
+        $pivot = $menu->pivot;
+
+        return $pivot->can_view || $pivot->can_create || $pivot->can_edit || $pivot->can_delete;
     }
 }

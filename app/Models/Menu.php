@@ -25,12 +25,13 @@ class Menu extends Model
     ];
 
 
-    public function roles()
+    public function permissions()
     {
-        return $this->belongsToMany(Role::class, 'role_permissions', 'menu_id', 'role_id')
-            ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign');
+        return $this->belongsToMany(Menu::class, 'role_permissions', 'role_id', 'menu_id')
+            ->using(RolePermission::class)
+            ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign')
+            ->withTimestamps();
     }
-
     public function icon()
     {
         return $this->belongsTo(MenuIcon::class, 'icon_id', 'id');

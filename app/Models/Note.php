@@ -12,8 +12,6 @@ class Note extends Model
 
     protected $table = 'notes';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
         'client_id',
         'deal_id',

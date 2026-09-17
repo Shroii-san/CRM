@@ -12,8 +12,6 @@ class TaskReminder extends Model
 
     protected $table = 'task_reminders';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
         'task_id',
         'remind_at',

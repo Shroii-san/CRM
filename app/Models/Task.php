@@ -12,8 +12,6 @@ class Task extends Model
     use HasActivityLogs;
 
     protected $table = 'tasks';
-    protected $primaryKey = 'id';
-    public $timestamps = true;
 
     protected $fillable = [
         'client_id',

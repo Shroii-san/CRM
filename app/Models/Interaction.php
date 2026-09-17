@@ -12,8 +12,6 @@ class Interaction extends Model
 
     protected $table = 'interactions';
 
-    protected $primaryKey = 'id';
-
     protected $fillable = [
         'client_id',
         'deal_id',

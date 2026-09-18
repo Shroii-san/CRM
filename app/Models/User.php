@@ -73,7 +73,7 @@ class User extends Authenticatable
 
     public function setUsernameAttribute($value)
     {
-        $this->attributes['username'] = strtolower(str_replace(' ', '_', $value));
+        $this->attributes['name'] = strtolower(str_replace(' ', '_', $value));
     }
 
     public function getUsernameAttribute($value)
@@ -84,7 +84,7 @@ class User extends Authenticatable
     public function canAccess($menuId, string $action): bool
     {
         // 1. Superadmin Bypass
-        if ($this->role?->role_name === 'superadmin') {
+        if ($this->role?->name === 'superadmin') {
             return true;
         }
 
@@ -114,7 +114,7 @@ class User extends Authenticatable
 
     public function hasAnyAccess($menuId): bool
     {
-        if ($this->role?->role_name === 'superadmin') {
+        if ($this->role?->name === 'superadmin') {
             return true;
         }
 

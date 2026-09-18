@@ -55,7 +55,7 @@ class User extends Authenticatable
         return $this->hasMany(Note::class, 'created_by', 'id');
     }
 
-    public function attachment()
+    public function attachments()
     {
         return $this->hasMany(Attachment::class, 'uploaded_by', 'id');
     }
@@ -65,47 +65,26 @@ class User extends Authenticatable
         return $this->morphMany(Attachment::class, 'attachable');
     }
 
-
-    public function province()
-    {
-        return $this->belongsTo(Province::class, 'province_id', 'id');
-    }
-
-    public function regency()
-    {
-        return $this->belongsTo(Regency::class, 'regency_id', 'id');
-    }
-
-    public function district()
-    {
-        return $this->belongsTo(District::class, 'district_id', 'id');
-    }
-
-    public function village()
-    {
-        return $this->belongsTo(Village::class, 'village_id', 'id');
-    }
-
     public function getAuthPassword()
     {
-        return 'password_hash';
+        return $this->password_hash;
     }
 
 
-    public function setUsernameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['username'] = strtolower(str_replace(' ', '_', $value));
+        $this->attributes['name'] = strtolower(str_replace(' ', '_', $value));
     }
 
-    public function getUsernameAttribute($value)
+    public function getNameAttribute($value)
     {
         return strtoupper(str_replace('_', ' ', $value));
     }
 
-    public function canAccess($menuId, string $action): bool
+    public function canAccess($menuId, $action): bool
     {
         // 1. Superadmin Bypass
-        if ($this->role?->role_name === 'superadmin') {
+        if ($this->role?->name === 'superadmin') {
             return true;
         }
 
@@ -135,7 +114,7 @@ class User extends Authenticatable
 
     public function hasAnyAccess($menuId): bool
     {
-        if ($this->role?->role_name === 'superadmin') {
+        if ($this->role?->name === 'superadmin') {
             return true;
         }
 

@@ -55,7 +55,7 @@ class User extends Authenticatable
         return $this->hasMany(Note::class, 'created_by', 'id');
     }
 
-    public function attachment()
+    public function attachments()
     {
         return $this->hasMany(Attachment::class, 'uploaded_by', 'id');
     }
@@ -71,17 +71,17 @@ class User extends Authenticatable
     }
 
 
-    public function setUsernameAttribute($value)
+    public function setNameAttribute($value)
     {
         $this->attributes['name'] = strtolower(str_replace(' ', '_', $value));
     }
 
-    public function getUsernameAttribute($value)
+    public function getNameAttribute($value)
     {
         return strtoupper(str_replace('_', ' ', $value));
     }
 
-    public function canAccess($menuId, string $action): bool
+    public function canAccess($menuId, $action): bool
     {
         // 1. Superadmin Bypass
         if ($this->role?->name === 'superadmin') {

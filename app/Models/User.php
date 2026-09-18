@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function getAuthPassword()
     {
-        return 'password_hash';
+        return $this->password_hash;
     }
 
 

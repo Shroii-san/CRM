@@ -47,10 +47,6 @@ Route::post('/logout', [AuthController::class, 'logout'])
 // CASCADE DROPDOWN ROUTES
 // ==========================
 Route::middleware('auth')->group(function () {
-    Route::get('/get-regencies/{provinceId}', [UserController::class, 'getRegencies']);
-    Route::get('/get-districts/{regencyId}', [UserController::class, 'getDistricts']);
-    Route::get('/get-villages/{districtId}', [UserController::class, 'getVillages']);
-
     Route::get('/company/get-regencies/{provinceId}', [CompanyController::class, 'getRegencies']);
     Route::get('/company/get-districts/{regencyId}', [CompanyController::class, 'getDistricts']);
     Route::get('/company/get-villages/{districtId}', [CompanyController::class, 'getVillages']);
@@ -187,9 +183,13 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // ==========================
     // CRUD - Users
     // ==========================
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index']); // GET /api/users
+        Route::post('/', [UserController::class, 'store']); // POST /api/users
+        Route::put('/{id}', [UserController::class, 'update']); // PUT /api/users/1
+        Route::patch('/{id}', [UserController::class, 'update']); // PATCH /api/users/1
+        Route::delete('/{id}', [UserController::class, 'destroy']); // DELETE /api/users/1
+    });
 
     // ==========================
     // CRUD - Roles

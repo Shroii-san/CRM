@@ -1,242 +1,52 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Province;
-use App\Models\Regency;
-use App\Models\District;
-use App\Models\Village;
-use App\Models\User;
-use App\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\UserResource;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
     /**
      * List semua user
      */
-    public function index()
+    public function index(UserService $userService, )
     {
-        $users = User::with(['role', 'province', 'regency', 'district', 'village'])->paginate(5);
-        $roles = Role::all();
-        $provinces = Province::orderBy('name')->get();
-
-
-
-        return view('pages.user', compact('users', 'roles', 'provinces'));
+        $users = $userService->getAllUsers()->paginate(10);
+        return UserResource::collection($users);
     }
 
 
 
-   public function store(Request $request)
+    public function store(StoreUserRequest $request, UserService $userService)
     {
-        $request->validate([
-            'username' => 'required|string|max:100|unique:users,username',
-            'email'    => 'nullable|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'role_id'  => 'required|exists:roles,role_id',
-            'is_active' => 'sometimes|boolean',
-            'phone'      => 'nullable|string|max:20',
-            'birth_date' => 'nullable|date|before_or_equal:today',
-            'address'    => 'nullable|string|max:1000',
-            'province_id' => 'nullable|exists:provinces,id',
-            'regency_id'  => 'nullable|exists:regencies,id',
-            'district_id' => 'nullable|exists:districts,id',
-            'village_id'  => 'nullable|exists:villages,id',
+        $data = $request->validated();
+        $user = $userService->createUser($data);
+
+        return response()->json([
+            'message' => 'User created successfully',
+            'data' => UserResource::make($user)
+        ], 201);
+    }
+
+    public function update(UpdateUserRequest $request, UserService $userService, $id)
+    {
+        $data = $request->validated();
+        $user = $userService->updateUser($id, $data);
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'data' => UserResource::make($user)
         ]);
-
-        User::create([
-            'username'       => $request->username,
-            'email'          => $request->email,
-            'password_hash'  => Hash::make($request->password),
-            'phone'          => $request->phone,
-            'birth_date'     => $request->birth_date,
-            'address'        => $request->address,
-            'role_id'        => $request->role_id,
-            'is_active'      => $request->input('is_active', true),
-            'province_id'    => $request->province_id,
-            'regency_id'     => $request->regency_id,
-            'district_id'    => $request->district_id,
-            'village_id'     => $request->village_id,
-        ]);
-
-        return redirect()->route('user')->with('success', 'User berhasil ditambahkan!');
     }
 
-    public function update(Request $request, $id)
+    public function destroy(UserService $userService, $id)
     {
-        $user = User::findOrFail($id);
+        $userService->deleteUser($id);
 
-        $request->validate([
-            'username' => 'required|string|max:100|unique:users,username,' . $id . ',user_id',
-            'email'    => 'nullable|email|unique:users,email,' . $id . ',user_id',
-            'role_id'  => 'required|exists:roles,role_id',
-            'is_active' => 'sometimes|boolean',
-            'phone'      => 'nullable|string|max:20',
-            'birth_date' => 'nullable|date|before_or_equal:today',
-            'address'    => 'nullable|string|max:1000',
-            'province_id' => 'nullable|exists:provinces,id',
-            'regency_id'  => 'nullable|exists:regencies,id',
-            'district_id' => 'nullable|exists:districts,id',
-            'village_id'  => 'nullable|exists:villages,id',
+        return response()->json([
+            'message' => 'User deleted successfully'
         ]);
-
-        $data = [
-            'username' => $request->username,
-            'email' => $request->email,
-            'role_id' => $request->role_id,
-            'is_active' => $request->has('is_active') ? 1 : 0,
-            'phone'          => $request->phone,
-            'birth_date'     => $request->birth_date,
-            'address'        => $request->address,
-            'province_id'    => $request->province_id,
-            'regency_id'     => $request->regency_id,
-            'district_id'    => $request->district_id,
-            'village_id'     => $request->village_id,
-        ];
-
-
-        if ($request->filled('password')) {
-            $data['password_hash'] = Hash::make($request->password);
-        }
-
-        $user->update($data);
-
-
-        return redirect()->back()->with('success', 'User berhasil diperbarui!');
     }
-
-
-public function destroy($id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-
-        return redirect()->route('user')->with('success', 'User berhasil dihapus!');
-    }
-
-
-
-
-public function search(Request $request)
-{
-    $query = User::with('role', 'province', 'regency', 'district', 'village');
-
-    // Filter search
-    if ($request->filled('search')) {
-        $search = strtolower($request->search);
-        $query->where(function($q) use ($search) {
-            $q->where('username', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%")
-              ->orWhere('phone', 'like', "%{$search}%");
-        });
-    }
-
-    // Filter role
-    if ($request->filled('role')) {
-        $role = $request->role;
-        $query->whereHas('role', function($q) use ($role) {
-            // Jika role adalah numeric ID
-            if (is_numeric($role)) {
-                $q->where('role_id', $role);
-            } else {
-                // Jika role adalah string name
-                $q->whereRaw('LOWER(role_name) = ?', [strtolower($role)]);
-            }
-        });
-    }
-
-    $users = $query->paginate(5);
-
-    return response()->json([
-        'items' => $users->map(function($user, $index) use ($users) {
-            // Format alamat
-            $alamatWilayah = collect([
-                optional($user->village)->name,
-                optional($user->district)->name,
-                optional($user->regency)->name,
-                optional($user->province)->name,
-            ])->filter()->implode(', ');
-
-            $alamatDisplay = $alamatWilayah ?: ($user->address ?? '-');
-            if ($alamatWilayah && $user->address) {
-                $alamatDisplay = $alamatWilayah . ' - ' . $user->address;
-            }
-
-            return [
-                'number' => $users->firstItem() + $index,
-                'user' => [
-                    'username' => $user->username ?? '-',
-                    'email' => $user->email ?? '-'
-                ],
-                'phone' => $user->phone ?? '-',
-                'date_birth' => $user->birth_date
-                    ? \Carbon\Carbon::parse($user->birth_date)->format('d M Y')
-                    : '-',
-                'alamat' => $alamatDisplay,
-                'role' => $user->role->role_name ?? 'No Role',
-                'status' => $user->is_active ? 'Active' : 'Inactive',
-                'actions' => $this->getUserActions($user)
-            ];
-        })->toArray(),
-        'pagination' => [
-            'current_page' => $users->currentPage(),
-            'last_page' => $users->lastPage(),
-            'from' => $users->firstItem(),
-            'to' => $users->lastItem(),
-            'total' => $users->total()
-        ]
-    ]);
-}
-
-private function getUserActions($user)
-{
-    $isSuperAdmin = auth()->user()->role &&
-                   (strtolower(auth()->user()->role->role_name) === 'superadmin');
-
-    $isTargetSuperAdmin = $user->role &&
-                         (strtolower($user->role->role_name) === 'superadmin');
-
-    $canEdit = auth()->user()->canAccess($currentMenuId ?? 1, 'edit') &&
-              (!$isTargetSuperAdmin || $isSuperAdmin);
-
-    $canDelete = auth()->user()->canAccess($currentMenuId ?? 1, 'delete') &&
-                (!$isTargetSuperAdmin || $isSuperAdmin);
-
-    $actions = [];
-
-    if ($canEdit) {
-        $actions[] = [
-            'type' => 'edit',
-            'onclick' => "openEditModal(
-                '{$user->user_id}',
-                '" . addslashes($user->username) . "',
-                '" . addslashes($user->email) . "',
-                '{$user->role_id}',
-                " . ($user->is_active ? 'true' : 'false') . ",
-                '" . addslashes($user->phone ?? '') . "',
-                '" . addslashes($user->birth_date ?? '') . "',
-                `" . addslashes($user->address ?? '') . "`,
-                '{$user->province_id}',
-                '{$user->regency_id}',
-                '{$user->district_id}',
-                '{$user->village_id}'
-            )",
-            'title' => 'Edit User'
-        ];
-    }
-
-    if ($canDelete) {
-        $csrfToken = csrf_token();
-        $deleteRoute = route('users.destroy', $user->user_id);
-
-                $actions[] = [
-            'type' => 'delete',
-            'onclick' => "deleteUser('{$user->user_id}', '{$deleteRoute}', '{$csrfToken}')",
-            'title' => 'Delete User'
-        ];
-    }
-
-    return $actions;
-}
 }

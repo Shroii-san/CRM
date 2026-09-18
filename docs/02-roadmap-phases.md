@@ -35,7 +35,7 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 - [x] **Model & Relationships** (Setup Eloquent model, fillable, casts, & relationships)
 - [ ] **Form Requests** (Validasi terpusat untuk create/update pada setiap resource)
 - [ ] **Business Logic / Services** (Pemisahan logic dari Controller ke Service layer)
-- [ ] **Centralized Region API** (Endpoint terpusat Provinsi -> Kota -> Kec -> Kel)
+- [x] **Centralized Region API** (Endpoint terpusat Provinsi -> Kota -> Kec -> Kel)
 - [ ] **Standard Query Pattern** (Composable Search, Filter, Sort, & Pagination)
 - [ ] **AJAX Response Standardizer** (Format JSON `success`, `message`, `data`, `errors`)
 - [ ] **Import & Export Handlers** (Validasi file, parsing data, & penanganan error import)

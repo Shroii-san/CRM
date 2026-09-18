@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PasswordResetController; 
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController; 
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\CompanyChartController;
@@ -17,6 +17,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\SalesPerformanceController;
 use App\Http\Controllers\PipelineController;
 use App\http\Controllers\SalesVisitTrendController;
+use App\Http\Controllers\RegionController;
 
 // ==========================
 // Public Routes (Login / Logout / Password Reset)
@@ -24,16 +25,16 @@ use App\http\Controllers\SalesVisitTrendController;
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-    
+
     Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPasswordForm'])
         ->name('password.request');
-    
+
     Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
         ->name('password.email');
-    
+
     Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetPasswordForm'])
         ->name('password.reset');
-    
+
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
         ->name('password.update');
 });
@@ -80,7 +81,7 @@ Route::middleware(['auth', 'permission'])->group(function () {
     Route::get('/company/get-companies-dropdown', [CompanyController::class, 'getCompaniesForDropdown']);
     Route::get('/company/{id}/pics', [CompanyController::class, 'getCompanyPics']);
     Route::get('/company/{id}', [CompanyController::class, 'show'])->name('company.show');
-    
+
     // ==========================
     // Customer Management
     // ==========================
@@ -180,7 +181,7 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // Settings Pages
     // ==========================
     Route::get('/user', [UserController::class, 'index'])->name('user');
-    Route::get('/role', [RoleController::class, 'index'])->name('role'); 
+    Route::get('/role', [RoleController::class, 'index'])->name('role');
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
     // ==========================
@@ -248,7 +249,18 @@ Route::middleware(['auth', 'permission'])->group(function () {
         ->name('api.visit.trend');
 
     Route::get('/trend', [TrendPageController::class, 'index'])
-    ->middleware('auth')
-    ->name('trend.page');
+        ->middleware('auth')
+        ->name('trend.page');
 
+
+
+    // ===================================
+    // CENTRALIZED REGION ROUTES
+    // ===================================
+    Route::prefix('region')->group(function () {
+        Route::get('/provinces', [RegionController::class, 'getProvinces']);
+        Route::get('/provinces/{provinceId}/regencies', [RegionController::class, 'getRegencies']);
+        Route::get('/regencies/{regencyId}/districts', [RegionController::class, 'getDistricts']);
+        Route::get('/districts/{districtId}/villages', [RegionController::class, 'getVillages']);
+    });
 });

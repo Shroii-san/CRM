@@ -6,6 +6,7 @@ use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -25,7 +26,6 @@ class User extends Authenticatable
     protected $casts = [
         'is_active' => 'boolean',
         'last_activity_at' => 'datetime',
-        'password_hash' => 'hashed',
     ];
 
     protected $hidden = ['password_hash', 'remember_token'];
@@ -88,9 +88,13 @@ class User extends Authenticatable
 
     public function getAuthPassword()
     {
-        return 'password_hash';
+        return $this->password_hash;
     }
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password_hash'] = Hash::make($value);
+    }
 
     public function setUsernameAttribute($value)
     {

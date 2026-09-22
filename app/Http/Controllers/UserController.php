@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\User\IndexUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserResource;
@@ -8,21 +10,34 @@ use App\Services\UserService;
 
 class UserController extends Controller
 {
-    /**
-     * List semua user
-     */
-    public function index(UserService $userService, )
+    public function __construct(private UserService $userService)
     {
-        $users = $userService->getAllUsers()->paginate(10);
-        return UserResource::collection($users);
     }
 
-
-
-    public function store(StoreUserRequest $request, UserService $userService)
+    public function index(IndexUserRequest $request)
     {
-        $data = $request->validated();
-        $user = $userService->createUser($data);
+        $users = $this->userService->list(
+            search: $request->search,
+            roleId: $request->role_id,
+            isActive: $request->is_active,
+            perPage: $request->per_page ?? 50,
+            page: $request->page ?? 1,
+        );
+
+        return UserResource::collection($users)
+            ->additional([
+                'meta' => [
+                    'total' => $users->total(),
+                    'per_page' => $users->perPage(),
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                ]
+            ]);
+    }
+
+    public function store(StoreUserRequest $request)
+    {
+        $user = $this->userService->create($request->validated());
 
         return response()->json([
             'message' => 'User created successfully',
@@ -30,10 +45,9 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function update(UpdateUserRequest $request, UserService $userService, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $data = $request->validated();
-        $user = $userService->updateUser($id, $data);
+        $user = $this->userService->update($id, $request->validated());
 
         return response()->json([
             'message' => 'User updated successfully',
@@ -41,9 +55,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(UserService $userService, $id)
+    public function destroy($id)
     {
-        $userService->deleteUser($id);
+        $this->userService->delete($id);
 
         return response()->json([
             'message' => 'User deleted successfully'

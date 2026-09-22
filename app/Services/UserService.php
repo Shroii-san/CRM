@@ -7,43 +7,66 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function createUser($data): User
+    public function list(
+        ?string $search = null,
+        ?int $roleId = null,
+        ?bool $isActive = null,
+        int $perPage = 50,
+        int $page = 1,
+    ) {
+        $query = User::query()
+            ->select('id', 'role_id', 'name', 'email', 'phone', 'is_active', 'created_at')
+            ->with(['role:id,name'])
+            ->orderBy('created_at', 'desc');
+
+        // Search
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by role
+        if ($roleId !== null) {
+            $query->where('role_id', $roleId);
+        }
+
+        // Filter by status
+        if ($isActive !== null) {
+            $query->where('is_active', $isActive);
+        }
+
+        // Pagination (backend)
+        return $query->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function create(array $data)
     {
-        $data['password_hash'] = Hash::make($data['password']);
-        $data['is_active'] = $data['is_active'] ?? true;
+        if (isset($data['password'])) {
+            $data['password_hash'] = Hash::make($data['password']);
+            unset($data['password']);
+        }
 
         return User::create($data);
     }
 
-    public function updateUser($id, $data): User
+    public function update(int $id, array $data)
     {
         $user = User::findOrFail($id);
 
-        if (!empty($data['password'])) {
+        if (isset($data['password'])) {
             $data['password_hash'] = Hash::make($data['password']);
-        } else {
             unset($data['password']);
         }
 
-        $data['is_active'] = isset($data['is_active']) ? 1 : 0;
-
         $user->update($data);
-        return $user;
+        return $user->refresh();
     }
 
-    public function deleteUser($id): bool
+    public function delete(int $id)
     {
-        $user = User::findOrFail($id);
-        return $user->delete();
-    }
-
-    public function getUser($id): User
-    {
-        return User::findOrFail($id);
-    }
-
-    public function getAllUsers()
-    {
-        return User::orderBy('name', 'asc')->get();
+        User::findOrFail($id)->delete();
     }
 }

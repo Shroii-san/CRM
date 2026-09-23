@@ -23,7 +23,7 @@ class Role extends Model
     {
         return $this->belongsToMany(Menu::class, 'role_permissions', 'role_id', 'menu_id')
             ->using(RolePermission::class)
-            ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign')
+            ->withPivot('can_view', 'can_create', 'can_update', 'can_delete', 'can_assign')
             ->withTimestamps();
     }
 }

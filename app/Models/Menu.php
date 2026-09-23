@@ -10,7 +10,8 @@ class Menu extends Model
 {
     use HasFactory, HasActivityLogs;
 
-    protected $table = 'menu';
+    // Sesuai migration: tabel bernama `menus`
+    protected $table = 'menus';
 
     protected $fillable = [
         'parent_id',
@@ -30,9 +31,9 @@ class Menu extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(Menu::class, 'role_permissions', 'role_id', 'menu_id')
+        return $this->belongsToMany(Role::class, 'role_permissions', 'menu_id', 'role_id')
             ->using(RolePermission::class)
-            ->withPivot('can_view', 'can_create', 'can_edit', 'can_delete', 'can_assign')
+            ->withPivot('can_view', 'can_create', 'can_update', 'can_delete', 'can_assign')
             ->withTimestamps();
     }
     public function icon()
@@ -48,7 +49,8 @@ class Menu extends Model
 
     public function children()
     {
-        return $this->hasMany(Menu::class, 'parent_id', 'id')->orderBy('order');
+        // Migration menggunakan kolom `position` untuk ordering
+        return $this->hasMany(Menu::class, 'parent_id', 'id')->orderBy('position');
     }
 
 
@@ -77,9 +79,9 @@ class Menu extends Model
     public function getFullPath()
     {
         if ($this->parent) {
-            return $this->parent->nama_menu . ' > ' . $this->nama_menu;
+            return $this->parent->name . ' > ' . $this->name;
         }
-        return $this->nama_menu;
+        return $this->name;
     }
 
     public function getLevel()
@@ -109,7 +111,7 @@ class Menu extends Model
     {
         return self::with('children')
             ->whereNull('parent_id')
-            ->orderBy('order')
+            ->orderBy('position')
             ->get();
     }
 }

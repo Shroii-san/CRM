@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Menu;
+use App\Services\PermissionService;
 use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,14 +29,15 @@ class AppServiceProvider extends ServiceProvider
     {
         // Superadmin selalu bisa akses apa saja
         Gate::before(function ($user, $ability) {
-            if ($user->role?->role_name === 'superadmin') {
+            if ($user->role?->name === 'superadmin') {
                 return true;
             }
         });
 
         // Gate kustom untuk cek menu
         Gate::define('access-menu', function ($user, $menuId, $action) {
-            return $user->canAccess($menuId, $action);
+            return app(PermissionService::class)->hasPermission($user, $menuId, $action);
         });
     }
 }
+

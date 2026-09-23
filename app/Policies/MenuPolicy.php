@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use App\Models\Menu;
+use App\Services\PermissionService;
+
+class MenuPolicy
+{
+    public function __construct(private PermissionService $permissionService)
+    {
+    }
+
+    public function viewAny(User $user): bool
+    {
+        return $this->permissionService->hasPermission($user, 'menu', 'view');
+    }
+
+    public function view(User $user, Menu $menu): bool
+    {
+        return $this->permissionService->hasPermission($user, 'menu', 'view');
+    }
+
+    public function create(User $user): bool
+    {
+        return $this->permissionService->hasPermission($user, 'menu', 'create');
+    }
+
+    public function update(User $user, Menu $menu): bool
+    {
+        return $this->permissionService->hasPermission($user, 'menu', 'update');
+    }
+
+    public function delete(User $user, Menu $menu): bool
+    {
+        return $this->permissionService->hasPermission($user, 'menu', 'delete');
+    }
+}

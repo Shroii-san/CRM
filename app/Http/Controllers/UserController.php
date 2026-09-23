@@ -8,59 +8,42 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserResource;
 use App\Services\UserService;
 
+use App\Http\Controllers\Web\UserController as WebUserController;
+use App\Http\Controllers\Api\V1\UserController as ApiUserController;
+use Illuminate\Http\Request;
+
 class UserController extends Controller
 {
-    public function __construct(private UserService $userService)
-    {
+    public function __construct(
+        private UserService $userService,
+        private WebUserController $webUserController,
+        private ApiUserController $apiUserController
+    ) {
     }
 
-    public function index(IndexUserRequest $request)
+    public function index(Request $request)
     {
-        $users = $this->userService->list(
-            search: $request->search,
-            roleId: $request->role_id,
-            isActive: $request->is_active,
-            perPage: $request->per_page ?? 50,
-            page: $request->page ?? 1,
-        );
+        if ($request->wantsJson() || $request->ajax() || $request->has('search') || $request->has('role_id')) {
+            $indexRequest = IndexUserRequest::createFrom($request);
+            return $this->apiUserController->index($indexRequest);
+        }
 
-        return UserResource::collection($users)
-            ->additional([
-                'meta' => [
-                    'total' => $users->total(),
-                    'per_page' => $users->perPage(),
-                    'current_page' => $users->currentPage(),
-                    'last_page' => $users->lastPage(),
-                ]
-            ]);
+        return $this->webUserController->index($request);
     }
 
     public function store(StoreUserRequest $request)
     {
-        $user = $this->userService->create($request->validated());
-
-        return response()->json([
-            'message' => 'User created successfully',
-            'data' => UserResource::make($user)
-        ], 201);
+        return $this->apiUserController->store($request);
     }
 
     public function update(UpdateUserRequest $request, $id)
     {
-        $user = $this->userService->update($id, $request->validated());
-
-        return response()->json([
-            'message' => 'User updated successfully',
-            'data' => UserResource::make($user)
-        ]);
+        return $this->apiUserController->update($request, $id);
     }
 
     public function destroy($id)
     {
-        $this->userService->delete($id);
-
-        return response()->json([
-            'message' => 'User deleted successfully'
-        ]);
+        return $this->apiUserController->destroy($id);
     }
 }
+

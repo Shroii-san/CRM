@@ -84,58 +84,5 @@ class User extends Authenticatable
     {
         return strtoupper(str_replace('_', ' ', $value));
     }
-
-    public function canAccess($menuId, $action): bool
-    {
-        // 1. Superadmin Bypass
-        if ($this->role?->name === 'superadmin') {
-            return true;
-        }
-
-        if (!$this->role) {
-            return false;
-        }
-
-        $menu = $this->role->relationLoaded('menus')
-            ? $this->role->menus->firstWhere('id', $menuId)
-            : $this->role->menus()->where('menus.id', $menuId)->first();
-
-        if (!$menu) {
-            return false;
-        }
-
-        $pivotColumn = 'can_' . $action;
-
-        return $menu->pivot->{$pivotColumn} ?? false;
-    }
-
-    public function canAccessCurrent(string $action): bool
-    {
-        $menuId = currentMenuId();
-
-        return $menuId ? $this->canAccess($menuId, $action) : false;
-    }
-
-    public function hasAnyAccess($menuId): bool
-    {
-        if ($this->role?->name === 'superadmin') {
-            return true;
-        }
-
-        if (!$this->role) {
-            return false;
-        }
-
-        $menu = $this->role->relationLoaded('menus')
-            ? $this->role->menus->firstWhere('id', $menuId)
-            : $this->role->menus()->where('menus.id', $menuId)->first();
-
-        if (!$menu) {
-            return false;
-        }
-
-        $pivot = $menu->pivot;
-
-        return $pivot->can_view || $pivot->can_create || $pivot->can_edit || $pivot->can_delete;
-    }
 }
+

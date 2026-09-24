@@ -16,7 +16,7 @@ class UpdateClientRequest extends FormRequest
         return [
             'person_id'       => 'nullable|exists:persons,id',
             'organization_id' => 'nullable|exists:organizations,id',
-            'source_id'       => 'required|exists:client_sources,id',
+            'source_id'       => 'nullable|exists:client_sources,id',
             'is_active'       => 'nullable|boolean',
         ];
     }

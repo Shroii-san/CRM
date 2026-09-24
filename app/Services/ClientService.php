@@ -68,12 +68,16 @@ class ClientService
     public function update(int $id, array $data): Client
     {
         $client = Client::findOrFail($id);
-        $client->update([
-            'person_id'       => $data['person_id'] ?? $client->person_id,
-            'organization_id' => $data['organization_id'] ?? $client->organization_id,
-            'source_id'       => $data['source_id'] ?? $client->source_id,
-            'is_active'       => $data['is_active'] ?? $client->is_active,
-        ]);
+
+        $clientUpdate = [];
+        if (array_key_exists('person_id', $data))       $clientUpdate['person_id']       = $data['person_id'];
+        if (array_key_exists('organization_id', $data)) $clientUpdate['organization_id'] = $data['organization_id'];
+        if (array_key_exists('source_id', $data))       $clientUpdate['source_id']       = $data['source_id'];
+        if (array_key_exists('is_active', $data))       $clientUpdate['is_active']       = (bool) $data['is_active'];
+
+        if (!empty($clientUpdate)) {
+            $client->update($clientUpdate);
+        }
 
         return $client->refresh();
     }

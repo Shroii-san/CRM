@@ -15,14 +15,12 @@ class UpdateOrganizationContactRequest extends FormRequest
     {
         return [
             'name'       => 'nullable|string|max:255',
-            'pic_name'   => 'nullable|string|max:255',
             'email'      => 'nullable|email|max:255',
-            'pic_email'  => 'nullable|email|max:255',
             'phone'      => 'nullable|string|max:20',
-            'pic_phone'  => 'nullable|string|max:20',
-            'job_title'  => 'nullable|string|max:255',
-            'position'   => 'nullable|string|max:255',
+            'job_title'  => 'nullable|string|max:100',
             'is_primary' => 'nullable|boolean',
+            'started_at' => 'nullable|date',
+            'ended_at'   => 'nullable|date|after:started_at',
         ];
     }
 }

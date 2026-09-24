@@ -3,6 +3,7 @@
 namespace App\Http\Requests\OrganizationContact;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreOrganizationContactRequest extends FormRequest
 {
@@ -14,17 +15,27 @@ class StoreOrganizationContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'organization_id' => 'required_without:company_id|exists:organizations,id',
-            'company_id'      => 'required_without:organization_id|exists:organizations,id',
-            'name'            => 'required_without:pic_name|string|max:255',
-            'pic_name'        => 'required_without:name|string|max:255',
+            'organization_id' => 'required|exists:organizations,id',
+            'person_id'       => 'nullable|exists:persons,id',
+            'name'            => 'required_without:person_id|nullable|string|max:255',
             'email'           => 'nullable|email|max:255',
-            'pic_email'       => 'nullable|email|max:255',
             'phone'           => 'nullable|string|max:20',
-            'pic_phone'       => 'nullable|string|max:20',
-            'job_title'       => 'nullable|string|max:255',
-            'position'        => 'nullable|string|max:255',
+            'job_title'       => 'nullable|string|max:100',
             'is_primary'      => 'nullable|boolean',
+            'started_at'      => 'nullable|date',
+            'ended_at'        => 'nullable|date|after:started_at',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($this->filled('person_id') && $this->filled('name')) {
+                $validator->errors()->add(
+                    'person_id',
+                    'Tidak dapat mengirimkan person_id dan name secara bersamaan. Pilih person_id yang sudah ada ATAU isi name untuk membuat person baru.'
+                );
+            }
+        });
     }
 }

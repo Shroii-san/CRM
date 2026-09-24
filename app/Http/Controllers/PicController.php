@@ -2,256 +2,102 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CompanyPic;
-use App\Models\Company;
+use App\Http\Controllers\Web\OrganizationContactController as WebContactController;
+use App\Http\Controllers\Api\V1\OrganizationContactController as ApiContactController;
+use App\Http\Requests\OrganizationContact\StoreOrganizationContactRequest;
+use App\Http\Requests\OrganizationContact\UpdateOrganizationContactRequest;
+use App\Services\OrganizationContactService;
 use Illuminate\Http\Request;
 
 class PicController extends Controller
 {
-    /**
-     * List semua PIC
-     */
-    public function index()
+    public function __construct(
+        private OrganizationContactService $contactService,
+        private WebContactController $webContactController,
+        private ApiContactController $apiContactController
+    ) {
+    }
+
+    public function index(Request $request)
     {
-        $pics = CompanyPic::with('company')->paginate(5);
-        $companies = Company::orderBy('company_name')->get();
-        $currentMenuId = 10; // Sesuaikan dengan menu ID PIC di database
-        
-        return view('pages.pic', compact('pics', 'companies', 'currentMenuId'));
+        if ($request->wantsJson() || $request->ajax() || $request->has('search')) {
+            return $this->apiContactController->index($request);
+        }
+
+        return $this->webContactController->index($request);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'company_id' => 'required|exists:company,company_id',
-            'pic_name'   => 'required|string|max:255',
-            'position'   => 'nullable|string|max:255',
-            'phone'      => 'nullable|string|max:20',
-            'email'      => 'nullable|email|max:255',
-        ]);
+        $this->normalizeLegacyInputs($request);
+        $storeRequest = StoreOrganizationContactRequest::createFrom($request);
 
-        CompanyPic::create([
-            'company_id' => $request->company_id,
-            'pic_name'   => $request->pic_name,
-            'position'   => $request->position,
-            'phone'      => $request->phone,
-            'email'      => $request->email,
-        ]);
+        if ($request->wantsJson() || $request->ajax()) {
+            return $this->apiContactController->store($storeRequest);
+        }
 
-        return redirect()->route('pic')->with('success', 'PIC berhasil ditambahkan!');
+        $this->contactService->create($storeRequest->validated());
+        return redirect()->route('pic')->with('success', 'PIC berhasil ditambahkan');
     }
 
     public function update(Request $request, $id)
     {
-        $pic = CompanyPic::findOrFail($id);
+        $this->normalizeLegacyInputs($request);
+        $updateRequest = UpdateOrganizationContactRequest::createFrom($request);
 
-        $request->validate([
-            'company_id' => 'required|exists:company,company_id',
-            'pic_name'   => 'required|string|max:255',
-            'position'   => 'nullable|string|max:255',
-            'phone'      => 'nullable|string|max:20',
-            'email'      => 'nullable|email|max:255',
-        ]);
+        if ($request->wantsJson() || $request->ajax()) {
+            return $this->apiContactController->update($updateRequest, (int) $id);
+        }
 
-        $pic->update([
-            'company_id' => $request->company_id,
-            'pic_name'   => $request->pic_name,
-            'position'   => $request->position,
-            'phone'      => $request->phone,
-            'email'      => $request->email,
-        ]);
-
-        return redirect()->back()->with('success', 'PIC berhasil diperbarui!');
+        $this->contactService->update((int) $id, $updateRequest->validated());
+        return redirect()->route('pic')->with('success', 'PIC berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        try {
-            $pic = CompanyPic::findOrFail($id);
-            $pic->delete();
+        $this->contactService->delete((int) $id);
 
-            // Jika request AJAX, return JSON response
-            if (request()->ajax() || request()->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'PIC berhasil dihapus!'
-                ]);
-            }
-
-            // Jika regular request, redirect
-            return redirect()->route('pic')->with('success', 'PIC berhasil dihapus!');
-
-        } catch (\Exception $e) {
-            // Jika request AJAX, return JSON error
-            if (request()->ajax() || request()->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Gagal menghapus PIC: ' . $e->getMessage()
-                ], 500);
-            }
-
-            // Jika regular request, redirect dengan error
-            return redirect()->back()->with('error', 'Gagal menghapus PIC: ' . $e->getMessage());
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json(['message' => 'PIC deleted successfully']);
         }
+
+        return redirect()->route('pic')->with('success', 'PIC berhasil dihapus');
     }
 
     public function search(Request $request)
     {
-        $query = CompanyPic::with('company');
-
-        // Filter search
-        if ($request->filled('search')) {
-            $search = strtolower($request->search);
-            $query->where(function($q) use ($search) {
-                $q->where('pic_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('position', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by company
-        if ($request->filled('company')) {
-            $companyId = $request->company;
-            $query->where('company_id', $companyId);
-        }
-
-        $pics = $query->paginate(5);
-
-        return response()->json([
-            'items' => $pics->map(function($pic, $index) use ($pics) {
-                return [
-                    'number' => $pics->firstItem() + $index,
-                    'pic' => [
-                        'name' => $pic->pic_name ?? '-',
-                        'position' => $pic->position ?? '-'
-                    ],
-                    'company' => $pic->company->company_name ?? '-',
-                    'phone' => $pic->phone ?? '-',
-                    'email' => $pic->email ?? '-',
-                    'actions' => $this->getPicActions($pic)
-                ];
-            })->toArray(),
-            'pagination' => [
-                'current_page' => $pics->currentPage(),
-                'last_page' => $pics->lastPage(),
-                'from' => $pics->firstItem(),
-                'to' => $pics->lastItem(),
-                'total' => $pics->total()
-            ]
-        ]);
+        return $this->apiContactController->index($request);
     }
 
     public function getPICsByCompany($companyId)
     {
-        try {
-            $pics = CompanyPic::where('company_id', $companyId)
-                ->select('pic_id as id', 'pic_name as name', 'position', 'email', 'phone')
-                ->orderBy('pic_name')
-                ->get();
-            
-            \Log::info("Fetched PICs for company {$companyId}: " . $pics->count());
-            
-            return response()->json([
-                'success' => true,
-                'pics' => $pics
-            ]);
-            
-        } catch (\Exception $e) {
-            \Log::error("Error fetching PICs for company: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'error' => 'Failed to load PICs'
-            ], 500);
-        }
+        return $this->apiContactController->byOrganization($companyId);
     }
 
-    /**
-     * Store PIC via AJAX (untuk modal di salesvisit)
-     */
     public function storePICAjax(Request $request)
     {
-        try {
-            $request->validate([
-                'company_id' => 'required|exists:company,company_id',
-                'pic_name'   => 'required|string|max:255',
-                'position'   => 'nullable|string|max:255',
-                'phone'      => 'nullable|string|max:20',
-                'email'      => 'nullable|email|max:255',
-            ]);
+        $this->normalizeLegacyInputs($request);
+        $storeRequest = StoreOrganizationContactRequest::createFrom($request);
 
-            $pic = CompanyPic::create([
-                'company_id' => $request->company_id,
-                'pic_name'   => $request->pic_name,
-                'position'   => $request->position,
-                'phone'      => $request->phone,
-                'email'      => $request->email,
-            ]);
-
-            \Log::info('PIC created via AJAX:', $pic->toArray());
-
-            return response()->json([
-                'success' => true,
-                'message' => 'PIC berhasil ditambahkan!',
-                'pic' => [
-                    'id' => $pic->pic_id,
-                    'name' => $pic->pic_name,
-                    'position' => $pic->position,
-                    'email' => $pic->email,
-                    'phone' => $pic->phone
-                ]
-            ]);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            \Log::error('Error storing PIC via AJAX: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menambahkan PIC: ' . $e->getMessage()
-            ], 500);
-        }
+        return $this->apiContactController->store($storeRequest);
     }
 
-
-    private function getPicActions($pic)
+    private function normalizeLegacyInputs(Request $request): void
     {
-        $currentMenuId = 10; // Sesuaikan dengan menu ID
-        $canEdit = auth()->user()->canAccess($currentMenuId, 'edit');
-        $canDelete = auth()->user()->canAccess($currentMenuId, 'delete');
-
-        $actions = [];
-
-        if ($canEdit) {
-            $actions[] = [
-                'type' => 'edit',
-                'onclick' => "openEditPICModal(
-                    '{$pic->pic_id}',
-                    '{$pic->company_id}',
-                    '" . addslashes($pic->pic_name) . "',
-                    '" . addslashes($pic->position ?? '') . "',
-                    '" . addslashes($pic->email ?? '') . "',
-                    '" . addslashes($pic->phone ?? '') . "'
-                )",
-                'title' => 'Edit PIC'
-            ];
+        if ($request->has('company_id') && !$request->has('organization_id')) {
+            $request->merge(['organization_id' => $request->input('company_id')]);
         }
-
-        if ($canDelete) {
-            $csrfToken = csrf_token();
-            $deleteRoute = route('pics.destroy', $pic->pic_id);
-            
-            $actions[] = [
-                'type' => 'delete',
-                'onclick' => "deletePIC('{$pic->pic_id}', '{$deleteRoute}', '{$csrfToken}')",
-                'title' => 'Delete PIC'
-            ];
+        if ($request->has('pic_name') && !$request->has('name')) {
+            $request->merge(['name' => $request->input('pic_name')]);
         }
-
-        return $actions;
+        if ($request->has('pic_email') && !$request->has('email')) {
+            $request->merge(['email' => $request->input('pic_email')]);
+        }
+        if ($request->has('pic_phone') && !$request->has('phone')) {
+            $request->merge(['phone' => $request->input('pic_phone')]);
+        }
+        if ($request->has('position') && !$request->has('job_title')) {
+            $request->merge(['job_title' => $request->input('position')]);
+        }
     }
 }

@@ -27,23 +27,29 @@ class PicController extends Controller
         return $this->webContactController->index($request);
     }
 
-    public function store(StoreOrganizationContactRequest $request)
+    public function store(Request $request)
     {
+        $this->normalizeLegacyInputs($request);
+        $storeRequest = StoreOrganizationContactRequest::createFrom($request);
+
         if ($request->wantsJson() || $request->ajax()) {
-            return $this->apiContactController->store($request);
+            return $this->apiContactController->store($storeRequest);
         }
 
-        $this->contactService->create($request->validated());
+        $this->contactService->create($storeRequest->validated());
         return redirect()->route('pic')->with('success', 'PIC berhasil ditambahkan');
     }
 
-    public function update(UpdateOrganizationContactRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->normalizeLegacyInputs($request);
+        $updateRequest = UpdateOrganizationContactRequest::createFrom($request);
+
         if ($request->wantsJson() || $request->ajax()) {
-            return $this->apiContactController->update($request, (int) $id);
+            return $this->apiContactController->update($updateRequest, (int) $id);
         }
 
-        $this->contactService->update((int) $id, $request->validated());
+        $this->contactService->update((int) $id, $updateRequest->validated());
         return redirect()->route('pic')->with('success', 'PIC berhasil diperbarui');
     }
 
@@ -68,8 +74,30 @@ class PicController extends Controller
         return $this->apiContactController->byOrganization($companyId);
     }
 
-    public function storePICAjax(StoreOrganizationContactRequest $request)
+    public function storePICAjax(Request $request)
     {
-        return $this->apiContactController->store($request);
+        $this->normalizeLegacyInputs($request);
+        $storeRequest = StoreOrganizationContactRequest::createFrom($request);
+
+        return $this->apiContactController->store($storeRequest);
+    }
+
+    private function normalizeLegacyInputs(Request $request): void
+    {
+        if ($request->has('company_id') && !$request->has('organization_id')) {
+            $request->merge(['organization_id' => $request->input('company_id')]);
+        }
+        if ($request->has('pic_name') && !$request->has('name')) {
+            $request->merge(['name' => $request->input('pic_name')]);
+        }
+        if ($request->has('pic_email') && !$request->has('email')) {
+            $request->merge(['email' => $request->input('pic_email')]);
+        }
+        if ($request->has('pic_phone') && !$request->has('phone')) {
+            $request->merge(['phone' => $request->input('pic_phone')]);
+        }
+        if ($request->has('position') && !$request->has('job_title')) {
+            $request->merge(['job_title' => $request->input('position')]);
+        }
     }
 }

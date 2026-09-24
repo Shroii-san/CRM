@@ -45,18 +45,23 @@ class OrganizationContactService
     public function create(array $data): OrganizationContact
     {
         return DB::transaction(function () use ($data) {
-            $person = $this->personService->findOrCreate([
-                'name'  => $data['name'] ?? ($data['pic_name'] ?? 'Contact Person'),
-                'email' => $data['email'] ?? ($data['pic_email'] ?? null),
-                'phone' => $data['phone'] ?? ($data['pic_phone'] ?? null),
-            ]);
+            $personId = $data['person_id'] ?? null;
+
+            if (!$personId) {
+                $person = $this->personService->findOrCreate([
+                    'name'  => $data['name'],
+                    'email' => $data['email'] ?? null,
+                    'phone' => $data['phone'] ?? null,
+                ]);
+                $personId = $person->id;
+            }
 
             return OrganizationContact::create([
-                'organization_id' => $data['organization_id'] ?? $data['company_id'],
-                'person_id'       => $person->id,
-                'job_title'       => $data['job_title'] ?? ($data['position'] ?? null),
+                'organization_id' => $data['organization_id'],
+                'person_id'       => $personId,
+                'job_title'       => $data['job_title'] ?? null,
                 'is_primary'      => $data['is_primary'] ?? true,
-                'started_at'      => $data['started_at'] ?? now(),
+                'started_at'      => $data['started_at'] ?? now()->toDateString(),
                 'ended_at'        => $data['ended_at'] ?? null,
             ]);
         });
@@ -70,18 +75,28 @@ class OrganizationContactService
         return DB::transaction(function () use ($id, $data) {
             $contact = OrganizationContact::findOrFail($id);
 
+            // Update data person jika ada input name/email/phone
             if ($contact->person) {
-                $contact->person->update(array_filter([
-                    'name'  => $data['name'] ?? ($data['pic_name'] ?? null),
-                    'email' => $data['email'] ?? ($data['pic_email'] ?? null),
-                    'phone' => $data['phone'] ?? ($data['pic_phone'] ?? null),
-                ]));
+                $personUpdate = [];
+                if (array_key_exists('name', $data)) $personUpdate['name'] = $data['name'];
+                if (array_key_exists('email', $data)) $personUpdate['email'] = $data['email'];
+                if (array_key_exists('phone', $data)) $personUpdate['phone'] = $data['phone'];
+
+                if (!empty($personUpdate)) {
+                    $contact->person->update($personUpdate);
+                }
             }
 
-            $contact->update(array_filter([
-                'job_title'  => $data['job_title'] ?? ($data['position'] ?? null),
-                'is_primary' => isset($data['is_primary']) ? (bool) $data['is_primary'] : null,
-            ]));
+            // Update data organization_contact (memungkinkan set ke null)
+            $contactUpdate = [];
+            if (array_key_exists('job_title', $data)) $contactUpdate['job_title'] = $data['job_title'];
+            if (array_key_exists('is_primary', $data)) $contactUpdate['is_primary'] = (bool) $data['is_primary'];
+            if (array_key_exists('started_at', $data)) $contactUpdate['started_at'] = $data['started_at'];
+            if (array_key_exists('ended_at', $data)) $contactUpdate['ended_at'] = $data['ended_at'];
+
+            if (!empty($contactUpdate)) {
+                $contact->update($contactUpdate);
+            }
 
             return $contact->refresh();
         });

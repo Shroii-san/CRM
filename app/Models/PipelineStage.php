@@ -36,7 +36,7 @@ class PipelineStage extends Model
     // FK relationships untuk deals yang terkait dengan stage ini
     public function deals()
     {
-        return $this->hasMany(Deal::class, 'pipeline_stage_id', 'id');
+        return $this->hasMany(Deal::class, 'current_stage_id', 'id');
     }
 
     // FK relationships untuk task template yang terkait dengan stage ini

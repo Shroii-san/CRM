@@ -4,11 +4,10 @@ namespace App\Models;
 
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deal extends Model
 {
-    use SoftDeletes, HasActivityLogs;
+    use HasActivityLogs;
 
     protected $table = 'deals';
 
@@ -43,7 +42,7 @@ class Deal extends Model
         return $this->belongsTo(Client::class, 'client_id', 'id');
     }
 
-    // FK relationshiops untuk pipeline yang terkait deals
+    // FK relationships untuk pipeline yang terkait deals
     public function pipeline()
     {
         return $this->belongsTo(Pipeline::class, 'pipeline_id', 'id');
@@ -82,53 +81,10 @@ class Deal extends Model
         return $this->morphMany(Attachment::class, 'attachable');
     }
 
-
-
-    // ============= SCOPES =============
-
-    // public function scopeDeals($query)
-    // {
-    //     return $query->where('status', 'Deals');
-    // }
-
-    // public function scopeFails($query)
-    // {
-    //     return $query->where('status', 'Fails');
-    // }
-
-    // public function scopeBySales($query, $salesId)
-    // {
-    //     return $query->where('sales_id', $salesId);
-    // }
-
-    // public function scopeByCompany($query, $companyId)
-    // {
-    //     return $query->where('company_id', $companyId);
-    // }
-
-    // public function scopeByStatus($query, $status)
-    // {
-    //     return $query->where('status', $status);
-    // }
-
-    // public function scopeSearchByName($query, $search)
-    // {
-    //     return $query->where('nama_sales', 'like', "%{$search}%")
-    //         ->orWhere('nama_perusahaan', 'like', "%{$search}%");
-    // }
-
     // ============= ACCESSORS =============
 
     public function getValueFormattedAttribute()
     {
         return 'Rp' . number_format((float) ($this->value ?? 0), 0, ',', '.');
     }
-    // public function getStatusBadgeAttribute()
-    // {
-    //     if ($this->status === 'Deals') {
-    //         return '<span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background-color: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.7rem; font-weight: 600;"><i class="fas fa-check-circle"></i> Deals</span>';
-    //     } else {
-    //         return '<span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background-color: #fee2e2; color: #991b1b; border-radius: 9999px; font-size: 0.7rem; font-weight: 600;"><i class="fas fa-times-circle"></i> Fails</span>';
-    //     }
-    // }
 }

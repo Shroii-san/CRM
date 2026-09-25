@@ -79,26 +79,6 @@ class SalesVisit extends Model
         return $this->user_id ?? null;
     }
 
-    public function province()
-    {
-        return $this->belongsTo(Province::class, 'province_id', 'id');
-    }
-
-    public function regency()
-    {
-        return $this->belongsTo(Regency::class, 'regency_id', 'id');
-    }
-
-    public function district()
-    {
-        return $this->belongsTo(District::class, 'district_id', 'id');
-    }
-
-    public function village()
-    {
-        return $this->belongsTo(Village::class, 'village_id', 'id');
-    }
-
     // ============= SCOPES =============
 
     public function scopeFilterBySales($query, $salesId)

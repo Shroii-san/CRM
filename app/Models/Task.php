@@ -57,6 +57,6 @@ class Task extends Model
 
     public function reminders()
     {
-        return $this->hasMany(Task::class, 'task_id', 'id');
+        return $this->hasMany(TaskReminder::class, 'task_id', 'id');
     }
 }

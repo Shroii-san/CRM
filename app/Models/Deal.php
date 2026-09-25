@@ -23,8 +23,8 @@ class Deal extends Model
         'value',
         'status',
         'priority',
-        'expected_close_at',
-        'actual_close_at',
+        'expected_closed_at',
+        'actual_closed_at',
         'is_active',
     ];
 
@@ -32,8 +32,8 @@ class Deal extends Model
         'value' => 'decimal:2',
         'status' => 'integer',
         'priority' => 'integer',
-        'expected_close_at' => 'date',
-        'actual_close_at' => 'date',
+        'expected_closed_at' => 'date',
+        'actual_closed_at' => 'date',
         'is_active' => 'boolean',
     ];
 

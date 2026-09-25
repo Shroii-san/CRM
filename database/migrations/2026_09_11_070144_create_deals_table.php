@@ -31,7 +31,7 @@ return new class extends Migration {
             $table->decimal('value', 15, 2)->default(0.00);
             $table->unsignedSmallInteger('status')->default(1);
             $table->unsignedSmallInteger('priority')->default(1);
-            $table->date('expected_close_at');
+            $table->date('expected_closed_at');
             $table->date('actual_closed_at')->nullable();
             $table->boolean('is_active')->default(true);
 

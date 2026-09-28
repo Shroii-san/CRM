@@ -3,33 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Region\RegionResource;
-
 use App\Services\RegionService;
 
 class RegionController extends Controller
 {
-
-    public function getProvinces(RegionService $regionService)
+    public function __construct(private RegionService $regionService)
     {
-        $provinces = $regionService->getProvince();
+    }
+
+    public function getProvinces()
+    {
+        $provinces = $this->regionService->getProvinces();
         return RegionResource::collection($provinces);
     }
 
-    public function getRegencies(RegionService $regionService, $provinceId)
+    public function getRegencies($provinceId)
     {
-        $regencies = $regionService->getRegenciesByProvince($provinceId);
+        $regencies = $this->regionService->getRegencies((int) $provinceId);
         return RegionResource::collection($regencies);
     }
 
-    public function getDistricts(RegionService $regionService, $regencyId)
+    public function getDistricts($regencyId)
     {
-        $districts = $regionService->getDistrictsByRegencies($regencyId);
+        $districts = $this->regionService->getDistricts((int) $regencyId);
         return RegionResource::collection($districts);
     }
 
-    public function getVillages(RegionService $regionService, $districtId)
+    public function getVillages($districtId)
     {
-        $villages = $regionService->getVillageByDistricts($districtId);
+        $villages = $this->regionService->getVillages((int) $districtId);
         return RegionResource::collection($villages);
     }
 }

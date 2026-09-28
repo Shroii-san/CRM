@@ -2,51 +2,97 @@
 
 namespace App\Services;
 
+use App\Models\Country;
+use App\Models\District;
 use App\Models\Province;
 use App\Models\Regency;
-use App\Models\District;
 use App\Models\Village;
 
 class RegionService
 {
-    public function getProvince()
+    /**
+     * Mendapatkan daftar negara.
+     */
+    public function getCountries(?string $search = null)
     {
-        return Province::orderBy('name', 'asc')
-            ->select('id', 'name')
-            ->get();
+        $query = Country::query()->orderBy('name', 'asc');
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->get();
     }
 
-    public function getRegenciesByProvince($provinceId)
+    /**
+     * Mendapatkan daftar provinsi.
+     */
+    public function getProvinces(?int $countryId = null, ?string $search = null)
     {
+        $query = Province::query()->orderBy('name', 'asc');
 
-        $province = Province::findOrFail($provinceId);
+        if ($countryId) {
+            $query->where('country_id', $countryId);
+        }
 
-        return Regency::where('province_id', $provinceId)
-            ->orderBy('name', 'asc')
-            ->select('id', 'name', 'province_id')
-            ->get();
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->get();
     }
 
-    public function getDistrictsByRegencies($regencyId)
+    /**
+     * Mendapatkan daftar kabupaten/kota berdasarkan provinsi.
+     */
+    public function getRegencies(?int $provinceId = null, ?string $search = null)
     {
+        $query = Regency::query()->orderBy('name', 'asc');
 
-        $regency = Regency::findOrFail($regencyId);
+        if ($provinceId) {
+            $query->where('province_id', $provinceId);
+        }
 
-        return District::where('regency_id', $regencyId)
-            ->orderBy('name', 'asc')
-            ->select('id', 'name', 'regency_id')
-            ->get();
-        ;
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->get();
     }
 
-    public function getVillageByDistricts($districtId)
+    /**
+     * Mendapatkan daftar kecamatan berdasarkan kabupaten/kota.
+     */
+    public function getDistricts(?int $regencyId = null, ?string $search = null)
     {
-        $district = District::findOrFail($districtId);
+        $query = District::query()->orderBy('name', 'asc');
 
-        return Village::where('district_id', $districtId)
-            ->orderBy('name', 'asc')
-            ->select('id', 'name', 'district_id')
-            ->get();
+        if ($regencyId) {
+            $query->where('regency_id', $regencyId);
+        }
 
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Mendapatkan daftar kelurahan/desa berdasarkan kecamatan.
+     */
+    public function getVillages(?int $districtId = null, ?string $search = null)
+    {
+        $query = Village::query()->orderBy('name', 'asc');
+
+        if ($districtId) {
+            $query->where('district_id', $districtId);
+        }
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->get();
     }
 }

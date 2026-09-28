@@ -10,6 +10,8 @@ class Attachment extends Model
 
     use HasActivityLogs;
 
+    protected $table = 'attachment';
+
     const UPDATED_AT = null;
 
     protected $fillable = [

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
-    protected $fillable = ['id', 'regency_id', 'name'];
+    protected $table = 'districts';
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
@@ -19,10 +19,5 @@ class District extends Model
     public function villages()
     {
         return $this->hasMany(Village::class, 'district_id', 'id');
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class, 'district_id', 'id');
     }
 }

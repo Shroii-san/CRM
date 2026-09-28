@@ -23,10 +23,18 @@ use App\Http\Controllers\Api\V1\ActivityLogController;
 use App\Http\Controllers\Api\V1\AttachmentController;
 use App\Http\Controllers\Api\V1\ExternalConversationController;
 use App\Http\Controllers\Api\V1\RegionController;
+use App\Http\Controllers\Api\V1\AuthController;
 
 // ==========================
 // REST API V1
 // ==========================
+
+// Auth routes (publik, tidak butuh token)
+Route::prefix('v1/auth')->name('api.v1.auth.')->group(function () {
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('logout');
+});
+
 Route::prefix('v1')->name('api.v1.')->middleware(['auth:sanctum'])->group(function () {
 
     // ------------------------------

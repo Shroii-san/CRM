@@ -18,12 +18,12 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'username' => 'required|string',
+            'name'     => 'required|string',
             'password' => 'required|string',
         ]);
 
         $credentials = [
-            'username' => strtolower(str_replace(' ', '_', $request->username)),
+            'name'     => strtolower(str_replace(' ', '_', $request->name)),
             'password' => $request->password,
         ];
 
@@ -51,9 +51,9 @@ class AuthController extends Controller
             'message' => 'Login berhasil.',
             'token'   => $token,
             'user'    => [
-                'id'       => $user->id,
-                'username' => $user->username,
-                'role'     => $user->role?->name ?? null,
+                'id'   => $user->id,
+                'name' => $user->name,
+                'role' => $user->role?->name ?? null,
             ],
         ]);
     }

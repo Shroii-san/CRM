@@ -26,6 +26,10 @@ Aturan teknis pengembangan _backend_ menggunakan Laravel. Berisi standar pemisah
 
 Aturan teknis pengembangan antarmuka. Berisi manajemen aset Vite (`resources/` vs `public/`), strategi _hybrid rendering_, modularisasi JavaScript, panduan pembuatan komponen _reusable_ (DataTable, ConfirmModal, Cascade Select), serta manajemen 4 _state_ AJAX (Loading, Success, Empty, Error).
 
+### 6. [06 - Pembersihan Legacy Backend & Clean Architecture](./06-legacy-backend-cleanup.md)
+
+Dokumentasi pembersihan 16 file controller legacy monolitik, analisis dampak penghapusan, solusi pemisahan Web/API controller, serta panduan best practice Clean Architecture pada proyek CRM.
+
 ---
 
 ## LINK CEPAT

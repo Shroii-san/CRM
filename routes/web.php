@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\OrganizationChartController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Controllers
@@ -56,6 +57,22 @@ Route::middleware(['auth', 'permission'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    Route::prefix('api/geographic/bar')->group(function () {
+        Route::get('/distribution', [OrganizationChartController::class, 'getGeoDistributionBar']);
+        Route::get('/tier/{tier}', [OrganizationChartController::class, 'getTierDetailBar']);
+        Route::get('/export', [OrganizationChartController::class, 'exportGeoDataBar']);
+    });
+
+    // ==========================
+    // PIE CHART ROUTES
+    // ==========================
+    Route::prefix('api/geographic/pie')->group(function () {
+        Route::get('/distribution', [OrganizationChartController::class, 'getGeoDistributionPie']);
+        Route::get('/tier/{tier}', [OrganizationChartController::class, 'getTierDetailPie']);
+        Route::get('/export', [OrganizationChartController::class, 'exportGeoDataPie']);
+    });
+
 
     // -----------------------------------------------
     // Domain: Auth & User Management

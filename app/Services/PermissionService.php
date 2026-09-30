@@ -7,6 +7,9 @@ use App\Models\Menu;
 
 class PermissionService
 {
+    /**
+     * Cek apakah user punya permission ke menu (untuk detail permission check)
+     */
     public function hasPermission(User $user, int|string $menuIdOrRoute, string $action): bool
     {
         if ($user->role?->name === 'superadmin') {
@@ -38,38 +41,16 @@ class PermissionService
         return (bool) ($menu->pivot->{$pivotColumn} ?? false);
     }
 
-    public function hasAnyPermission(User $user, int|string $menuIdOrRoute): bool
-    {
-        if ($user->role?->name === 'superadmin') {
-            return true;
-        }
-
-        if (!$user->role) {
-            return false;
-        }
-
-        if (!$user->role->relationLoaded('permissions')) {
-            $user->role->load('permissions');
-        }
-
-        $menu = is_numeric($menuIdOrRoute)
-            ? $user->role->permissions->firstWhere('id', (int) $menuIdOrRoute)
-            : $user->role->permissions->firstWhere('slug', $menuIdOrRoute);
-
-        if (!$menu) {
-            return false;
-        }
-
-        $pivot = $menu->pivot;
-        return (bool) ($pivot->can_view || $pivot->can_create || $pivot->can_update || $pivot->can_delete);
-    }
-
-    public function getAccessibleMenus(User $user)
+    /**
+     * Ambil menus untuk sidebar berdasarkan RBAC
+     */
+    public function getSidebarMenus(User $user)
     {
         if (!$user->role) {
             return collect();
         }
 
+        // Superadmin lihat semua menu
         if ($user->role->name === 'superadmin') {
             return Menu::parentOnly()
                 ->where('is_active', true)
@@ -78,10 +59,12 @@ class PermissionService
                 ->get();
         }
 
+        // Non-superadmin: filter berdasarkan role_permissions
         $user->role->load('permissions');
 
         $viewableMenuIds = $user->role->permissions
             ->where('pivot.can_view', true)
+            ->where('is_active', true)
             ->pluck('id')
             ->toArray();
 

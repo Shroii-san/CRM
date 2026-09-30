@@ -19,7 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'phone',
-        'password_hash',
+        'password',
         'is_active',
         'last_activity_at',
     ];
@@ -29,7 +29,7 @@ class User extends Authenticatable
         'last_activity_at' => 'datetime',
     ];
 
-    protected $hidden = ['password_hash', 'remember_token'];
+    protected $hidden = ['password', 'remember_token'];
 
     public function role()
     {
@@ -68,12 +68,12 @@ class User extends Authenticatable
 
     public function getAuthPassword()
     {
-        return $this->password_hash;
+        return $this->password;
     }
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password_hash'] = Hash::make($value);
+        $this->attributes['password'] = Hash::make($value);
     }
 
     public function setNameAttribute($value)

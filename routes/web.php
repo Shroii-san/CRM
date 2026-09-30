@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\OrganizationChartController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Controllers
@@ -54,7 +56,23 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware(['auth', 'permission'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', fn () => view('pages.dashboard'))->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    Route::prefix('api/geographic/bar')->group(function () {
+        Route::get('/distribution', [OrganizationChartController::class, 'getGeoDistributionBar']);
+        Route::get('/tier/{tier}', [OrganizationChartController::class, 'getTierDetailBar']);
+        Route::get('/export', [OrganizationChartController::class, 'exportGeoDataBar']);
+    });
+
+    // ==========================
+    // PIE CHART ROUTES
+    // ==========================
+    Route::prefix('api/geographic/pie')->group(function () {
+        Route::get('/distribution', [OrganizationChartController::class, 'getGeoDistributionPie']);
+        Route::get('/tier/{tier}', [OrganizationChartController::class, 'getTierDetailPie']);
+        Route::get('/export', [OrganizationChartController::class, 'exportGeoDataPie']);
+    });
+
 
     // -----------------------------------------------
     // Domain: Auth & User Management
@@ -118,5 +136,5 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Calendar (React SPA shell)
     // -----------------------------------------------
-    Route::get('/calendar', fn () => view('layout.react'))->name('calendar');
+    Route::get('/calendar', fn() => view('layout.react'))->name('calendar');
 });

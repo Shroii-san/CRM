@@ -5,33 +5,34 @@
     <div class="pt-20"> <!-- CUMA pt-20, TANPA px -->
         <!-- Ringkasan Metrik -->
         <div class="px-4 sm:px-6 lg:px-8 mb-6">
-            <x-dashboard.kpi :$stats="$stats" />
+            <x-dashboard.kpi :stats="$stats" />
         </div>
 
         <!-- Charts Section-->
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8 px-4 sm:px-6 lg:px-8">
-            <x-dashboard.chart.distribusigeografis />
-            <x-dashboard.chart.kategoriindustri />
+            <x-dashboard.chart.distribusi-geografis />
+            <x-dashboard.chart.kategori-industri />
         </div>
 
         <!-- Status Proposal & Trend -->
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8 px-4 sm:px-6 lg:px-8">
-            <x-dashboard.chart.statusproposal />
-            <x-dashboard.kpi.trendbulanan :current-user="auth()->user()"
+            <x-dashboard.chart.status-proposal />
+            <x-dashboard.kpi.trend-bulanan :current-user="auth()->user()"
                 :sales-list="\App\Models\User::where('role_id', 12)->get()" />
 
         </div>
 
         <!-- Communication & Follow-up Reminders -->
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8 px-4 sm:px-6 lg:px-8">
-            <x-dashboard.kpi.folreminder />
-            <x-dashboard.kpi.komunikasi />
-            <x-dashboard.chart.performawilayah />
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8 px-4 sm:px-6 lg:px-8">
+            <x-dashboard.kpi.follow-up-reminder :tasks="$followUps" :urgent-count="$urgentCount" />
+            <x-dashboard.kpi.komunikasi :communications="$communications" />
+            <!-- <x-dashboard.kpi.meeting /> -->
+            <!-- <x-dashboard.kpi.performa-wilayah /> -->
         </div>
 
         <!-- Aktivitas Terbaru & Quick Actions -->
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 px-4 sm:px-6 lg:px-8">
-            <x-dashboard.kpi.aktivitasterbaru />
+            <x-dashboard.kpi.aktivitas-terbaru />
             <x-dashboard.action.action />
         </div>
     </div>

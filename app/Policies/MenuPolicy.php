@@ -4,36 +4,34 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Menu;
-use App\Services\PermissionService;
 
 class MenuPolicy
 {
-    public function __construct(private PermissionService $permissionService)
-    {
-    }
-
+    /**
+     * Hanya superadmin yang bisa akses menu management
+     */
     public function viewAny(User $user): bool
     {
-        return $this->permissionService->hasPermission($user, 'menu', 'view');
+        return $user->role?->name === 'superadmin';
     }
 
     public function view(User $user, Menu $menu): bool
     {
-        return $this->permissionService->hasPermission($user, 'menu', 'view');
+        return $user->role?->name === 'superadmin';
     }
 
     public function create(User $user): bool
     {
-        return $this->permissionService->hasPermission($user, 'menu', 'create');
+        return $user->role?->name === 'superadmin';
     }
 
     public function update(User $user, Menu $menu): bool
     {
-        return $this->permissionService->hasPermission($user, 'menu', 'update');
+        return $user->role?->name === 'superadmin';
     }
 
     public function delete(User $user, Menu $menu): bool
     {
-        return $this->permissionService->hasPermission($user, 'menu', 'delete');
+        return $user->role?->name === 'superadmin';
     }
 }

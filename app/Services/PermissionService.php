@@ -12,6 +12,7 @@ class PermissionService
      */
     public function hasPermission(User $user, int|string $menuIdOrRoute, string $action): bool
     {
+        // 1. Superadmin Bypass
         if ($user->role?->name === 'superadmin') {
             return true;
         }
@@ -20,24 +21,31 @@ class PermissionService
             return false;
         }
 
+        // 2. Normalisasi nama aksi ('edit' -> 'update')
         $normalizedAction = match ($action) {
             'edit' => 'update',
             default => $action,
         };
 
-        if (!$user->role->relationLoaded('permissions')) {
-            $user->role->load('permissions');
+        // 3. Cari menu berdasarkan ID atau Route/Slug
+        $menu = null;
+        if (is_numeric($menuIdOrRoute)) {
+            $menu = $user->role->relationLoaded('menus')
+                ? $user->role->menus->firstWhere('id', (int) $menuIdOrRoute)
+                : $user->role->menus()->where('menus.id', (int) $menuIdOrRoute)->first();
+        } else {
+            $menu = $user->role->relationLoaded('menus')
+                ? $user->role->menus->firstWhere('route', $menuIdOrRoute)
+                : $user->role->menus()->where('menus.route', $menuIdOrRoute)->first();
         }
-
-        $menu = is_numeric($menuIdOrRoute)
-            ? $user->role->permissions->firstWhere('id', (int) $menuIdOrRoute)
-            : $user->role->permissions->firstWhere('slug', $menuIdOrRoute);
 
         if (!$menu) {
             return false;
         }
 
+        // 4. Ambil nilai kolom pivot (can_view, can_create, can_update, can_delete, can_assign)
         $pivotColumn = 'can_' . $normalizedAction;
+
         return (bool) ($menu->pivot->{$pivotColumn} ?? false);
     }
 
@@ -68,27 +76,6 @@ class PermissionService
             ->pluck('id')
             ->toArray();
 
-        if (empty($viewableMenuIds)) {
-            return collect();
-        }
-
-        // Query parent menus
-        $menus = Menu::whereIn('id', $viewableMenuIds)
-            ->parentOnly()
-            ->where('is_active', true)
-            ->with(['icon', 'children'])
-            ->orderBy('position')
-            ->get();
-
-        // Filter children yang accessible
-        return $menus->each(function ($menu) use ($viewableMenuIds) {
-            if ($menu->children && $menu->children->count() > 0) {
-                $filteredChildren = $menu->children
-                    ->filter(fn($child) => in_array($child->id, $viewableMenuIds) && $child->is_active)
-                    ->values();
-
-                $menu->children = $filteredChildren;
-            }
-        });
+        return (bool) ($pivot->can_view || $pivot->can_create || $pivot->can_update || $pivot->can_delete);
     }
 }

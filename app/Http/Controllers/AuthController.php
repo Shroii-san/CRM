@@ -13,14 +13,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
+        // dd($request->all());
+
         $credentials = [
-            'username' => strtolower(str_replace(' ', '_', $request->username)),
+            'name' => strtolower(str_replace(' ', '_', $request->name)),
             'password' => $request->password
         ];
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $user = Auth::user(); // ambil user yang berhasil login
-            
+
             // cek apakah user aktif
             if (!$user->is_active) {
                 Auth::logout();
@@ -28,18 +31,18 @@ class AuthController extends Controller
                     'loginError' => 'Akun anda tidak aktif. Mohon hubungi admin untuk aktivasi.',
                 ])->withInput();
             }
-            
+
             // kalau aktif, lanjut login
             $request->session()->regenerate();
-            
+
             // Toast success message - redirect ke dashboard
             return redirect()->intended('/dashboard')
-                ->with('login_success', 'Selamat datang kembali, ' . $user->username . '! 🎉');
+                ->with('login_success', 'Selamat datang kembali, ' . $user->name . '!');
         }
 
         // Login gagal - kembali ke halaman login dengan error
         return back()->withErrors([
-            'loginError' => 'Username atau password salah. Silakan coba lagi!',
+            'loginError' => 'username atau password salah. Silakan coba lagi!',
         ])->withInput();
     }
 
@@ -49,9 +52,9 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         // Toast saat logout - redirect ke login
         return redirect('/')
-            ->with('success', 'Anda telah berhasil logout. Sampai jumpa! 👋');
+            ->with('success', 'Anda telah berhasil logout. Sampai jumpa!');
     }
 }

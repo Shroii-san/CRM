@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Controllers
@@ -54,7 +55,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware(['auth', 'permission'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', fn () => view('pages.dashboard'))->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 
     // -----------------------------------------------
     // Domain: Auth & User Management
@@ -118,5 +119,5 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Calendar (React SPA shell)
     // -----------------------------------------------
-    Route::get('/calendar', fn () => view('layout.react'))->name('calendar');
+    Route::get('/calendar', fn() => view('layout.react'))->name('calendar');
 });

@@ -5,7 +5,7 @@
     <div class="pt-20"> <!-- CUMA pt-20, TANPA px -->
         <!-- Ringkasan Metrik -->
         <div class="px-4 sm:px-6 lg:px-8 mb-6">
-            <x-dashboard.kpi :$stats="$stats" />
+            <x-dashboard.kpi :stats="$stats" />
         </div>
 
         <!-- Charts Section-->

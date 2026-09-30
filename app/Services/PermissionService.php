@@ -8,75 +8,49 @@ use App\Models\Menu;
 class PermissionService
 {
     /**
-     * Memeriksa apakah user memiliki hak akses ke menu dan aksi tertentu.
-     *
-     * @param User $user
-     * @param int|string $menuIdOrRoute
-     * @param string $action ('view', 'create', 'update', 'edit', 'delete', 'assign')
-     * @return bool
+     * Ambil menus untuk sidebar berdasarkan RBAC
      */
-    public function hasPermission(User $user, int|string $menuIdOrRoute, string $action): bool
+    public function getSidebarMenus(User $user)
     {
-        // 1. Superadmin Bypass
-        if ($user->role?->name === 'superadmin') {
-            return true;
-        }
-
         if (!$user->role) {
-            return false;
+            return collect();
         }
 
-        // 2. Normalisasi nama aksi ('edit' -> 'update')
-        $normalizedAction = match ($action) {
-            'edit' => 'update',
-            default => $action,
-        };
-
-        // 3. Cari menu berdasarkan ID atau Route/Slug
-        $menu = null;
-        if (is_numeric($menuIdOrRoute)) {
-            $menu = $user->role->relationLoaded('menus')
-                ? $user->role->menus->firstWhere('id', (int) $menuIdOrRoute)
-                : $user->role->menus()->where('menus.id', (int) $menuIdOrRoute)->first();
-        } else {
-            $menu = $user->role->relationLoaded('menus')
-                ? $user->role->menus->firstWhere('route', $menuIdOrRoute)
-                : $user->role->menus()->where('menus.route', $menuIdOrRoute)->first();
+        // Superadmin lihat semua menu yang aktif
+        if ($user->role->name === 'superadmin') {
+            return Menu::whereNull('parent_id')
+                ->where('is_active', true)
+                ->with(['icon', 'children' => fn($q) => $q->where('is_active', true)])
+                ->orderBy('position')
+                ->get();
         }
 
-        if (!$menu) {
-            return false;
+        // Non-superadmin: filter berdasarkan role_permissions
+        $user->role->load('permissions');
+
+        $viewableMenuIds = $user->role->permissions
+            ->where('pivot.can_view', true)
+            ->where('is_active', true)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($viewableMenuIds)) {
+            return collect();
         }
 
-        // 4. Ambil nilai kolom pivot (can_view, can_create, can_update, can_delete, can_assign)
-        $pivotColumn = 'can_' . $normalizedAction;
+        // Query parent menus
+        $menus = Menu::whereIn('id', $viewableMenuIds)
+            ->whereNull('parent_id')
+            ->where('is_active', true)
+            ->with(['icon', 'children' => fn($q) => $q->where('is_active', true)])
+            ->orderBy('position')
+            ->get();
 
-        return (bool) ($menu->pivot->{$pivotColumn} ?? false);
-    }
-
-    /**
-     * Memeriksa apakah user memiliki setidaknya satu akses pada menu tertentu.
-     */
-    public function hasAnyPermission(User $user, int|string $menuIdOrRoute): bool
-    {
-        if ($user->role?->name === 'superadmin') {
-            return true;
-        }
-
-        if (!$user->role) {
-            return false;
-        }
-
-        $menu = is_numeric($menuIdOrRoute)
-            ? $user->role->menus()->where('menus.id', (int) $menuIdOrRoute)->first()
-            : $user->role->menus()->where('menus.route', $menuIdOrRoute)->first();
-
-        if (!$menu) {
-            return false;
-        }
-
-        $pivot = $menu->pivot;
-
-        return (bool) ($pivot->can_view || $pivot->can_create || $pivot->can_update || $pivot->can_delete);
+        // Filter children yang accessible
+        return $menus->each(function ($menu) use ($viewableMenuIds) {
+            $menu->children = $menu->children->filter(
+                fn($child) => in_array($child->id, $viewableMenuIds)
+            )->values();
+        });
     }
 }

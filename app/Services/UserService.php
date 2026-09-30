@@ -45,7 +45,7 @@ class UserService
     public function create(array $data)
     {
         if (isset($data['password'])) {
-            $data['password_hash'] = Hash::make($data['password']);
+            $data['password'] = Hash::make($data['password']);
             unset($data['password']);
         }
 
@@ -57,7 +57,7 @@ class UserService
         $user = User::findOrFail($id);
 
         if (isset($data['password'])) {
-            $data['password_hash'] = Hash::make($data['password']);
+            $data['password'] = Hash::make($data['password']);
             unset($data['password']);
         }
 

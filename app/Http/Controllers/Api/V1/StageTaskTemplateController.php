@@ -26,7 +26,7 @@ class StageTaskTemplateController extends Controller
 
         $templates = $this->templateService->list(stageId: $stageId, activeOnly: $activeOnly);
 
-        return StageTaskTemplateResource::collection($templates)->response();
+        return $this->successResponse(StageTaskTemplateResource::collection($templates), 'Stage task templates retrieved successfully');
     }
 
     /**
@@ -36,10 +36,7 @@ class StageTaskTemplateController extends Controller
     {
         $template = $this->templateService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Stage task template created successfully',
-            'data'    => StageTaskTemplateResource::make($template)
-        ], 201);
+        return $this->successResponse(StageTaskTemplateResource::make($template), 'Stage task template created successfully', 201);
     }
 
     /**
@@ -49,9 +46,7 @@ class StageTaskTemplateController extends Controller
     {
         $template = $this->templateService->find((int) $id);
 
-        return response()->json([
-            'data' => StageTaskTemplateResource::make($template)
-        ]);
+        return $this->successResponse(StageTaskTemplateResource::make($template), 'Stage task template retrieved successfully');
     }
 
     /**
@@ -61,10 +56,7 @@ class StageTaskTemplateController extends Controller
     {
         $template = $this->templateService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Stage task template updated successfully',
-            'data'    => StageTaskTemplateResource::make($template)
-        ]);
+        return $this->successResponse(StageTaskTemplateResource::make($template), 'Stage task template updated successfully');
     }
 
     /**
@@ -74,8 +66,6 @@ class StageTaskTemplateController extends Controller
     {
         $this->templateService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Stage task template deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Stage task template deleted successfully');
     }
 }

@@ -29,7 +29,7 @@ class PipelineController extends Controller
 
         $pipelines = $this->pipelineService->list(search: $search, activeOnly: $activeOnly);
 
-        return PipelineResource::collection($pipelines)->response();
+        return $this->successResponse(PipelineResource::collection($pipelines), 'Pipelines retrieved successfully');
     }
 
     /**
@@ -39,10 +39,7 @@ class PipelineController extends Controller
     {
         $pipeline = $this->pipelineService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Pipeline created successfully',
-            'data'    => PipelineResource::make($pipeline)
-        ], 201);
+        return $this->successResponse(PipelineResource::make($pipeline), 'Pipeline created successfully', 201);
     }
 
     /**
@@ -52,9 +49,7 @@ class PipelineController extends Controller
     {
         $pipeline = $this->pipelineService->find((int) $id);
 
-        return response()->json([
-            'data' => PipelineResource::make($pipeline)
-        ]);
+        return $this->successResponse(PipelineResource::make($pipeline), 'Pipeline retrieved successfully');
     }
 
     /**
@@ -64,10 +59,7 @@ class PipelineController extends Controller
     {
         $pipeline = $this->pipelineService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Pipeline updated successfully',
-            'data'    => PipelineResource::make($pipeline)
-        ]);
+        return $this->successResponse(PipelineResource::make($pipeline), 'Pipeline updated successfully');
     }
 
     /**
@@ -77,9 +69,7 @@ class PipelineController extends Controller
     {
         $this->pipelineService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Pipeline deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Pipeline deleted successfully');
     }
 
     /**
@@ -89,10 +79,7 @@ class PipelineController extends Controller
     {
         $stage = $this->pipelineService->createStage((int) $pipelineId, $request->validated());
 
-        return response()->json([
-            'message' => 'Pipeline stage created successfully',
-            'data'    => PipelineStageResource::make($stage)
-        ], 201);
+        return $this->successResponse(PipelineStageResource::make($stage), 'Pipeline stage created successfully', 201);
     }
 
     /**
@@ -102,10 +89,7 @@ class PipelineController extends Controller
     {
         $stage = $this->pipelineService->updateStage((int) $stageId, $request->validated());
 
-        return response()->json([
-            'message' => 'Pipeline stage updated successfully',
-            'data'    => PipelineStageResource::make($stage)
-        ]);
+        return $this->successResponse(PipelineStageResource::make($stage), 'Pipeline stage updated successfully');
     }
 
     /**
@@ -115,9 +99,7 @@ class PipelineController extends Controller
     {
         $this->pipelineService->deleteStage((int) $stageId);
 
-        return response()->json([
-            'message' => 'Pipeline stage deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Pipeline stage deleted successfully');
     }
 
     /**
@@ -133,8 +115,6 @@ class PipelineController extends Controller
 
         $this->pipelineService->reorderStages((int) $pipelineId, $request->input('stages'));
 
-        return response()->json([
-            'message' => 'Pipeline stages reordered successfully'
-        ]);
+        return $this->successResponse(null, 'Pipeline stages reordered successfully');
     }
 }

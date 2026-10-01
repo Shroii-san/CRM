@@ -259,7 +259,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr>
+                <tr class="hrd-no-data-row">
                     <td colspan="10" class="px-6 py-4 text-center text-gray-500">Belum ada data</td>
                 </tr>
                 @endforelse
@@ -268,6 +268,24 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- ==================== Pagging dan view n record  ==================== -->
+        <div class="flex flex-col gap-3 border-t border-gray-200 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                <label for="hrdPageSize" class="flex items-center gap-2">
+                    Tampilkan
+                    <select id="hrdPageSize" class="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none">
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    data per halaman
+                </label>
+                <span id="hrdPaginationInfo" aria-live="polite"></span>
+            </div>
+            <nav id="hrdPagination" class="flex items-center justify-end gap-1" aria-label="Navigasi halaman"></nav>
+        </div>
     </div>
 </div>
 
@@ -1019,44 +1037,130 @@ function closeKaryawanModal() {
 }
 
 let hrdSortState = { column: null, direction: 'asc' };
-
 const hrdSearchInput = document.getElementById('hrdSearch');
 const hrdStatusFilter = document.getElementById('hrdStatusFilter');
 const hrdDivisionFilter = document.getElementById('hrdDivisionFilter');
-const hrdFilterCount = document.getElementById('hrdFilterCount');
 const hrdFilterEmpty = document.getElementById('hrdFilterEmpty');
-const hrdCandidateRows = Array.from(document.querySelectorAll('tr.hrd-kandidat-row'));
+let hrdCandidateRows = Array.from(document.querySelectorAll('tr.hrd-kandidat-row'));
+const hrdNoDataRow = document.querySelector('.hrd-no-data-row');
+const hrdPageSizeSelect = document.getElementById('hrdPageSize');
+const hrdPaginationInfo = document.getElementById('hrdPaginationInfo');
+const hrdPagination = document.getElementById('hrdPagination');
+let hrdCurrentPage = 1;
+let hrdPageSize = Number(hrdPageSizeSelect.value) || 10;
 
-function filterHrdCandidates() {
-    const query = hrdSearchInput.value.trim().toLocaleLowerCase('id');
-    const selectedStatus = hrdStatusFilter.value;
-    const selectedDivision = hrdDivisionFilter.value.toLocaleLowerCase('id');
-    let visibleCount = 0;
+function getFilteredHrdRows() {
+    const query = hrdSearchInput?.value.trim().toLocaleLowerCase('id') || '';
+    const selectedStatus = hrdStatusFilter?.value || '';
+    const selectedDivision = hrdDivisionFilter?.value.toLocaleLowerCase('id') || '';
 
-    hrdCandidateRows.forEach(row => {
+    return hrdCandidateRows.filter(row => {
         const matchesSearch = (row.dataset.search || '').toLocaleLowerCase('id').includes(query);
         const matchesStatus = !selectedStatus || row.dataset.status === selectedStatus;
         const matchesDivision = !selectedDivision || row.dataset.division === selectedDivision;
-        const visible = matchesSearch && matchesStatus && matchesDivision;
-
-        row.classList.toggle('hidden', !visible);
-        if (visible) visibleCount++;
+        return matchesSearch && matchesStatus && matchesDivision;
     });
-
-    hrdFilterEmpty.classList.toggle('hidden', visibleCount > 0 || hrdCandidateRows.length === 0);
-    hrdFilterCount.textContent = `Menampilkan ${visibleCount} dari ${hrdCandidateRows.length} kandidat`;
 }
 
-hrdSearchInput.addEventListener('input', filterHrdCandidates);
-hrdStatusFilter.addEventListener('change', filterHrdCandidates);
-hrdDivisionFilter.addEventListener('change', filterHrdCandidates);
-document.getElementById('hrdFilterReset').addEventListener('click', () => {
-    hrdSearchInput.value = '';
-    hrdStatusFilter.value = '';
-    hrdDivisionFilter.value = '';
-    filterHrdCandidates();
+function makeHrdPageButton(label, page, options = {}) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.innerHTML = label;
+    button.disabled = Boolean(options.disabled);
+    button.setAttribute('aria-label', options.ariaLabel || `Halaman ${page}`);
+
+    const baseClasses = 'min-w-9 rounded-md border px-3 py-2 text-sm transition-colors';
+    button.className = options.active
+        ? `${baseClasses} border-indigo-600 bg-indigo-600 text-white`
+        : `${baseClasses} border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40`;
+
+    if (!button.disabled && !options.active) {
+        button.addEventListener('click', () => {
+            hrdCurrentPage = page;
+            renderHrdPagination();
+        });
+    }
+
+    return button;
+}
+
+function renderHrdPagination() {
+    const filteredRows = getFilteredHrdRows();
+    const totalRows = filteredRows.length;
+    const pageCount = Math.max(1, Math.ceil(totalRows / hrdPageSize));
+    hrdCurrentPage = Math.min(hrdCurrentPage, pageCount);
+
+    const startIndex = totalRows ? (hrdCurrentPage - 1) * hrdPageSize : 0;
+    const endIndex = Math.min(startIndex + hrdPageSize, totalRows);
+    const visibleRows = new Set(filteredRows.slice(startIndex, endIndex));
+
+    hrdCandidateRows.forEach(row => row.classList.toggle('hidden', !visibleRows.has(row)));
+    if (hrdNoDataRow) hrdNoDataRow.classList.toggle('hidden', hrdCandidateRows.length > 0);
+    hrdFilterEmpty.classList.toggle('hidden', totalRows > 0 || hrdCandidateRows.length === 0);
+
+    filteredRows.slice(startIndex, endIndex).forEach((row, index) => {
+        row.cells[0].textContent = startIndex + index + 1;
+    });
+
+    hrdPaginationInfo.textContent = totalRows
+        ? `Menampilkan ${startIndex + 1} sampai ${endIndex} dari ${totalRows} hasil`
+        : 'Menampilkan 0 hasil';
+
+    hrdPagination.replaceChildren();
+    hrdPagination.appendChild(makeHrdPageButton('<i class="fas fa-angle-left"></i>', Math.max(1, hrdCurrentPage - 1), {
+        disabled: hrdCurrentPage === 1,
+        ariaLabel: 'Halaman sebelumnya',
+    }));
+
+    const pageNumbers = new Set([1, pageCount, hrdCurrentPage - 1, hrdCurrentPage, hrdCurrentPage + 1]);
+    const pages = [...pageNumbers].filter(page => page >= 1 && page <= pageCount).sort((a, b) => a - b);
+    let previousPage = 0;
+
+    pages.forEach(page => {
+        if (previousPage && page - previousPage > 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.className = 'px-1 text-sm text-gray-400';
+            ellipsis.textContent = '...';
+            hrdPagination.appendChild(ellipsis);
+        }
+
+        hrdPagination.appendChild(makeHrdPageButton(String(page), page, {
+            active: page === hrdCurrentPage,
+            ariaLabel: `Halaman ${page}${page === hrdCurrentPage ? ', aktif' : ''}`,
+        }));
+        previousPage = page;
+    });
+
+    hrdPagination.appendChild(makeHrdPageButton('<i class="fas fa-angle-right"></i>', Math.min(pageCount, hrdCurrentPage + 1), {
+        disabled: hrdCurrentPage === pageCount,
+        ariaLabel: 'Halaman berikutnya',
+    }));
+}
+
+hrdSearchInput?.addEventListener('input', () => {
+    hrdCurrentPage = 1;
+    renderHrdPagination();
 });
-filterHrdCandidates();
+hrdStatusFilter?.addEventListener('change', () => {
+    hrdCurrentPage = 1;
+    renderHrdPagination();
+});
+hrdDivisionFilter?.addEventListener('change', () => {
+    hrdCurrentPage = 1;
+    renderHrdPagination();
+});
+document.getElementById('hrdFilterReset')?.addEventListener('click', () => {
+    if (hrdSearchInput) hrdSearchInput.value = '';
+    if (hrdStatusFilter) hrdStatusFilter.value = '';
+    if (hrdDivisionFilter) hrdDivisionFilter.value = '';
+    hrdCurrentPage = 1;
+    renderHrdPagination();
+});
+hrdPageSizeSelect.addEventListener('change', () => {
+    hrdPageSize = Number(hrdPageSizeSelect.value) || 10;
+    hrdCurrentPage = 1;
+    renderHrdPagination();
+});
 
 document.querySelectorAll('[data-sort-column]').forEach(button => {
     button.addEventListener('click', () => {
@@ -1072,10 +1176,8 @@ document.querySelectorAll('[data-sort-column]').forEach(button => {
             return direction === 'asc' ? comparison : -comparison;
         });
 
-        rows.forEach((row, index) => {
-            row.cells[0].textContent = index + 1;
-            tbody.appendChild(row);
-        });
+        rows.forEach(row => tbody.appendChild(row));
+        hrdCandidateRows = rows;
         hrdSortState = { column, direction };
 
         document.querySelectorAll('[data-sort-column]').forEach(sortButton => {
@@ -1087,8 +1189,13 @@ document.querySelectorAll('[data-sort-column]').forEach(button => {
                 ? `fas fa-sort-${direction === 'asc' ? 'up' : 'down'} text-blue-600`
                 : 'fas fa-sort text-gray-400';
         });
+
+            hrdCurrentPage = 1;
+            renderHrdPagination();
     });
 });
+
+        renderHrdPagination();
 
 const hrdKeluargaState = { karyawanId: null, records: [] };
 

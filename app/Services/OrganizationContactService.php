@@ -13,30 +13,34 @@ class OrganizationContactService
     }
 
     /**
-     * Mendapatkan daftar kontak organisasi (PIC).
+     * Mendapatkan daftar kontak organisasi (PIC) dengan filter, search, sort, dan pagination.
      */
-    public function list(?int $organizationId = null, ?string $search = null, int $perPage = 50, int $page = 1)
-    {
-        $query = OrganizationContact::query()
+    public function list(
+        ?int $organizationId = null,
+        ?string $search = null,
+        int $perPage = 50,
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
+    ) {
+        $params = array_filter([
+            'organization_id' => $organizationId,
+            'search'          => $search,
+            'sort_by'         => $sortBy,
+            'sort_dir'        => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return OrganizationContact::query()
             ->with(['organization', 'person'])
-            ->orderBy('created_at', 'desc');
-
-        if ($organizationId) {
-            $query->where('organization_id', $organizationId);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('job_title', 'like', "%{$search}%")
-                    ->orWhereHas('person', function ($pq) use ($search) {
-                        $pq->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%")
-                            ->orWhere('phone', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['job_title', 'person.name', 'person.email', 'person.phone'],
+                filterable: ['organization_id', 'person_id', 'is_primary'],
+                sortable: ['id', 'job_title', 'is_primary', 'created_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
+    use Filterable;
+
     const UPDATED_AT = null; // Cuma ada created_at di tabel
 
     protected $fillable = [

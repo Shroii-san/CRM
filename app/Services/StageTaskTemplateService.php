@@ -7,23 +7,34 @@ use App\Models\StageTaskTemplate;
 class StageTaskTemplateService
 {
     /**
-     * Mendapatkan daftar template tugas per stage.
+     * Mendapatkan daftar template tugas per stage dengan filter dan search.
      */
-    public function list(?int $stageId = null, bool $activeOnly = false)
-    {
-        $query = StageTaskTemplate::query()
+    public function list(
+        ?int $stageId = null,
+        bool $activeOnly = false,
+        ?string $search = null,
+        ?string $sortBy = 'priority',
+        ?string $sortDir = 'asc'
+    ) {
+        $params = array_filter([
+            'stage_id'  => $stageId,
+            'is_active' => $activeOnly ? true : null,
+            'search'    => $search,
+            'sort_by'   => $sortBy,
+            'sort_dir'  => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return StageTaskTemplate::query()
             ->with('pipelineStage')
-            ->orderBy('id', 'asc');
-
-        if ($stageId) {
-            $query->where('stage_id', $stageId);
-        }
-
-        if ($activeOnly) {
-            $query->where('is_active', true);
-        }
-
-        return $query->get();
+            ->applyFilters(
+                params: $params,
+                searchable: ['name', 'description'],
+                filterable: ['stage_id', 'priority', 'is_required', 'is_active'],
+                sortable: ['id', 'name', 'priority', 'due_offset_days', 'created_at'],
+                defaultSortField: 'priority',
+                defaultSortDir: 'asc'
+            )
+            ->get();
     }
 
     /**

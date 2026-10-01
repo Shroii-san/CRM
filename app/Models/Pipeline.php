@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Pipeline extends Model
 {
-
-    use HasActivityLogs;
+    use HasActivityLogs, Filterable;
 
     protected $table = 'pipelines';
 
@@ -33,5 +33,4 @@ class Pipeline extends Model
     {
         return $this->hasMany(Deal::class, 'pipeline_id', 'id');
     }
-
 }

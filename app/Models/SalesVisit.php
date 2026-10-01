@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SalesVisit extends Model
 {
-    use HasFactory, HasActivityLogs;
+    use HasFactory, HasActivityLogs, Filterable;
 
     protected $table = 'sales_visits';
     protected $primaryKey = 'id';
@@ -104,28 +105,4 @@ class SalesVisit extends Model
     {
         return $regencyId ? $query->where('regency_id', $regencyId) : $query;
     }
-
-    // public function scopeSearch($query, $search)
-    // {
-    //     if (!$search)
-    //         return $query;
-
-    //     $searchLower = strtolower($search);
-
-    //     return $query->where(function ($q) use ($searchLower) {
-    //         $q->whereRaw('LOWER(organization_contact_id.name) LIKE ?', ["%{$searchLower}%"])
-    //             ->orWhereRaw('LOWER(organization.name) LIKE ?', ["%{$searchLower}%"])
-    //             ->orWhereRaw('LOWER(visit_purpose) LIKE ?', ["%{$searchLower}%"])
-    //             ->orWhereRaw('LOWER(address) LIKE ?', ["%{$searchLower}%"])
-    //             ->orWhereHas('user_id', function ($qt) use ($searchLower) {
-    //                 $qt->whereRaw('LOWER(username) LIKE ?', ["%{$searchLower}%"])
-    //                     ->orWhereRaw('LOWER(email) LIKE ?', ["%{$searchLower}%"]);
-    //             })
-    //             ->orWhereHas('user', function ($qt) use ($searchLower) {
-    //                 $qt->whereRaw('LOWER(username) LIKE ?', ["%{$searchLower}%"]);
-    //             })
-    //             ->orWhereHas('province', fn($qt) => $qt->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]))
-    //             ->orWhereHas('regency', fn($qt) => $qt->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]));
-    //     });
-    // }
 }

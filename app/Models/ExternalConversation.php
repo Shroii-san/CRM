@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class ExternalConversation extends Model
 {
-
-    use HasActivityLogs;
+    use HasActivityLogs, Filterable;
 
     protected $table = 'external_conversations';
 

@@ -8,7 +8,7 @@ use App\Models\User;
 class SalesVisitService
 {
     /**
-     * Mendapatkan daftar kunjungan sales dengan filter dan pagination.
+     * Mendapatkan daftar kunjungan sales dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?User $user = null,
@@ -17,35 +17,30 @@ class SalesVisitService
         ?bool $isFollowUp = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'visit_date',
+        ?string $sortDir = 'desc'
     ) {
-        $query = SalesVisit::query()
+        $params = array_filter([
+            'user_id'         => $salesId,
+            'organization_id' => $organizationId,
+            'is_follow_up'    => $isFollowUp,
+            'search'          => $search,
+            'sort_by'         => $sortBy,
+            'sort_dir'        => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return SalesVisit::query()
             ->with(['organization', 'contactPerson.person', 'user'])
-            ->orderBy('visit_date', 'desc');
-
-        if ($salesId) {
-            $query->where('user_id', $salesId);
-        }
-
-        if ($organizationId) {
-            $query->where('organization_id', $organizationId);
-        }
-
-        if ($isFollowUp !== null) {
-            $query->where('is_follow_up', $isFollowUp);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('visit_purpose', 'like', "%{$search}%")
-                    ->orWhere('address', 'like', "%{$search}%")
-                    ->orWhereHas('organization', function ($oq) use ($search) {
-                        $oq->where('name', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['visit_purpose', 'address', 'organization.name'],
+                filterable: ['user_id', 'organization_id', 'organization_contact_id', 'is_follow_up', 'province_id', 'regency_id'],
+                sortable: ['id', 'visit_date', 'created_at', 'updated_at'],
+                defaultSortField: 'visit_date',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

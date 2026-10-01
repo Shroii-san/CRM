@@ -10,35 +10,36 @@ use Illuminate\Support\Facades\Storage;
 class AttachmentService
 {
     /**
-     * Mendapatkan daftar lampiran berkas dengan filter dan pagination.
+     * Mendapatkan daftar lampiran berkas dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?string $attachableType = null,
         ?int $attachableId = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = Attachment::query()
+        $params = array_filter([
+            'attachable_type' => $attachableType,
+            'attachable_id'   => $attachableId,
+            'search'          => $search,
+            'sort_by'         => $sortBy,
+            'sort_dir'        => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return Attachment::query()
             ->with(['uploader', 'attachable'])
-            ->orderBy('created_at', 'desc');
-
-        if ($attachableType) {
-            $query->where('attachable_type', $attachableType);
-        }
-
-        if ($attachableId) {
-            $query->where('attachable_id', $attachableId);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('file_name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['file_name', 'description', 'mime_type'],
+                filterable: ['attachable_type', 'attachable_id', 'uploaded_by'],
+                sortable: ['id', 'file_name', 'file_size', 'created_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

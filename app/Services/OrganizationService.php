@@ -8,7 +8,7 @@ use App\Models\User;
 class OrganizationService
 {
     /**
-     * Mendapatkan daftar organisasi murni core (list, search, data_scoping).
+     * Mendapatkan daftar organisasi murni core (list, search, filter, sort, pagination).
      */
     public function list(
         ?User $user = null,
@@ -17,38 +17,36 @@ class OrganizationService
         ?string $tier = null,
         ?bool $isActive = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'name',
+        ?string $sortDir = 'asc'
     ) {
+        $params = array_filter([
+            'search'      => $search,
+            'industry_id' => $industryId,
+            'tier'        => $tier,
+            'is_active'   => $isActive,
+            'sort_by'     => $sortBy,
+            'sort_dir'    => $sortDir,
+        ], fn ($val) => $val !== null);
+
         $query = Organization::query()
-            ->with(['industry', 'province', 'regency', 'district', 'village'])
-            ->orderBy('name', 'asc');
+            ->with(['industry', 'province', 'regency', 'district', 'village']);
 
         if ($user && method_exists(Organization::class, 'scopeForUser')) {
             $query->forUser($user);
         }
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('address', 'like', "%{$search}%");
-            });
-        }
-
-        if ($industryId) {
-            $query->where('industry_id', $industryId);
-        }
-
-        if ($tier) {
-            $query->where('tier', $tier);
-        }
-
-        if ($isActive !== null) {
-            $query->where('is_active', $isActive);
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+        return $query
+            ->applyFilters(
+                params: $params,
+                searchable: ['name', 'email', 'phone', 'address'],
+                filterable: ['industry_id', 'tier', 'is_active'],
+                sortable: ['id', 'name', 'tier', 'created_at', 'updated_at'],
+                defaultSortField: 'name',
+                defaultSortDir: 'asc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

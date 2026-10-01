@@ -7,24 +7,33 @@ use App\Models\ClientSource;
 class ClientSourceService
 {
     /**
-     * Mendapatkan daftar sumber client.
+     * Mendapatkan daftar sumber client dengan filter, search, sort, dan pagination.
      */
-    public function list(?string $search = null, ?bool $activeOnly = false, int $perPage = 50, int $page = 1)
-    {
-        $query = ClientSource::query()->orderBy('name', 'asc');
+    public function list(
+        ?string $search = null,
+        ?bool $activeOnly = false,
+        int $perPage = 50,
+        int $page = 1,
+        ?string $sortBy = 'name',
+        ?string $sortDir = 'asc'
+    ) {
+        $params = array_filter([
+            'search'    => $search,
+            'is_active' => $activeOnly ? true : null,
+            'sort_by'   => $sortBy,
+            'sort_dir'  => $sortDir,
+        ], fn ($val) => $val !== null);
 
-        if ($activeOnly) {
-            $query->where('is_active', true);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+        return ClientSource::query()
+            ->applyFilters(
+                params: $params,
+                searchable: ['name', 'description'],
+                filterable: ['is_active'],
+                sortable: ['id', 'name', 'created_at'],
+                defaultSortField: 'name',
+                defaultSortDir: 'asc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
@@ -33,9 +42,9 @@ class ClientSourceService
     public function create(array $data): ClientSource
     {
         return ClientSource::create([
-            'name' => $data['name'],
+            'name'        => $data['name'],
             'description' => $data['description'] ?? null,
-            'is_active' => $data['is_active'] ?? true,
+            'is_active'   => $data['is_active'] ?? true,
         ]);
     }
 
@@ -46,9 +55,9 @@ class ClientSourceService
     {
         $source = ClientSource::findOrFail($id);
         $source->update([
-            'name' => $data['name'] ?? $source->name,
+            'name'        => $data['name'] ?? $source->name,
             'description' => $data['description'] ?? $source->description,
-            'is_active' => $data['is_active'] ?? $source->is_active,
+            'is_active'   => $data['is_active'] ?? $source->is_active,
         ]);
 
         return $source->refresh();

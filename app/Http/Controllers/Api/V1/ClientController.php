@@ -37,16 +37,7 @@ class ClientController extends Controller
             page: $page
         );
 
-        return ClientResource::collection($clients)
-            ->additional([
-                'meta' => [
-                    'total' => $clients->total(),
-                    'per_page' => $clients->perPage(),
-                    'current_page' => $clients->currentPage(),
-                    'last_page' => $clients->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($clients, ClientResource::class, 'Client list retrieved successfully');
     }
 
     /**
@@ -56,10 +47,11 @@ class ClientController extends Controller
     {
         $client = $this->clientService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Client created successfully',
-            'data' => ClientResource::make($client)
-        ], 201);
+        return $this->successResponse(
+            ClientResource::make($client),
+            'Client created successfully',
+            201
+        );
     }
 
     /**
@@ -69,10 +61,10 @@ class ClientController extends Controller
     {
         $client = $this->clientService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Client updated successfully',
-            'data' => ClientResource::make($client)
-        ]);
+        return $this->successResponse(
+            ClientResource::make($client),
+            'Client updated successfully'
+        );
     }
 
     /**
@@ -82,9 +74,7 @@ class ClientController extends Controller
     {
         $this->clientService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Client deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Client deleted successfully');
     }
 
     /**
@@ -99,8 +89,6 @@ class ClientController extends Controller
 
         $this->clientService->bulkDelete($request->input('ids'));
 
-        return response()->json([
-            'message' => 'Clients bulk deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Clients bulk deleted successfully');
     }
 }

@@ -39,16 +39,7 @@ class OrganizationController extends Controller
             page: $page
         );
 
-        return OrganizationResource::collection($organizations)
-            ->additional([
-                'meta' => [
-                    'total' => $organizations->total(),
-                    'per_page' => $organizations->perPage(),
-                    'current_page' => $organizations->currentPage(),
-                    'last_page' => $organizations->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($organizations, OrganizationResource::class, 'Organization list retrieved successfully');
     }
 
     /**
@@ -58,10 +49,11 @@ class OrganizationController extends Controller
     {
         $organization = $this->organizationService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Organization created successfully',
-            'data' => OrganizationResource::make($organization)
-        ], 201);
+        return $this->successResponse(
+            OrganizationResource::make($organization),
+            'Organization created successfully',
+            201
+        );
     }
 
     /**
@@ -71,10 +63,10 @@ class OrganizationController extends Controller
     {
         $organization = $this->organizationService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Organization updated successfully',
-            'data' => OrganizationResource::make($organization)
-        ]);
+        return $this->successResponse(
+            OrganizationResource::make($organization),
+            'Organization updated successfully'
+        );
     }
 
     /**
@@ -84,9 +76,7 @@ class OrganizationController extends Controller
     {
         $this->organizationService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Organization deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Organization deleted successfully');
     }
 
     /**
@@ -100,8 +90,9 @@ class OrganizationController extends Controller
             perPage: 100
         );
 
-        return response()->json([
-            'data' => OrganizationResource::collection($organizations)
-        ]);
+        return $this->successResponse(
+            OrganizationResource::collection($organizations),
+            'Organization dropdown options retrieved successfully'
+        );
     }
 }

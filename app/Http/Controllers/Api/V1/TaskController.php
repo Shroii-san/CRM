@@ -43,16 +43,7 @@ class TaskController extends Controller
             page: $page
         );
 
-        return TaskResource::collection($tasks)
-            ->additional([
-                'meta' => [
-                    'total'        => $tasks->total(),
-                    'per_page'     => $tasks->perPage(),
-                    'current_page' => $tasks->currentPage(),
-                    'last_page'    => $tasks->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($tasks, TaskResource::class, 'Task list retrieved successfully');
     }
 
     /**
@@ -62,10 +53,11 @@ class TaskController extends Controller
     {
         $task = $this->taskService->create($request->validated(), $request->user());
 
-        return response()->json([
-            'message' => 'Task created successfully',
-            'data'    => TaskResource::make($task)
-        ], 201);
+        return $this->successResponse(
+            TaskResource::make($task),
+            'Task created successfully',
+            201
+        );
     }
 
     /**
@@ -75,9 +67,10 @@ class TaskController extends Controller
     {
         $task = $this->taskService->find((int) $id);
 
-        return response()->json([
-            'data' => TaskResource::make($task)
-        ]);
+        return $this->successResponse(
+            TaskResource::make($task),
+            'Task detail retrieved successfully'
+        );
     }
 
     /**
@@ -87,10 +80,10 @@ class TaskController extends Controller
     {
         $task = $this->taskService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Task updated successfully',
-            'data'    => TaskResource::make($task)
-        ]);
+        return $this->successResponse(
+            TaskResource::make($task),
+            'Task updated successfully'
+        );
     }
 
     /**
@@ -101,10 +94,10 @@ class TaskController extends Controller
         $completed = $request->boolean('completed', true);
         $task = $this->taskService->toggleComplete((int) $id, $completed);
 
-        return response()->json([
-            'message' => $completed ? 'Task marked as completed' : 'Task marked as pending',
-            'data'    => TaskResource::make($task)
-        ]);
+        return $this->successResponse(
+            TaskResource::make($task),
+            $completed ? 'Task marked as completed' : 'Task marked as pending'
+        );
     }
 
     /**
@@ -114,9 +107,7 @@ class TaskController extends Controller
     {
         $this->taskService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Task deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Task deleted successfully');
     }
 
     /**
@@ -126,9 +117,10 @@ class TaskController extends Controller
     {
         $reminder = $this->taskService->addReminder((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Task reminder added successfully',
-            'data'    => TaskReminderResource::make($reminder)
-        ], 201);
+        return $this->successResponse(
+            TaskReminderResource::make($reminder),
+            'Task reminder added successfully',
+            201
+        );
     }
 }

@@ -39,16 +39,7 @@ class SalesVisitController extends Controller
             page: $page
         );
 
-        return SalesVisitResource::collection($visits)
-            ->additional([
-                'meta' => [
-                    'total'        => $visits->total(),
-                    'per_page'     => $visits->perPage(),
-                    'current_page' => $visits->currentPage(),
-                    'last_page'    => $visits->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($visits, SalesVisitResource::class, 'Sales visit list retrieved successfully');
     }
 
     /**
@@ -58,10 +49,11 @@ class SalesVisitController extends Controller
     {
         $visit = $this->visitService->create($request->validated(), $request->user());
 
-        return response()->json([
-            'message' => 'Sales visit created successfully',
-            'data'    => SalesVisitResource::make($visit)
-        ], 201);
+        return $this->successResponse(
+            SalesVisitResource::make($visit),
+            'Sales visit created successfully',
+            201
+        );
     }
 
     /**
@@ -71,9 +63,10 @@ class SalesVisitController extends Controller
     {
         $visit = $this->visitService->find((int) $id);
 
-        return response()->json([
-            'data' => SalesVisitResource::make($visit)
-        ]);
+        return $this->successResponse(
+            SalesVisitResource::make($visit),
+            'Sales visit detail retrieved successfully'
+        );
     }
 
     /**
@@ -83,10 +76,10 @@ class SalesVisitController extends Controller
     {
         $visit = $this->visitService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Sales visit updated successfully',
-            'data'    => SalesVisitResource::make($visit)
-        ]);
+        return $this->successResponse(
+            SalesVisitResource::make($visit),
+            'Sales visit updated successfully'
+        );
     }
 
     /**
@@ -96,8 +89,6 @@ class SalesVisitController extends Controller
     {
         $this->visitService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Sales visit deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Sales visit deleted successfully');
     }
 }

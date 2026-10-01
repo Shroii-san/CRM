@@ -44,7 +44,7 @@ function openCustomerModal(mode = 'add', customerId = null) {
         toggleCompanyFields();
         
         // Initialize address cascade for add
-        initCustomerAddressCascade();
+        initCustomerAddressCascade('province_id', 'regency_id', 'district_id', 'village_id', '');
         
     } else if (mode === 'edit' && customerId) {
         console.log('✅ Opening Edit Customer Modal for ID:', customerId);
@@ -54,7 +54,7 @@ function openCustomerModal(mode = 'add', customerId = null) {
         document.getElementById('formMethod').value = 'PUT';
         
         // Initialize cascade first, then load data
-        initCustomerAddressCascade();
+        initCustomerAddressCascade('province_id', 'regency_id', 'district_id', 'village_id', '');
         loadCustomerData(customerId);
     }
     
@@ -89,7 +89,7 @@ function closeCustomerModal() {
     document.getElementById('create-village').innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
 }
 
-function initCustomerAddressCascade() {
+function initCustomerAddressCascade(provinceId, regencyId, districtId, villageId, baseUrl) {
     console.log('🔄 Initializing Customer Address Cascade');
     
     if (customerAddressCascade) {
@@ -101,7 +101,7 @@ function initCustomerAddressCascade() {
         regencyId: 'create-regency',
         districtId: 'create-district',
         villageId: 'create-village',
-        baseUrl: '/customers'
+        baseUrl: ''
     });
     
     console.log('✅ Address cascade initialized');

@@ -10,28 +10,47 @@
         :tierCompanies="$tierCompanies"
         :activeCompanies="$activeCompanies"
     />
-    
-    <!-- Company Card dengan Everything Inside -->
-    <div style="background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; overflow: hidden; margin-top: 0.5rem;">
-        
-        <!-- Card Header dengan Title dan Action Button -->
-        <div style="padding: 0.5rem 1.5rem; border-bottom: 1px solid #e5e7eb;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div>
-                    <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin: 0;">Company Management</h3>
-                    <p style="font-size: 0.875rem; color: #6b7280; margin: 0.25rem 0 0 0;">Kelola data perusahaan dan informasinya</p>
-                </div>
-                
-                @if(auth()->user()->canAccess($currentMenuId, 'create'))
-                <button onclick="openAddCompanyModal()" 
-                    style="display: flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2); transition: all 0.2s;">
-                    <i class="fas fa-plus"></i>
-                    <span>Tambah Perusahaan</span>
-                </button>
-                @endif
-            </div>
-        </div>
 
+    <div style="padding: 0.5rem 1.5rem; border-bottom: 1px solid #e5e7eb;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin: 0;">Company Management</h3>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0.25rem 0 0 0;">Kelola data perusahaan dan informasinya</p>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <!-- Tombol Export -->
+            <a href="{{ route('company.export') }}" 
+               style="display: flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.75rem; background: #22c55e; color: white; border: none; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; text-decoration: none;">
+                <i class="fas fa-file-excel"></i>
+                <span>Export</span>
+            </a>
+
+            <!-- Form Import -->
+            <form action="{{ route('company.import') }}" method="POST" enctype="multipart/form-data" style="display: flex; align-items: center; gap: 0.375rem;">
+                @csrf
+                <input type="file" name="file" accept=".xlsx,.xls,.csv" required 
+                       style="padding: 0.375rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; max-width: 180px;">
+                <button type="submit" 
+                        style="display: flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.75rem; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; cursor: pointer;">
+                    <i class="fas fa-file-import"></i>
+                    <span>Import</span>
+                </button>
+            </form>
+
+            <!-- Tombol Tambah Perusahaan (pakai modal, bukan route) -->
+            @if(auth()->user()->canAccess($currentMenuId, 'create'))
+            <button onclick="openAddCompanyModal()" 
+                style="display: flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2); transition: all 0.2s;">
+                <i class="fas fa-plus"></i>
+                <span>Tambah Perusahaan</span>
+            </button>
+            @endif
+        </div>
+    </div>
+</div>
+
+        
         <!-- Search and Filter Section -->
         <div style="padding: 0.5rem 1.5rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; fade-in">
             <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">

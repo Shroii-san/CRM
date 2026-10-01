@@ -16,7 +16,10 @@ use App\Http\Controllers\PicController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\SalesPerformanceController;
 use App\Http\Controllers\PipelineController;
-use App\http\Controllers\SalesVisitTrendController;
+use App\Http\Controllers\SalesVisitTrendController;   // ← h jadi H
+use App\Http\Controllers\TrendPageController;          // ← TAMBAH INI
+use App\Http\Controllers\HrdController;
+use App\Http\Controllers\KeluargaController;
 
 // ==========================
 // Public Routes (Login / Logout / Password Reset)
@@ -58,7 +61,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/pics/store-pic-ajax', [PicController::class, 'storePICAjax']);
 });
 
-
 // ==========================
 // Protected Routes (Login + Permission)
 // ==========================
@@ -73,6 +75,8 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // Company Management
     // ==========================
     Route::get('/company', [CompanyController::class, 'index'])->name('company');
+    Route::get('/company/export', [CompanyController::class, 'exportExcel'])->name('company.export');
+    Route::post('/company/import', [CompanyController::class, 'importExcel'])->name('company.import');  
     Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
     Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.update');
     Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.destroy');
@@ -125,7 +129,7 @@ Route::middleware(['auth', 'permission'])->group(function () {
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi');
     Route::get('/transaksi/search', [TransaksiController::class, 'search'])->name('transaksi.search');
     Route::get('/transaksi/api/sales', [TransaksiController::class, 'getSalesUsers'])->name('transaksi.api.sales');
-    Route::get('/transaksi/pics/by-company/{companyId}', [TransaksiController::class, 'getPicsByCompany'])->name('transaksi.pics. bycompany');
+    Route::get('/transaksi/pics/by-company/{companyId}', [TransaksiController::class, 'getPicsByCompany'])->name('transaksi.pics.bycompany'); // ← spasi dihapus
     Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
     Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/transaksi/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
@@ -149,10 +153,10 @@ Route::middleware(['auth', 'permission'])->group(function () {
     Route::get('/pipeline/search', [PipelineController::class, 'search'])->name('pipeline.search');
 
     // ROUTES UNTUK DETAIL
-    Route::get('/pipeline/lead/{id}', [PipelineController::class, 'showLead'])->name('pipeline. lead. show');
+    Route::get('/pipeline/lead/{id}', [PipelineController::class, 'showLead'])->name('pipeline.lead.show');          // ← spasi dihapus
     Route::get('/pipeline/visit/{id}', [PipelineController::class, 'showVisit'])->name('pipeline.visit.show');
     Route::get('/pipeline/follow-up/{id}', [PipelineController::class, 'showFollowUp'])->name('pipeline.followup.show');
-    Route::get('/pipeline/transaksi/{id}', [PipelineController::class, 'showTransaksi'])->name('pipeline. transaksi.show');
+    Route::get('/pipeline/transaksi/{id}', [PipelineController::class, 'showTransaksi'])->name('pipeline.transaksi.show'); // ← spasi dihapus
 
     // ==========================
     // Calendar Page (React)
@@ -248,7 +252,25 @@ Route::middleware(['auth', 'permission'])->group(function () {
         ->name('api.visit.trend');
 
     Route::get('/trend', [TrendPageController::class, 'index'])
-    ->middleware('auth')
-    ->name('trend.page');
+        ->middleware('auth')
+        ->name('trend.page');
 
+    Route::post('/karyawan/{karyawan}/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');
+    Route::put('/keluarga/{keluarga}', [KeluargaController::class, 'update'])->name('keluarga.update');
+    Route::delete('/keluarga/{keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
 });
+
+// ==========================
+// HRD Routes
+// ==========================
+Route::prefix('hrd')->name('hrd.')->group(function () {
+    Route::get('/', [HrdController::class, 'index'])->name('index');
+    Route::post('/', [HrdController::class, 'store'])->name('store');
+    Route::put('/{id}', [HrdController::class, 'update'])->name('update');
+    Route::delete('/{id}', [HrdController::class, 'destroy'])->name('destroy');
+
+    Route::post('/{id}/jadikan-karyawan', [HrdController::class, 'jadikanKaryawan'])
+        ->name('jadikan-karyawan');
+});
+
+

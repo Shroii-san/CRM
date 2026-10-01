@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CompanyExport;
+use App\Imports\CompanyImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Company;
 use App\Models\CompanyType;
 use App\Models\CompanyPic;
@@ -16,6 +19,23 @@ use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
+
+  public function exportExcel() 
+    {
+        return Excel::download(new CompanyExport, 'Data_Company.xlsx');
+    }
+
+    public function importExcel(Request $request) 
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new CompanyImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data Company berhasil diimport!');
+    }
+    
     public function index()
     {
         $user = Auth::user();
@@ -34,6 +54,7 @@ class CompanyController extends Controller
             $companiesQuery->whereNull('company_id');
         }
 
+    
         // KPI calculations
         $totalCompanies = (clone $companiesQuery)->count();
         $jenisCompanies = (clone $companiesQuery)->distinct('company_type_id')->count('company_type_id');
@@ -54,6 +75,31 @@ class CompanyController extends Controller
             'provinces'
         ));
     }
+
+
+    public function destroy($id)
+{
+    try {
+        $company = Company::findOrFail($id);
+
+        // Hapus PICs terlebih dahulu (jika ada)
+        CompanyPic::where('company_id', $company->company_id)->delete();
+
+        // Hapus logo jika ada
+        if ($company->logo) {
+            Storage::disk('public')->delete($company->logo);
+        }
+
+        // Hapus company
+        $company->delete();
+
+        return redirect()->back()->with('success', 'Company berhasil dihapus');
+
+    } catch (\Exception $e) {
+        \Log::error('❌ Error deleting company: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Gagal menghapus company: ' . $e->getMessage());
+    }
+}
 
      public function getRegencies($province_id)
     {

@@ -61,11 +61,11 @@
                         <div>
                             <!-- Nama User -->
                             <span class="text-white font-medium block">
-                                {{ Auth::user()->username }}
+                                {{ auth()->user()?->username ?? 'Guest' }}
                             </span>
                             <!-- Role User (kecil) -->
                             <span class="text-blue-200 text-xs block">
-                                {{ Auth::user()->role->role_name }}
+                                {{ auth()->user()?->role?->role_name ?? '-' }}
                             </span>
                         </div>
                     </div>
@@ -120,17 +120,20 @@ document.addEventListener('click', function(event) {
 
         @php
         use Illuminate\Support\Facades\Auth;
-        $currentRoute = request()->route()->getName();
+        $currentRoute = request()->route()?->getName();
         $user = Auth::user();
-        $user->load('role.menus');
+        $parentMenus = collect();
 
-        // Kalau superadmin, ambil semua menu dengan children-nya
-        $parentMenus = $user->role->role_name === 'superadmin'
-            ? \App\Models\Menu::whereNull('parent_id')->with('children')->orderBy('order', 'asc')->get()
-            : $user->role->menus->where('pivot.can_view', true)->whereNull('parent_id')->load('children')->sortBy('order');
+        if ($user) {
+            $user->load('role.menus');
+            $parentMenus = $user->role && $user->role->role_name === 'superadmin'
+                ? \App\Models\Menu::whereNull('parent_id')->with('children')->orderBy('order', 'asc')->get()
+                : ($user->role ? $user->role->menus->where('pivot.can_view', true)->whereNull('parent_id')->load('children')->sortBy('order') : collect());
+        }
         @endphp
 
         <nav class="space-y-2 pb-6">
+            @if($user)
             @foreach($parentMenus as $menu)
                 @if(auth()->user()->canAccess($menu->menu_id, 'view'))
                     @php
@@ -191,6 +194,9 @@ document.addEventListener('click', function(event) {
                     @endif
                 @endif
             @endforeach
+            @else
+                <div class="px-3 py-4 text-sm text-gray-500">Silakan login untuk melihat menu.</div>
+            @endif
         </nav>
     </div>
 

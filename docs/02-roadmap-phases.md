@@ -37,7 +37,7 @@ Dokumen ini berisi urutan pengerjaan refactoring dan pengembangan sistem berdasa
 - [x] **Business Logic / Services** (Pemisahan logic dari Controller ke Service layer)
 - [x] **Centralized Region API** (Endpoint terpusat Provinsi -> Kota -> Kec -> Kel)
 - [ ] **Standard Query Pattern** (Composable Search, Filter, Sort, & Pagination)
-- [x] **AJAX Response Standardizer** (Format JSON `success`, `message`, `data`, `errors`)
+- [] **AJAX Response Standardizer** (Format JSON `success`, `message`, `data`, `errors`)
 - [ ] **Import & Export Handlers** (Validasi file, parsing data, & penanganan error import)
 
 ---

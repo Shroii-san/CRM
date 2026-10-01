@@ -8096,7 +8096,7 @@ COPY public.deals (id, client_id, pipeline_id, current_stage_id, assigned_user_i
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, role_id, name, email, phone, password_hash, is_active, remember_token, last_activity_at, created_at, updated_at) FROM stdin;
+COPY public.users (id, role_id, name, email, phone, password, is_active, remember_token, last_activity_at, created_at, updated_at) FROM stdin;
 1	1	superadmin	\N	\N	$2y$12$ZZ4kJd4QVlGVawpvZ2hxpO2Ub8PaqLw5c/R3PcSbUKTnPuyd3SJ2u	t	\N	2025-11-28 09:09:45	2025-09-08 10:44:30.321085	2025-11-28 09:09:45
 11	7	ihsan	\N	\N	$2y$12$vk16wPJkoMU8DoXZkO1Wp.nhDq/SSy5ncc4v0TWYkqDXnrq7QzJfu	t	\N	2025-10-06 03:26:16	2025-09-18 05:35:13	2025-10-06 03:26:16
 32	12	annisanurulfajri	annisanurulfajri120494@gmail.com	6283829719550	$2y$12$JRWtNfmscXHVOSPiffsd9uqgB6YdX9CN82s/5EsyJiXW7dbcaYVWK	f	\N	2025-10-03 03:26:10	2025-10-03 10:17:16.510074	2025-11-17 03:03:22

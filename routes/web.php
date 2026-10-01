@@ -94,8 +94,9 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Domain: Client Management
     // -----------------------------------------------
-    // View: pages.customers (ClientController -> existing blade)
-    Route::get('/customers', [ClientController::class, 'index'])->name('customers');
+    // View: pages.clients (ClientController -> existing blade)
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+    Route::get('/clients/export', [ClientController::class, 'export'])->name('clients.export');
 
     // -----------------------------------------------
     // Domain: Sales Pipeline & Deals

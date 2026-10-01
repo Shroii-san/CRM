@@ -37,16 +37,7 @@ class ActivityLogController extends Controller
             page: $page
         );
 
-        return ActivityLogResource::collection($logs)
-            ->additional([
-                'meta' => [
-                    'total'        => $logs->total(),
-                    'per_page'     => $logs->perPage(),
-                    'current_page' => $logs->currentPage(),
-                    'last_page'    => $logs->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($logs, ActivityLogResource::class, 'Activity log list retrieved successfully');
     }
 
     /**
@@ -56,8 +47,9 @@ class ActivityLogController extends Controller
     {
         $log = $this->logService->find((int) $id);
 
-        return response()->json([
-            'data' => ActivityLogResource::make($log)
-        ]);
+        return $this->successResponse(
+            ActivityLogResource::make($log),
+            'Activity log detail retrieved successfully'
+        );
     }
 }

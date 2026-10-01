@@ -28,16 +28,7 @@ class MenuController extends Controller
 
         $menus = $this->menuService->list($search, $parentOnly, $perPage, $page);
 
-        return MenuResource::collection($menus)
-            ->additional([
-                'meta' => [
-                    'total' => $menus->total(),
-                    'per_page' => $menus->perPage(),
-                    'current_page' => $menus->currentPage(),
-                    'last_page' => $menus->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($menus, MenuResource::class, 'Menus retrieved successfully');
     }
 
     /**
@@ -47,9 +38,7 @@ class MenuController extends Controller
     {
         $tree = $this->menuService->getMenuTree();
 
-        return response()->json([
-            'data' => MenuResource::collection($tree)
-        ]);
+        return $this->successResponse(MenuResource::collection($tree), 'Menu tree retrieved successfully');
     }
 
     /**
@@ -59,10 +48,7 @@ class MenuController extends Controller
     {
         $menu = $this->menuService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Menu created successfully',
-            'data' => MenuResource::make($menu)
-        ], 201);
+        return $this->successResponse(MenuResource::make($menu), 'Menu created successfully', 201);
     }
 
     /**
@@ -73,14 +59,9 @@ class MenuController extends Controller
         try {
             $menu = $this->menuService->update((int) $id, $request->validated());
 
-            return response()->json([
-                'message' => 'Menu updated successfully',
-                'data' => MenuResource::make($menu)
-            ]);
+            return $this->successResponse(MenuResource::make($menu), 'Menu updated successfully');
         } catch (\InvalidArgumentException $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 422);
+            return $this->errorResponse($e->getMessage(), 422);
         }
     }
 
@@ -91,8 +72,6 @@ class MenuController extends Controller
     {
         $this->menuService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Menu deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Menu deleted successfully');
     }
 }

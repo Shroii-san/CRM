@@ -29,16 +29,7 @@ class UserController extends Controller
             page: $request->page ?? 1,
         );
 
-        return UserResource::collection($users)
-            ->additional([
-                'meta' => [
-                    'total' => $users->total(),
-                    'per_page' => $users->perPage(),
-                    'current_page' => $users->currentPage(),
-                    'last_page' => $users->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($users, UserResource::class, 'Users retrieved successfully');
     }
 
     /**
@@ -48,10 +39,7 @@ class UserController extends Controller
     {
         $user = $this->userService->create($request->validated());
 
-        return response()->json([
-            'message' => 'User created successfully',
-            'data' => UserResource::make($user)
-        ], 201);
+        return $this->successResponse(UserResource::make($user), 'User created successfully', 201);
     }
 
     /**
@@ -61,10 +49,7 @@ class UserController extends Controller
     {
         $user = $this->userService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'User updated successfully',
-            'data' => UserResource::make($user)
-        ]);
+        return $this->successResponse(UserResource::make($user), 'User updated successfully');
     }
 
     /**
@@ -74,8 +59,6 @@ class UserController extends Controller
     {
         $this->userService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'User deleted successfully'
-        ]);
+        return $this->successResponse(null, 'User deleted successfully');
     }
 }

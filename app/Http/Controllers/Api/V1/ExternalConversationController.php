@@ -35,16 +35,7 @@ class ExternalConversationController extends Controller
             page: $page
         );
 
-        return ExternalConversationResource::collection($conversations)
-            ->additional([
-                'meta' => [
-                    'total'        => $conversations->total(),
-                    'per_page'     => $conversations->perPage(),
-                    'current_page' => $conversations->currentPage(),
-                    'last_page'    => $conversations->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($conversations, ExternalConversationResource::class, 'External conversation list retrieved successfully');
     }
 
     /**
@@ -54,10 +45,11 @@ class ExternalConversationController extends Controller
     {
         $conversation = $this->conversationService->create($request->validated());
 
-        return response()->json([
-            'message' => 'External conversation created successfully',
-            'data'    => ExternalConversationResource::make($conversation)
-        ], 201);
+        return $this->successResponse(
+            ExternalConversationResource::make($conversation),
+            'External conversation created successfully',
+            201
+        );
     }
 
     /**
@@ -67,9 +59,10 @@ class ExternalConversationController extends Controller
     {
         $conversation = $this->conversationService->find((int) $id);
 
-        return response()->json([
-            'data' => ExternalConversationResource::make($conversation)
-        ]);
+        return $this->successResponse(
+            ExternalConversationResource::make($conversation),
+            'External conversation detail retrieved successfully'
+        );
     }
 
     /**
@@ -79,10 +72,10 @@ class ExternalConversationController extends Controller
     {
         $conversation = $this->conversationService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'External conversation updated successfully',
-            'data'    => ExternalConversationResource::make($conversation)
-        ]);
+        return $this->successResponse(
+            ExternalConversationResource::make($conversation),
+            'External conversation updated successfully'
+        );
     }
 
     /**
@@ -92,8 +85,6 @@ class ExternalConversationController extends Controller
     {
         $this->conversationService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'External conversation deleted successfully'
-        ]);
+        return $this->successResponse(null, 'External conversation deleted successfully');
     }
 }

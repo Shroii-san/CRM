@@ -28,16 +28,7 @@ class ClientSourceController extends Controller
 
         $sources = $this->sourceService->list($search, $activeOnly, $perPage, $page);
 
-        return ClientSourceResource::collection($sources)
-            ->additional([
-                'meta' => [
-                    'total' => $sources->total(),
-                    'per_page' => $sources->perPage(),
-                    'current_page' => $sources->currentPage(),
-                    'last_page' => $sources->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($sources, ClientSourceResource::class, 'Client sources retrieved successfully');
     }
 
     /**
@@ -47,10 +38,7 @@ class ClientSourceController extends Controller
     {
         $source = $this->sourceService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Client source created successfully',
-            'data' => ClientSourceResource::make($source)
-        ], 201);
+        return $this->successResponse(ClientSourceResource::make($source), 'Client source created successfully', 201);
     }
 
     /**
@@ -60,10 +48,7 @@ class ClientSourceController extends Controller
     {
         $source = $this->sourceService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Client source updated successfully',
-            'data' => ClientSourceResource::make($source)
-        ]);
+        return $this->successResponse(ClientSourceResource::make($source), 'Client source updated successfully');
     }
 
     /**
@@ -73,8 +58,6 @@ class ClientSourceController extends Controller
     {
         $this->sourceService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Client source deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Client source deleted successfully');
     }
 }

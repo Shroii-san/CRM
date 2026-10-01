@@ -22,7 +22,10 @@ class RegionController extends Controller
         $search = $request->input('search');
         $countries = $this->regionService->getCountries(search: $search);
 
-        return RegionResource::collection($countries)->response();
+        return $this->successResponse(
+            RegionResource::collection($countries),
+            'Countries retrieved successfully'
+        );
     }
 
     /**
@@ -35,7 +38,10 @@ class RegionController extends Controller
 
         $provinces = $this->regionService->getProvinces(countryId: $countryId, search: $search);
 
-        return RegionResource::collection($provinces)->response();
+        return $this->successResponse(
+            RegionResource::collection($provinces),
+            'Provinces retrieved successfully'
+        );
     }
 
     /**
@@ -46,7 +52,10 @@ class RegionController extends Controller
         $search = $request->input('search');
         $regencies = $this->regionService->getRegencies(provinceId: (int) $provinceId, search: $search);
 
-        return RegionResource::collection($regencies)->response();
+        return $this->successResponse(
+            RegionResource::collection($regencies),
+            'Regencies retrieved successfully'
+        );
     }
 
     /**
@@ -57,7 +66,10 @@ class RegionController extends Controller
         $search = $request->input('search');
         $districts = $this->regionService->getDistricts(regencyId: (int) $regencyId, search: $search);
 
-        return RegionResource::collection($districts)->response();
+        return $this->successResponse(
+            RegionResource::collection($districts),
+            'Districts retrieved successfully'
+        );
     }
 
     /**
@@ -68,6 +80,9 @@ class RegionController extends Controller
         $search = $request->input('search');
         $villages = $this->regionService->getVillages(districtId: (int) $districtId, search: $search);
 
-        return RegionResource::collection($villages)->response();
+        return $this->successResponse(
+            RegionResource::collection($villages),
+            'Villages retrieved successfully'
+        );
     }
 }

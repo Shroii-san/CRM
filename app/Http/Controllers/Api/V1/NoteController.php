@@ -39,16 +39,7 @@ class NoteController extends Controller
             page: $page
         );
 
-        return NoteResource::collection($notes)
-            ->additional([
-                'meta' => [
-                    'total'        => $notes->total(),
-                    'per_page'     => $notes->perPage(),
-                    'current_page' => $notes->currentPage(),
-                    'last_page'    => $notes->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($notes, NoteResource::class, 'Notes retrieved successfully');
     }
 
     /**
@@ -58,10 +49,7 @@ class NoteController extends Controller
     {
         $note = $this->noteService->create($request->validated(), $request->user());
 
-        return response()->json([
-            'message' => 'Note created successfully',
-            'data'    => NoteResource::make($note)
-        ], 201);
+        return $this->successResponse(NoteResource::make($note), 'Note created successfully', 201);
     }
 
     /**
@@ -71,9 +59,7 @@ class NoteController extends Controller
     {
         $note = $this->noteService->find((int) $id);
 
-        return response()->json([
-            'data' => NoteResource::make($note)
-        ]);
+        return $this->successResponse(NoteResource::make($note), 'Note retrieved successfully');
     }
 
     /**
@@ -83,10 +69,7 @@ class NoteController extends Controller
     {
         $note = $this->noteService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Note updated successfully',
-            'data'    => NoteResource::make($note)
-        ]);
+        return $this->successResponse(NoteResource::make($note), 'Note updated successfully');
     }
 
     /**
@@ -96,8 +79,6 @@ class NoteController extends Controller
     {
         $this->noteService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Note deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Note deleted successfully');
     }
 }

@@ -17,16 +17,17 @@ class OrganizationSocialProfileController extends Controller
     }
 
     /**
-     * Mendapatkan daftar profil sosial media organisasi.
+     * Mendapatkan daftar profil sosial media organisasi (JSON API).
      */
     public function index(Request $request): JsonResponse
     {
         $organizationId = $request->input('organization_id') ? (int) $request->input('organization_id') : null;
-        $profiles = $this->profileService->list($organizationId);
+        $perPage = (int) $request->input('per_page', 50);
+        $page = (int) $request->input('page', 1);
 
-        return response()->json([
-            'data' => OrganizationSocialProfileResource::collection($profiles)
-        ]);
+        $profiles = $this->profileService->list($organizationId, $perPage, $page);
+
+        return $this->paginatedResponse($profiles, OrganizationSocialProfileResource::class, 'Organization social profile list retrieved successfully');
     }
 
     /**
@@ -36,10 +37,11 @@ class OrganizationSocialProfileController extends Controller
     {
         $profile = $this->profileService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Organization social profile created successfully',
-            'data' => OrganizationSocialProfileResource::make($profile)
-        ], 201);
+        return $this->successResponse(
+            OrganizationSocialProfileResource::make($profile),
+            'Organization social profile created successfully',
+            201
+        );
     }
 
     /**
@@ -49,10 +51,10 @@ class OrganizationSocialProfileController extends Controller
     {
         $profile = $this->profileService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Organization social profile updated successfully',
-            'data' => OrganizationSocialProfileResource::make($profile)
-        ]);
+        return $this->successResponse(
+            OrganizationSocialProfileResource::make($profile),
+            'Organization social profile updated successfully'
+        );
     }
 
     /**
@@ -62,8 +64,6 @@ class OrganizationSocialProfileController extends Controller
     {
         $this->profileService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Organization social profile deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Organization social profile deleted successfully');
     }
 }

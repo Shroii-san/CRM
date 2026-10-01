@@ -43,16 +43,7 @@ class InteractionController extends Controller
             page: $page
         );
 
-        return InteractionResource::collection($interactions)
-            ->additional([
-                'meta' => [
-                    'total'        => $interactions->total(),
-                    'per_page'     => $interactions->perPage(),
-                    'current_page' => $interactions->currentPage(),
-                    'last_page'    => $interactions->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($interactions, InteractionResource::class, 'Interaction list retrieved successfully');
     }
 
     /**
@@ -62,10 +53,11 @@ class InteractionController extends Controller
     {
         $interaction = $this->interactionService->create($request->validated(), $request->user());
 
-        return response()->json([
-            'message' => 'Interaction created successfully',
-            'data'    => InteractionResource::make($interaction)
-        ], 201);
+        return $this->successResponse(
+            InteractionResource::make($interaction),
+            'Interaction created successfully',
+            201
+        );
     }
 
     /**
@@ -75,9 +67,10 @@ class InteractionController extends Controller
     {
         $interaction = $this->interactionService->find((int) $id);
 
-        return response()->json([
-            'data' => InteractionResource::make($interaction)
-        ]);
+        return $this->successResponse(
+            InteractionResource::make($interaction),
+            'Interaction detail retrieved successfully'
+        );
     }
 
     /**
@@ -87,10 +80,10 @@ class InteractionController extends Controller
     {
         $interaction = $this->interactionService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Interaction updated successfully',
-            'data'    => InteractionResource::make($interaction)
-        ]);
+        return $this->successResponse(
+            InteractionResource::make($interaction),
+            'Interaction updated successfully'
+        );
     }
 
     /**
@@ -100,8 +93,6 @@ class InteractionController extends Controller
     {
         $this->interactionService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Interaction deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Interaction deleted successfully');
     }
 }

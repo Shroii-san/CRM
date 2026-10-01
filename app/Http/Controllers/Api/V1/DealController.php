@@ -40,16 +40,7 @@ class DealController extends Controller
             page: $page
         );
 
-        return DealResource::collection($deals)
-            ->additional([
-                'meta' => [
-                    'total'        => $deals->total(),
-                    'per_page'     => $deals->perPage(),
-                    'current_page' => $deals->currentPage(),
-                    'last_page'    => $deals->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($deals, DealResource::class, 'Deal list retrieved successfully');
     }
 
     /**
@@ -59,10 +50,11 @@ class DealController extends Controller
     {
         $deal = $this->dealService->create($request->validated(), $request->user());
 
-        return response()->json([
-            'message' => 'Deal created successfully',
-            'data'    => DealResource::make($deal)
-        ], 201);
+        return $this->successResponse(
+            DealResource::make($deal),
+            'Deal created successfully',
+            201
+        );
     }
 
     /**
@@ -72,9 +64,10 @@ class DealController extends Controller
     {
         $deal = $this->dealService->find((int) $id);
 
-        return response()->json([
-            'data' => DealResource::make($deal)
-        ]);
+        return $this->successResponse(
+            DealResource::make($deal),
+            'Deal detail retrieved successfully'
+        );
     }
 
     /**
@@ -84,10 +77,10 @@ class DealController extends Controller
     {
         $deal = $this->dealService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Deal updated successfully',
-            'data'    => DealResource::make($deal)
-        ]);
+        return $this->successResponse(
+            DealResource::make($deal),
+            'Deal updated successfully'
+        );
     }
 
     /**
@@ -101,10 +94,10 @@ class DealController extends Controller
             changedBy: $request->user()
         );
 
-        return response()->json([
-            'message' => 'Deal stage moved successfully',
-            'data'    => DealResource::make($deal)
-        ]);
+        return $this->successResponse(
+            DealResource::make($deal),
+            'Deal stage moved successfully'
+        );
     }
 
     /**
@@ -114,8 +107,6 @@ class DealController extends Controller
     {
         $this->dealService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Deal deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Deal deleted successfully');
     }
 }

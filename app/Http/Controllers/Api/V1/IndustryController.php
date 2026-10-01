@@ -28,16 +28,7 @@ class IndustryController extends Controller
 
         $industries = $this->industryService->list($search, $activeOnly, $perPage, $page);
 
-        return IndustryResource::collection($industries)
-            ->additional([
-                'meta' => [
-                    'total' => $industries->total(),
-                    'per_page' => $industries->perPage(),
-                    'current_page' => $industries->currentPage(),
-                    'last_page' => $industries->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($industries, IndustryResource::class, 'Industries retrieved successfully');
     }
 
     /**
@@ -47,10 +38,7 @@ class IndustryController extends Controller
     {
         $industry = $this->industryService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Industry created successfully',
-            'data' => IndustryResource::make($industry)
-        ], 201);
+        return $this->successResponse(IndustryResource::make($industry), 'Industry created successfully', 201);
     }
 
     /**
@@ -60,10 +48,7 @@ class IndustryController extends Controller
     {
         $industry = $this->industryService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Industry updated successfully',
-            'data' => IndustryResource::make($industry)
-        ]);
+        return $this->successResponse(IndustryResource::make($industry), 'Industry updated successfully');
     }
 
     /**
@@ -73,8 +58,6 @@ class IndustryController extends Controller
     {
         $this->industryService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Industry deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Industry deleted successfully');
     }
 }

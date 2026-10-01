@@ -35,16 +35,7 @@ class AttachmentController extends Controller
             page: $page
         );
 
-        return AttachmentResource::collection($attachments)
-            ->additional([
-                'meta' => [
-                    'total'        => $attachments->total(),
-                    'per_page'     => $attachments->perPage(),
-                    'current_page' => $attachments->currentPage(),
-                    'last_page'    => $attachments->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($attachments, AttachmentResource::class, 'Attachment list retrieved successfully');
     }
 
     /**
@@ -58,10 +49,11 @@ class AttachmentController extends Controller
             uploader: $request->user()
         );
 
-        return response()->json([
-            'message' => 'Attachment uploaded successfully',
-            'data'    => AttachmentResource::make($attachment)
-        ], 201);
+        return $this->successResponse(
+            AttachmentResource::make($attachment),
+            'Attachment uploaded successfully',
+            201
+        );
     }
 
     /**
@@ -71,9 +63,10 @@ class AttachmentController extends Controller
     {
         $attachment = $this->attachmentService->find((int) $id);
 
-        return response()->json([
-            'data' => AttachmentResource::make($attachment)
-        ]);
+        return $this->successResponse(
+            AttachmentResource::make($attachment),
+            'Attachment detail retrieved successfully'
+        );
     }
 
     /**
@@ -83,10 +76,10 @@ class AttachmentController extends Controller
     {
         $attachment = $this->attachmentService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Attachment updated successfully',
-            'data'    => AttachmentResource::make($attachment)
-        ]);
+        return $this->successResponse(
+            AttachmentResource::make($attachment),
+            'Attachment updated successfully'
+        );
     }
 
     /**
@@ -96,8 +89,6 @@ class AttachmentController extends Controller
     {
         $this->attachmentService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Attachment deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Attachment deleted successfully');
     }
 }

@@ -28,16 +28,7 @@ class OrganizationContactController extends Controller
 
         $contacts = $this->contactService->list($organizationId, $search, $perPage, $page);
 
-        return OrganizationContactResource::collection($contacts)
-            ->additional([
-                'meta' => [
-                    'total' => $contacts->total(),
-                    'per_page' => $contacts->perPage(),
-                    'current_page' => $contacts->currentPage(),
-                    'last_page' => $contacts->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($contacts, OrganizationContactResource::class, 'Organization contact list retrieved successfully');
     }
 
     /**
@@ -47,10 +38,11 @@ class OrganizationContactController extends Controller
     {
         $contact = $this->contactService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Organization contact created successfully',
-            'data' => OrganizationContactResource::make($contact)
-        ], 201);
+        return $this->successResponse(
+            OrganizationContactResource::make($contact),
+            'Organization contact created successfully',
+            201
+        );
     }
 
     /**
@@ -60,10 +52,10 @@ class OrganizationContactController extends Controller
     {
         $contact = $this->contactService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Organization contact updated successfully',
-            'data' => OrganizationContactResource::make($contact)
-        ]);
+        return $this->successResponse(
+            OrganizationContactResource::make($contact),
+            'Organization contact updated successfully'
+        );
     }
 
     /**
@@ -73,9 +65,7 @@ class OrganizationContactController extends Controller
     {
         $this->contactService->delete((int) $id);
 
-        return response()->json([
-            'message' => 'Organization contact deleted successfully'
-        ]);
+        return $this->successResponse(null, 'Organization contact deleted successfully');
     }
 
     /**
@@ -85,8 +75,9 @@ class OrganizationContactController extends Controller
     {
         $contacts = $this->contactService->list((int) $organizationId, null, 100, 1);
 
-        return response()->json([
-            'data' => OrganizationContactResource::collection($contacts)
-        ]);
+        return $this->successResponse(
+            OrganizationContactResource::collection($contacts),
+            'Organization contacts retrieved successfully'
+        );
     }
 }

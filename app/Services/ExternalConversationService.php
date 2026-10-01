@@ -7,35 +7,36 @@ use App\Models\ExternalConversation;
 class ExternalConversationService
 {
     /**
-     * Mendapatkan daftar percakapan eksternal dengan filter dan pagination.
+     * Mendapatkan daftar percakapan eksternal dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?int $clientId = null,
         ?string $platform = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'last_interaction_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = ExternalConversation::query()
+        $params = array_filter([
+            'client_id' => $clientId,
+            'platform'  => $platform,
+            'search'    => $search,
+            'sort_by'   => $sortBy,
+            'sort_dir'  => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return ExternalConversation::query()
             ->with(['client'])
-            ->orderBy('last_interaction_at', 'desc');
-
-        if ($clientId) {
-            $query->where('client_id', $clientId);
-        }
-
-        if ($platform) {
-            $query->where('platform', $platform);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('external_conversation_id', 'like', "%{$search}%")
-                    ->orWhere('platform', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['external_conversation_id', 'platform'],
+                filterable: ['client_id', 'platform'],
+                sortable: ['id', 'platform', 'last_interaction_at', 'created_at'],
+                defaultSortField: 'last_interaction_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

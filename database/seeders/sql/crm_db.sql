@@ -7433,19 +7433,19 @@ COPY public.districts (id, regency_id, name) FROM stdin;
 
 COPY public.menus (id, parent_id, icon_id, name, slug, route, position, is_active, created_at, updated_at) FROM stdin;
 19	\N	\N	Dashboard	dashboard	dashboard	1	t	2025-09-16 11:20:48.813618	2025-09-16 11:20:48.813618
-20	\N	\N	Customers	customers	customers	2	t	2025-09-16 11:21:46.882915	2025-09-16 11:21:46.882915
+20	\N	\N	Clients	clients	clients	2	t	2025-09-16 11:21:46.882915	2025-09-16 11:21:46.882915
 22	\N	\N	Settings	settings	\N	9999	t	2025-09-16 11:22:13.881708	2025-09-16 11:22:13.881708
 23	22	\N	Menu	menu	menu	5	t	2025-09-16 13:54:20.1463	2025-09-16 13:54:20.1463
 25	22	\N	Role	role	role	4	t	2025-09-17 15:43:43.52365	2025-09-17 15:43:43.52365
 30	22	\N	User	user	user	3	t	2025-09-19 10:01:23.079404	2025-09-19 10:01:23.079404
-35	41	\N	Category Company	category-company	categorycompany	6	t	2025-09-23 11:33:04.83515	2025-09-23 11:33:04.83515
+35	41	\N	CategoryCompany	category-company	categorycompany	6	t	2025-09-23 11:33:04.83515	2025-09-23 11:33:04.83515
 37	\N	\N	Sales	sales	\N	9	t	2025-10-06 11:08:05.388592	2025-10-06 11:08:05.388592
-38	37	\N	Company	company	company	7	t	2025-10-06 11:09:59.099679	2025-10-06 11:09:59.099679
+38	37	\N	Organization	organization	organization	7	t	2025-10-06 11:09:59.099679	2025-10-06 11:09:59.099679
 40	37	\N	Canvassing	salesvisit	salesvisit	9	t	2025-10-06 11:11:43.844727	2025-10-06 11:11:43.844727
 41	\N	\N	Marketing	marketing	\N	5	t	2025-10-06 11:29:44.272069	2025-10-06 11:29:44.272069
 42	41	\N	Manage Sales	manage-sales	marketing	10001	t	2025-10-06 11:31:46.5014	2025-10-06 11:31:46.5014
 43	\N	\N	Calendar	calendar	calendar	12	t	2025-10-06 12:52:05.84553	2025-10-06 12:52:05.84553
-44	\N	\N	Transaksi	transaksi	transaksi	6	t	2025-11-18 14:13:38.280643	2025-11-18 14:13:38.280643
+44	\N	\N	Deals	deals	deals	6	t	2025-11-18 14:13:38.280643	2025-11-18 14:13:38.280643
 45	\N	\N	Pipeline	pipeline	pipeline	7	t	2025-11-24 08:52:30.931008	2025-11-24 08:52:30.931008
 \.
 

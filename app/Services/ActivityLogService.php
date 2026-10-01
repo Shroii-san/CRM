@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class ActivityLogService
 {
     /**
-     * Mendapatkan daftar log audit aktivitas dengan filter dan pagination.
+     * Mendapatkan daftar log audit aktivitas dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?User $user = null,
@@ -19,33 +19,31 @@ class ActivityLogService
         ?string $targetType = null,
         ?int $targetId = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = ActivityLog::query()
+        $params = array_filter([
+            'user_id'     => $filterUserId,
+            'action'      => $action,
+            'target_type' => $targetType,
+            'target_id'   => $targetId,
+            'search'      => $search,
+            'sort_by'     => $sortBy,
+            'sort_dir'    => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return ActivityLog::query()
             ->with(['user', 'target'])
-            ->orderBy('created_at', 'desc');
-
-        if ($filterUserId) {
-            $query->where('user_id', $filterUserId);
-        }
-
-        if ($action) {
-            $query->where('action', 'like', "%{$action}%");
-        }
-
-        if ($targetType) {
-            $query->where('target_type', $targetType);
-        }
-
-        if ($targetId) {
-            $query->where('target_id', $targetId);
-        }
-
-        if ($search) {
-            $query->where('action', 'like', "%{$search}%");
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['action', 'target_type'],
+                filterable: ['user_id', 'action', 'target_type', 'target_id'],
+                sortable: ['id', 'action', 'created_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

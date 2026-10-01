@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class ClientService
 {
     /**
-     * Mendapatkan daftar client murni core.
+     * Mendapatkan daftar client murni core dengan standard query pattern (search, filter, sort, pagination).
      */
     public function list(
         ?User $user = null,
@@ -17,36 +17,36 @@ class ClientService
         ?int $sourceId = null,
         ?bool $isActive = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = Client::query()
+        $params = array_filter([
+            'search'    => $search,
+            'source_id' => $sourceId,
+            'is_active' => $isActive,
+            'sort_by'   => $sortBy,
+            'sort_dir'  => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return Client::query()
             ->with(['person', 'organization', 'source'])
-            ->orderBy('created_at', 'desc');
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('person', function ($pq) use ($search) {
-                    $pq->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%");
-                })
-                ->orWhereHas('organization', function ($oq) use ($search) {
-                    $oq->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%");
-                });
-            });
-        }
-
-        if ($sourceId) {
-            $query->where('source_id', $sourceId);
-        }
-
-        if ($isActive !== null) {
-            $query->where('is_active', $isActive);
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: [
+                    'person.name',
+                    'person.email',
+                    'person.phone',
+                    'organization.name',
+                    'organization.email',
+                    'organization.phone',
+                ],
+                filterable: ['source_id', 'is_active'],
+                sortable: ['id', 'created_at', 'updated_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

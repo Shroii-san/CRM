@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class DealService
 {
     /**
-     * Mendapatkan daftar deal/transaksi dengan filter dan pagination.
+     * Mendapatkan daftar deal/transaksi dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?User $user = null,
@@ -20,32 +20,30 @@ class DealService
         ?int $clientId = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = Deal::query()
+        $params = array_filter([
+            'pipeline_id'      => $pipelineId,
+            'current_stage_id' => $stageId,
+            'client_id'        => $clientId,
+            'search'           => $search,
+            'sort_by'          => $sortBy,
+            'sort_dir'         => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return Deal::query()
             ->with(['client.person', 'client.organization', 'pipeline', 'currentStage', 'assignedUser'])
-            ->orderBy('created_at', 'desc');
-
-        if ($pipelineId) {
-            $query->where('pipeline_id', $pipelineId);
-        }
-
-        if ($stageId) {
-            $query->where('current_stage_id', $stageId);
-        }
-
-        if ($clientId) {
-            $query->where('client_id', $clientId);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['name', 'description'],
+                filterable: ['pipeline_id', 'current_stage_id', 'client_id', 'assigned_user_id', 'status', 'priority', 'is_active'],
+                sortable: ['id', 'name', 'value', 'priority', 'expected_closed_at', 'created_at', 'updated_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

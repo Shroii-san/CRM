@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-
-
-    use HasActivityLogs;
+    use HasActivityLogs, Filterable;
 
     protected $table = 'tasks';
 

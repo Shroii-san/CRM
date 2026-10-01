@@ -13,33 +13,29 @@ class UserService
         ?bool $isActive = null,
         int $perPage = 50,
         int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = User::query()
+        $params = array_filter([
+            'search'    => $search,
+            'role_id'   => $roleId,
+            'is_active' => $isActive,
+            'sort_by'   => $sortBy,
+            'sort_dir'  => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return User::query()
             ->select('id', 'role_id', 'name', 'email', 'phone', 'is_active', 'created_at')
             ->with(['role:id,name'])
-            ->orderBy('created_at', 'desc');
-
-        // Search
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by role
-        if ($roleId !== null) {
-            $query->where('role_id', $roleId);
-        }
-
-        // Filter by status
-        if ($isActive !== null) {
-            $query->where('is_active', $isActive);
-        }
-
-        // Pagination (backend)
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['name', 'email', 'phone'],
+                filterable: ['role_id', 'is_active'],
+                sortable: ['id', 'name', 'email', 'created_at', 'updated_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function create(array $data)

@@ -8,7 +8,7 @@ use App\Models\User;
 class InteractionService
 {
     /**
-     * Mendapatkan daftar interaksi/komunikasi dengan filter dan pagination.
+     * Mendapatkan daftar interaksi/komunikasi dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?User $user = null,
@@ -19,41 +19,32 @@ class InteractionService
         ?int $status = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = Interaction::query()
-            ->with(['client', 'deal', 'contactPerson', 'performer'])
-            ->orderBy('created_at', 'desc');
+        $params = array_filter([
+            'client_id'               => $clientId,
+            'deal_id'                => $dealId,
+            'organization_contact_id' => $contactId,
+            'type'                    => $type,
+            'status'                  => $status,
+            'search'                  => $search,
+            'sort_by'                 => $sortBy,
+            'sort_dir'                => $sortDir,
+        ], fn ($val) => $val !== null);
 
-        if ($clientId) {
-            $query->where('client_id', $clientId);
-        }
-
-        if ($dealId) {
-            $query->where('deal_id', $dealId);
-        }
-
-        if ($contactId) {
-            $query->where('organization_contact_id', $contactId);
-        }
-
-        if ($type !== null) {
-            $query->where('type', $type);
-        }
-
-        if ($status !== null) {
-            $query->where('status', $status);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('subject', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('summary', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+        return Interaction::query()
+            ->with(['client', 'deal', 'organizationContacts'])
+            ->applyFilters(
+                params: $params,
+                searchable: ['subject', 'description', 'summary'],
+                filterable: ['client_id', 'deal_id', 'organization_contact_id', 'type', 'status', 'performed_by'],
+                sortable: ['id', 'subject', 'start_at', 'end_at', 'created_at', 'updated_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
@@ -61,7 +52,7 @@ class InteractionService
      */
     public function find(int $id): Interaction
     {
-        return Interaction::with(['client', 'deal', 'contactPerson', 'performer'])->findOrFail($id);
+        return Interaction::with(['client', 'deal', 'organizationContacts'])->findOrFail($id);
     }
 
     /**

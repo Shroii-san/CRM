@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class TaskService
 {
     /**
-     * Mendapatkan daftar tugas dengan filter dan pagination.
+     * Mendapatkan daftar tugas dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?User $user = null,
@@ -21,36 +21,31 @@ class TaskService
         ?int $status = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'due_at',
+        ?string $sortDir = 'asc'
     ) {
-        $query = Task::query()
+        $params = array_filter([
+            'client_id'        => $clientId,
+            'deal_id'          => $dealId,
+            'assigned_user_id' => $assignedUserId,
+            'status'           => $status,
+            'search'           => $search,
+            'sort_by'          => $sortBy,
+            'sort_dir'         => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return Task::query()
             ->with(['client', 'deal', 'taskTemplate', 'assignedUser', 'reminders'])
-            ->orderBy('due_at', 'asc');
-
-        if ($clientId) {
-            $query->where('client_id', $clientId);
-        }
-
-        if ($dealId) {
-            $query->where('deal_id', $dealId);
-        }
-
-        if ($assignedUserId) {
-            $query->where('assigned_user_id', $assignedUserId);
-        }
-
-        if ($status !== null) {
-            $query->where('status', $status);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['name', 'description'],
+                filterable: ['client_id', 'deal_id', 'assigned_user_id', 'stage_task_template_id', 'status', 'priority'],
+                sortable: ['id', 'name', 'due_at', 'completed_at', 'status', 'priority', 'created_at', 'updated_at'],
+                defaultSortField: 'due_at',
+                defaultSortDir: 'asc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

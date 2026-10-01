@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Interaction extends Model
 {
-
-    use HasActivityLogs;
+    use HasActivityLogs, Filterable;
 
     protected $table = 'interactions';
 
@@ -46,7 +46,7 @@ class Interaction extends Model
 
     public function organizationContacts()
     {
-        return $this->belongsTo(OrganizationContact::class, 'organizaton_contact_id', 'id');
+        return $this->belongsTo(OrganizationContact::class, 'organization_contact_id', 'id');
     }
 
     public function attachable()

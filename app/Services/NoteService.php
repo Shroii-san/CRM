@@ -8,7 +8,7 @@ use App\Models\User;
 class NoteService
 {
     /**
-     * Mendapatkan daftar catatan dengan filter dan pagination.
+     * Mendapatkan daftar catatan dengan filter, search, sort, dan pagination.
      */
     public function list(
         ?User $user = null,
@@ -17,29 +17,30 @@ class NoteService
         ?string $noteType = null,
         ?string $search = null,
         int $perPage = 50,
-        int $page = 1
+        int $page = 1,
+        ?string $sortBy = 'created_at',
+        ?string $sortDir = 'desc'
     ) {
-        $query = Note::query()
+        $params = array_filter([
+            'client_id' => $clientId,
+            'deal_id'   => $dealId,
+            'note_type' => $noteType,
+            'search'    => $search,
+            'sort_by'   => $sortBy,
+            'sort_dir'  => $sortDir,
+        ], fn ($val) => $val !== null);
+
+        return Note::query()
             ->with(['client', 'deal', 'createdBy'])
-            ->orderBy('created_at', 'desc');
-
-        if ($clientId) {
-            $query->where('client_id', $clientId);
-        }
-
-        if ($dealId) {
-            $query->where('deal_id', $dealId);
-        }
-
-        if ($noteType) {
-            $query->where('note_type', $noteType);
-        }
-
-        if ($search) {
-            $query->where('content', 'like', "%{$search}%");
-        }
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+            ->applyFilters(
+                params: $params,
+                searchable: ['content'],
+                filterable: ['client_id', 'deal_id', 'note_type', 'created_by'],
+                sortable: ['id', 'note_type', 'created_at', 'updated_at'],
+                defaultSortField: 'created_at',
+                defaultSortDir: 'desc'
+            )
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class StageTaskTemplate extends Model
 {
-
-    use HasActivityLogs;
+    use HasActivityLogs, Filterable;
 
     protected $table = 'stage_task_templates';
 
@@ -39,5 +39,4 @@ class StageTaskTemplate extends Model
     {
         return $this->hasMany(Task::class, 'stage_task_template_id', 'id');
     }
-
 }

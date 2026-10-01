@@ -28,16 +28,7 @@ class RoleController extends Controller
 
         $roles = $this->roleService->list($search, $perPage, $page);
 
-        return RoleResource::collection($roles)
-            ->additional([
-                'meta' => [
-                    'total' => $roles->total(),
-                    'per_page' => $roles->perPage(),
-                    'current_page' => $roles->currentPage(),
-                    'last_page' => $roles->lastPage(),
-                ]
-            ])
-            ->response();
+        return $this->paginatedResponse($roles, RoleResource::class, 'Roles retrieved successfully');
     }
 
     /**
@@ -47,10 +38,7 @@ class RoleController extends Controller
     {
         $role = $this->roleService->create($request->validated());
 
-        return response()->json([
-            'message' => 'Role created successfully',
-            'data' => RoleResource::make($role)
-        ], 201);
+        return $this->successResponse(RoleResource::make($role), 'Role created successfully', 201);
     }
 
     /**
@@ -60,10 +48,7 @@ class RoleController extends Controller
     {
         $role = $this->roleService->update((int) $id, $request->validated());
 
-        return response()->json([
-            'message' => 'Role updated successfully',
-            'data' => RoleResource::make($role)
-        ]);
+        return $this->successResponse(RoleResource::make($role), 'Role updated successfully');
     }
 
     /**
@@ -74,13 +59,9 @@ class RoleController extends Controller
         try {
             $this->roleService->delete((int) $id);
 
-            return response()->json([
-                'message' => 'Role deleted successfully'
-            ]);
+            return $this->successResponse(null, 'Role deleted successfully');
         } catch (\InvalidArgumentException $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 422);
+            return $this->errorResponse($e->getMessage(), 422);
         }
     }
 
@@ -91,9 +72,6 @@ class RoleController extends Controller
     {
         $role = $this->roleService->assignPermissions((int) $id, $request->validated()['permissions']);
 
-        return response()->json([
-            'message' => 'Role permissions assigned successfully',
-            'data' => RoleResource::make($role)
-        ]);
+        return $this->successResponse(RoleResource::make($role), 'Role permissions assigned successfully');
     }
 }

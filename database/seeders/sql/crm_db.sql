@@ -8081,7 +8081,7 @@ COPY public.sales_visits (id, user_id, organizations_id, organization_contact_id
 -- Data for Name: deals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.deals (id, client_id, pipeline_id, current_stage_id, assigned_user_id, name, description, currency, value, status, priority, expected_close_at, actual_closed_at, is_active, created_at, updated_at) FROM stdin;
+COPY public.deals (id, client_id, pipeline_id, current_stage_id, assigned_user_id, name, description, currency, value, status, priority, expected_closed_at, actual_closed_at, is_active, created_at, updated_at) FROM stdin;
 2	46	1	1	33	PT. Xiee	Transaksi lama - PT. Xiee	IDR	5000000.00	2	1	2025-11-01	2025-11-21	t	2025-11-19 03:53:06	2025-11-21 01:27:40
 1	50	1	1	33	PT. Inotal Sistema Internasional	Transaksi lama - PT. Inotal Sistema Internasional	IDR	9000000.00	1	1	2025-11-01	2027-11-01	t	2025-11-19 03:51:53	2025-11-21 01:27:46
 3	48	1	1	33	Lixen	Transaksi lama - Lixen	IDR	7000000.00	1	1	2025-11-01	2029-11-01	t	2025-11-24 02:34:36	2025-11-24 02:34:36
@@ -8096,8 +8096,8 @@ COPY public.deals (id, client_id, pipeline_id, current_stage_id, assigned_user_i
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, role_id, name, email, phone, password_hash, is_active, remember_token, last_activity_at, created_at, updated_at) FROM stdin;
-1	1	superadmin	\N	\N	$2y$12$ZZ4kJd4QVlGVawpvZ2hxpO2Ub8PaqLw5c/R3PcSbUKTnPuyd3SJ2u	t	\N	2025-11-28 09:09:45	2025-09-08 10:44:30.321085	2025-11-28 09:09:45
+COPY public.users (id, role_id, name, email, phone, password, is_active, remember_token, last_activity_at, created_at, updated_at) FROM stdin;
+1	1	superadmin	\N	\N	$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi	t	\N	2025-11-28 09:09:45	2025-09-08 10:44:30.321085	2025-11-28 09:09:45
 11	7	ihsan	\N	\N	$2y$12$vk16wPJkoMU8DoXZkO1Wp.nhDq/SSy5ncc4v0TWYkqDXnrq7QzJfu	t	\N	2025-10-06 03:26:16	2025-09-18 05:35:13	2025-10-06 03:26:16
 32	12	annisanurulfajri	annisanurulfajri120494@gmail.com	6283829719550	$2y$12$JRWtNfmscXHVOSPiffsd9uqgB6YdX9CN82s/5EsyJiXW7dbcaYVWK	f	\N	2025-10-03 03:26:10	2025-10-03 10:17:16.510074	2025-11-17 03:03:22
 33	12	siskasriwahyuni	siskasriwahyuni2004@gmail.com	6281461243726	$2y$12$75h6xiF5UHahdtnE95J4vu6uNODhXmSoL0kGSdmps/AbMUIU4gnMm	f	\N	2025-10-03 03:37:03	2025-10-03 10:17:16.510074	2025-11-17 03:01:52

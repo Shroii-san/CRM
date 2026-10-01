@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -13,7 +13,7 @@ class AuthController extends Controller
      * Login dan dapatkan API token (Sanctum).
      *
      * POST /api/v1/auth/login
-     * Body: { "username": "...", "password": "..." }
+     * Body: { "name": "...", "password": "..." }
      */
     public function login(Request $request): JsonResponse
     {
@@ -28,18 +28,14 @@ class AuthController extends Controller
         ];
 
         if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Username atau password salah.',
-            ], 401);
+            return $this->errorResponse('Username atau password salah.', 401);
         }
 
         $user = Auth::user();
 
         if (!$user->is_active) {
             Auth::logout();
-            return response()->json([
-                'message' => 'Akun tidak aktif. Hubungi admin untuk aktivasi.',
-            ], 403);
+            return $this->errorResponse('Akun tidak aktif. Hubungi admin untuk aktivasi.', 403);
         }
 
         // Hapus token lama dengan nama yang sama (opsional, untuk single-session)
@@ -47,15 +43,14 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Login berhasil.',
-            'token'   => $token,
-            'user'    => [
+        return $this->successResponse([
+            'token' => $token,
+            'user'  => [
                 'id'   => $user->id,
                 'name' => $user->name,
                 'role' => $user->role?->name ?? null,
             ],
-        ]);
+        ], 'Login berhasil.');
     }
 
     /**
@@ -68,8 +63,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logout berhasil.',
-        ]);
+        return $this->successResponse(null, 'Logout berhasil.');
     }
 }

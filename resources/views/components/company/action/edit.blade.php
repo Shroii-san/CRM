@@ -70,8 +70,9 @@
                                         style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 2rem 0.5rem 2.25rem; font-size: 0.875rem; appearance: none;"
                                         required>
                                         <option value="">-- Pilih Jenis --</option>
-                                        @foreach($types as $type)
-                                            <option value="{{ $type->company_type_id }}">{{ $type->type_name }}</option>
+                                        @foreach($industries as $industry)
+                                            <option value="{{ $industry->id }}">{{ $industry->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <i class="fas fa-chevron-down"

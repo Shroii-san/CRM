@@ -53,20 +53,20 @@
                                     style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
                                     Jenis Perusahaan <span style="color: #ef4444;">*</span>
                                 </label>
-                                <select name="company_type_id"
+                                <select name="industry_id"
                                     style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     required>
                                     <option value="">-- Pilih Jenis --</option>
-                                    @foreach($types as $type)
-                                        <option value="{{ $type->company_type_id }}">{{ $type->type_name }}</option>
+                                    @foreach($industries as $industry)
+                                        <option value="{{ $industry->id }}">{{ $industry->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <!-- Tier -->
                             <div>
-                                <label
-                                    style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
+                                <label style=" display: block; font-size: 0.75rem; font-weight: 500; color: #374151;
+                                        margin-bottom: 0.375rem;">
                                     Tier
                                 </label>
                                 <select name="tier"

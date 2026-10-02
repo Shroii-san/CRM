@@ -45,11 +45,10 @@
             'status',
             'actions'
         ]" :filters="[
-            'industry_id' => $types->pluck('name', 'id')->toArray(),
+            'industry_id' => $industries->pluck('name', 'id')->toArray(),
             'tier' => ['A' => 'Tier A', 'B' => 'Tier B', 'C' => 'Tier C', 'D' => 'Tier D'],
             'is_active' => ['1' => 'Aktif', '0' => 'Nonaktif']
-        ]"
-                        ajaxUrl="/api/v1/organizations"
+        ]" ajaxUrl="/api/v1/organizations"
                         placeholder="Cari nama organisasi, deskripsi, atau email..." />
                 </div>
             </div>
@@ -58,20 +57,21 @@
             <x-company.table.table :companies="$companies" :currentMenuId="$currentMenuId" />
 
             <!-- Dynamic AJAX Pagination Container -->
-            <div data-pagination style="padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; background-color: #f9fafb;"></div>
+            <div data-pagination style="padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; background-color: #f9fafb;">
+            </div>
         </div>
     </div>
 
     <!-- Modals -->
-    <x-company.action.action :types="$types" :provinces="$provinces" />
-    <x-company.action.edit :types="$types" :provinces="$provinces" />
+    <x-company.action.action :industries="$industries" :provinces="$provinces" />
+    <x-company.action.edit :industries="$industries" :provinces="$provinces" />
 
     @push('scripts')
         <script>
             window._orgPermissions = {
                 edit: {{ auth()->user()->canAccess($currentMenuId, 'update') ? 'true' : 'false' }},
                 delete: {{ auth()->user()->canAccess($currentMenuId, 'delete') ? 'true' : 'false' }}
-            };
+                    };
         </script>
         <script src="{{ asset('js/organization/index.js') }}"></script>
         <script src="{{ asset('js/address-cascade.js') }}"></script>

@@ -1,69 +1,69 @@
-import { createFilterManager } from "../components/data-table/filter-manager";
-import { createSearchFilter } from "../components/data-table/search-filter";
-import { createFacetFilter } from "../components/data-table/facet-filter";
-import { createSortFilter } from "../components/data-table/sort-filter";
-import { createPaginationFilter } from "../components/data-table/pagination-filter";
-import { createDataTable } from "../components/data-table/data-table";
+// import { createFilterManager } from "../components/data-table/filter-manager";
+// import { createSearchFilter } from "../components/data-table/search-filter";
+// import { createFacetFilter } from "../components/data-table/facet-filter";
+// import { createSortFilter } from "../components/data-table/sort-filter";
+// import { createPaginationFilter } from "../components/data-table/pagination-filter";
+// import { createDataTable } from "../components/data-table/data-table";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const search = createSearchFilter("[data-search]");
+// document.addEventListener("DOMContentLoaded", () => {
+//     const search = createSearchFilter("[data-search]");
 
-    const facets = createFacetFilter({
-        industry_id: '[data-filter="industry_id"]',
-        tier: '[data-filter="tier"]',
-        is_active: '[data-filter="is_active"]',
-    });
+//     const facets = createFacetFilter({
+//         industry_id: '[data-filter="industry_id"]',
+//         tier: '[data-filter="tier"]',
+//         is_active: '[data-filter="is_active"]',
+//     });
 
-    const sort = createSortFilter('[data-sort="by"]', '[data-sort="dir"]', {
-        field: "created_at",
-        dir: "desc",
-    });
+//     const sort = createSortFilter('[data-sort="by"]', '[data-sort="dir"]', {
+//         field: "created_at",
+//         dir: "desc",
+//     });
 
-    const pagination = createPaginationFilter(
-        "[data-per-page]",
-        "[data-pagination]",
-    );
+//     const pagination = createPaginationFilter(
+//         "[data-per-page]",
+//         "[data-pagination]",
+//     );
 
-    const table = createDataTable("organizationTable", [
-        {
-            key: "name",
-        },
+//     const table = createDataTable("organizationTable", [
+//         {
+//             key: "name",
+//         },
 
-        {
-            key: "industry",
-            render: (row) => row.industry?.name ?? "-",
-        },
+//         {
+//             key: "industry",
+//             render: (row) => row.industry?.name ?? "-",
+//         },
 
-        {
-            key: "tier",
-        },
+//         {
+//             key: "tier",
+//         },
 
-        {
-            key: "is_active",
-            render: (row) => (row.is_active ? "Aktif" : "Nonaktif"),
-        },
-    ]);
+//         {
+//             key: "is_active",
+//             render: (row) => (row.is_active ? "Aktif" : "Nonaktif"),
+//         },
+//     ]);
 
-    const manager = createFilterManager("/api/organizations", {
-        debounceDelay: 300,
+//     const manager = createFilterManager("/api/organizations", {
+//         debounceDelay: 300,
 
-        onDataChanged: (data) => {
-            table.render(data);
+//         onDataChanged: (data) => {
+//             table.render(data);
 
-            pagination.renderPagination(data);
+//             pagination.renderPagination(data);
 
-            pagination.setPageData(data.meta);
-        },
-    });
+//             pagination.setPageData(data.meta);
+//         },
+//     });
 
-    manager
-        .registerFilter("search", search)
-        .registerFilter("facets", facets)
-        .registerFilter("sort", sort)
-        .registerFilter("pagination", pagination);
+//     manager
+//         .registerFilter("search", search)
+//         .registerFilter("facets", facets)
+//         .registerFilter("sort", sort)
+//         .registerFilter("pagination", pagination);
 
-    manager.fetchData();
-});
+//     manager.fetchData();
+// });
 
 const csrfToken =
     document

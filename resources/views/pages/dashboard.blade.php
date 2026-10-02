@@ -63,6 +63,12 @@
         }
     </style>
 
+    @if (session('api_token'))
+        <script>
+            localStorage.setItem('api_token', '{{ session("api_token") }}');
+        </script>
+    @endif
+
     @push('head')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     @endpush

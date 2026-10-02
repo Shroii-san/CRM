@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Filterable;
+use App\Services\PermissionService;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -75,6 +76,11 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function canAccess(int|string $menuIdOrRoute, string $action): bool
+    {
+        return app(PermissionService::class)->hasPermission($this, $menuIdOrRoute, $action);
     }
 
     public function setNameAttribute($value)

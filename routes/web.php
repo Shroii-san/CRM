@@ -46,9 +46,9 @@ Route::middleware('guest')->group(function () {
 // ==========================
 // Auth Actions (Non-Guest)
 // ==========================
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 // ==========================
 // Protected Web Routes

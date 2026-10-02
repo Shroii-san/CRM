@@ -84,9 +84,14 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Domain: Master Organization & Contact
     // -----------------------------------------------
-    // View: pages.company (OrganizationController -> existing blade)
-    Route::get('/company', [OrganizationController::class, 'index'])->name('company');
-    Route::get('/company/{id}', [OrganizationController::class, 'show'])->name('company.show');
+    // View: pages.organization (OrganizationController -> existing blade)
+    Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
+    Route::get('/organization/search', [OrganizationController::class, 'search'])->name('organization.search');
+    Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
+    Route::get('/organization/{id}', [OrganizationController::class, 'show'])->name('organization.show');
+    Route::get('/organization/{id}/pics', [OrganizationController::class, 'pics'])->name('organization.pics');
+    Route::put('/organization/{id}', [OrganizationController::class, 'update'])->name('organization.update');
+    Route::delete('/organization/{id}', [OrganizationController::class, 'destroy'])->name('organization.destroy');
 
     // View: pages.pic (OrganizationContactController -> existing blade)
     Route::get('/pic', [OrganizationContactController::class, 'index'])->name('pic');
@@ -94,8 +99,10 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Domain: Client Management
     // -----------------------------------------------
-    // View: pages.customers (ClientController -> existing blade)
-    Route::get('/customers', [ClientController::class, 'index'])->name('customers');
+    // View: pages.clients (ClientController -> existing blade)
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+    Route::get('/clients/search', [ClientController::class, 'search'])->name('clients.search');
+    Route::get('/clients/export', [ClientController::class, 'export'])->name('clients.export');
 
     // -----------------------------------------------
     // Domain: Sales Pipeline & Deals

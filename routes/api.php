@@ -35,7 +35,7 @@ Route::prefix('v1/auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-Route::prefix('v1')->name('api.v1.')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('v1')->name('api.v1.')->middleware(['auth:sanctum,web'])->group(function () {
 
     // ------------------------------
     // Domain: Auth & User Management

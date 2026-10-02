@@ -14,26 +14,34 @@ class OrganizationContactPolicy
 
     public function viewAny(User $user): bool
     {
-        return $this->permissionService->hasPermission($user, 'pic', 'view');
+        return $this->hasContactPermission($user, 'view');
     }
 
     public function view(User $user, OrganizationContact $contact): bool
     {
-        return $this->permissionService->hasPermission($user, 'pic', 'view');
+        return $this->hasContactPermission($user, 'view');
     }
 
     public function create(User $user): bool
     {
-        return $this->permissionService->hasPermission($user, 'pic', 'create');
+        return $this->hasContactPermission($user, 'create');
     }
 
     public function update(User $user, OrganizationContact $contact): bool
     {
-        return $this->permissionService->hasPermission($user, 'pic', 'update');
+        return $this->hasContactPermission($user, 'update');
     }
 
     public function delete(User $user, OrganizationContact $contact): bool
     {
-        return $this->permissionService->hasPermission($user, 'pic', 'delete');
+        return $this->hasContactPermission($user, 'delete');
+    }
+
+    private function hasContactPermission(User $user, string $action): bool
+    {
+        return $this->permissionService->hasPermission($user, 'organization_contacts', $action)
+            || $this->permissionService->hasPermission($user, 'organization_contact', $action)
+            || $this->permissionService->hasPermission($user, 'pic', $action)
+            || $this->permissionService->hasPermission($user, 'organization', $action);
     }
 }

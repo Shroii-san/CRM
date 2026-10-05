@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
 use App\Services\PermissionService;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasActivityLogs, Notifiable, HasFactory, Filterable;
+    use HasApiTokens, HasActivityLogs, Notifiable, HasFactory;
 
     protected $table = 'users';
     protected $fillable = [

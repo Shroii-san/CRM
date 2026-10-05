@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SalesVisit extends Model
 {
-    use HasFactory, HasActivityLogs, Filterable;
+    use HasFactory, HasActivityLogs;
 
     protected $table = 'sales_visits';
     protected $primaryKey = 'id';

@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    use HasActivityLogs, Filterable;
+    use HasActivityLogs;
 
     protected $table = 'clients';
     protected $fillable = [

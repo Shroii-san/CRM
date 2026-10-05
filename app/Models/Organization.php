@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-    use HasActivityLogs, Filterable;
+    use HasActivityLogs;
 
     protected $table = 'organizations';
 

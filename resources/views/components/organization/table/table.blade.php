@@ -9,12 +9,69 @@
                     <th
                         class="px-3 py-2 text-left text-[0.7rem] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         No</th>
-                    <th
-                        class="px-3 py-2 text-left text-[0.7rem] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                        Nama Perusahaan</th>
-                    <th
-                        class="px-3 py-2 text-left text-[0.7rem] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                        Jenis Industri</th>
+                    <th @click="onSort('name')" class="px-4 py-3 cursor-pointer select-none hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="px-3 py-2 text-left text-[0.7rem] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Nama
+                                Perusahaan</span>
+
+                            <!-- Area Ikon Panah -->
+                            <span class="inline-flex">
+                                <!-- 1. Panah Atas (Tampil jika kolom 'name' aktif & asc) -->
+                                <svg x-show="sortBy === 'name' && sortDir === 'asc'" class="w-4 h-4 text-blue-600"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7" />
+                                </svg>
+
+                                <!-- 2. Panah Bawah (Tampil jika kolom 'name' aktif & desc) -->
+                                <svg x-show="sortBy === 'name' && sortDir === 'desc'" class="w-4 h-4 text-blue-600"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+
+                                <!-- 3. Panah Netral/Atas-Bawah (Tampil jika kolom 'name' sedang TIDAK di-sort) -->
+                                <svg x-show="sortBy !== 'name'" class="w-4 h-4 text-gray-400 opacity-40" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                </svg>
+                            </span>
+                        </div>
+                    </th>
+                    <th @click="onSort('industry_name')"
+                        class="px-4 py-3 cursor-pointer select-none hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="px-3 py-2 text-left text-[0.7rem] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Jenis
+                                Industri</span>
+
+                            <!-- Area Ikon Panah -->
+                            <span class="inline-flex">
+                                <!-- 1. Panah Atas (Tampil jika kolom 'industry_name' aktif & asc) -->
+                                <svg x-show="sortBy === 'industry_name' && sortDir === 'asc'"
+                                    class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7" />
+                                </svg>
+
+                                <!-- 2. Panah Bawah (Tampil jika kolom 'industry_name' aktif & desc) -->
+                                <svg x-show="sortBy === 'industry_name' && sortDir === 'desc'"
+                                    class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+
+                                <!-- 3. Panah Netral/Atas-Bawah (Tampil jika kolom 'industry_name' sedang TIDAK di-sort) -->
+                                <svg x-show="sortBy !== 'industry_name'" class="w-4 h-4 text-gray-400 opacity-40"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                </svg>
+                            </span>
+                        </div>
+                    </th>
                     <th
                         class="px-3 py-2 text-left text-[0.7rem] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Tier</th>

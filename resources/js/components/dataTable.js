@@ -9,6 +9,7 @@ import { getNestedValue } from "../utils/getNestedValue.js";
  * @param {Array} options.columns Definisi kolom (key, label, sortable, render)
  * @param {Object} options.defaultSort Initial sort { field: 'id', dir: 'asc' }
  * @param {number} options.perPage Default item per halaman
+ * @param {Array} options.perPageOptions Opsi jumlah item per halaman (default: [10, 25, 75, 100])
  * @param {Object} options.initialFilters Initial filter values
  * @returns {Object} Alpine x-data component object
  */
@@ -18,6 +19,7 @@ export function createDataTable(options = {}) {
         columns = [],
         defaultSort = { field: "id", dir: "asc" },
         perPage = 10,
+        perPageOptions = [10, 25, 75, 100],
         initialFilters = {},
     } = options;
 
@@ -26,6 +28,7 @@ export function createDataTable(options = {}) {
         search: "",
         page: 1,
         perPage: perPage,
+        perPageOptions: perPageOptions,
         sortBy: defaultSort.field || "id",
         sortDir: defaultSort.dir || "asc",
         filters: { ...initialFilters },
@@ -77,7 +80,7 @@ export function createDataTable(options = {}) {
                 per_page: this.perPage,
                 sort_by: this.sortBy,
                 sort_dir: this.sortDir,
-                ...this.filters,
+                ...this.filters
             };
 
             try {
@@ -128,6 +131,15 @@ export function createDataTable(options = {}) {
             }
         },
 
+        onPerPageChange(event) {
+            const newPerPage = parseInt(event.target.value, 10);
+            if (!isNaN(newPerPage)) {
+                this.perPage = newPerPage;
+            }
+            this.page = 1;
+            this.load();
+        },
+
         onFilterChange(name, value) {
             this.filters[name] = value;
             this.page = 1;
@@ -162,6 +174,6 @@ export function createDataTable(options = {}) {
                 return col.render(row, index);
             }
             return getNestedValue(row, col.key, "-");
-        },
+        }
     };
 }

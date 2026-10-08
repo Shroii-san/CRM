@@ -134,7 +134,7 @@ abstract class BaseService
         return $query;
     }
 
-    private function applySorting(Builder $query, ?string $sortBy, ?string $sortDir): void
+    protected function applySorting(Builder $query, ?string $sortBy, ?string $sortDir): void
     {
         $sortableColumns = $this->getSortableColumns();
         $sortDir = strtolower($sortDir ?? 'asc') === 'desc' ? 'desc' : 'asc';

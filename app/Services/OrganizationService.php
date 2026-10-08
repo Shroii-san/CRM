@@ -33,7 +33,22 @@ class OrganizationService extends BaseService
 
     protected function getSortableColumns(): array
     {
-        return ['id', 'name', 'created_at', 'tier', 'is_active', 'industry_id'];
+        return ['id', 'name', 'created_at', 'tier', 'is_active', 'industry_id', 'industry_name'];
+    }
+
+    protected function applySorting(\Illuminate\Database\Eloquent\Builder $query, ?string $sortBy, ?string $sortDir): void
+    {
+        $sortDir = strtolower($sortDir ?? 'asc') === 'desc' ? 'desc' : 'asc';
+
+        if ($sortBy === 'industry_name') {
+            $query->orderBy(
+                Industry::select('name')->whereColumn('industries.id', 'organizations.industry_id'),
+                $sortDir
+            );
+            return;
+        }
+
+        parent::applySorting($query, $sortBy, $sortDir);
     }
 
     public function getFilterOptions(): array

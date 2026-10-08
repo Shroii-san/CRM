@@ -44,14 +44,14 @@ export function createDataTable(options = {}) {
             per_page: perPage
         },
 
-        // Debounced search handler
-        debouncedSearch: null,
+        // Debounced search handler (dibuat saat init)
+        _debouncedSearch: null,
 
         /**
          * Inisialisasi komponen Alpine
          */
         init() {
-            this.debouncedSearch = debounce(() => {
+            this._debouncedSearch = debounce(() => {
                 this.page = 1;
                 this.load();
             }, 300);
@@ -120,11 +120,11 @@ export function createDataTable(options = {}) {
             }
         },
 
-        // Trigger Event Handlers
+        // Event Handlers
         onSearchInput(event) {
             this.search = event.target.value;
-            if (this.debouncedSearch) {
-                this.debouncedSearch();
+            if (this._debouncedSearch) {
+                this._debouncedSearch();
             }
         },
 

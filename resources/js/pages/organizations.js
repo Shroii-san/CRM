@@ -169,11 +169,18 @@ function buildTableComponent() {
     };
 }
 
-// Cara resmi Alpine.js: register komponen di event alpine:init.
-// Script ini diload SETELAH Alpine CDN di layout utama, sehingga event selalu tertangkap.
-document.addEventListener('alpine:init', () => {
-    Alpine.data('organizationTable', buildTableComponent);
-});
+// Registrasi komponen Alpine organizationTable secara aman
+function registerComponent() {
+    if (window.Alpine && typeof window.Alpine.data === 'function') {
+        window.Alpine.data('organizationTable', buildTableComponent);
+    }
+}
+
+document.addEventListener('alpine:init', registerComponent);
+
+if (window.Alpine) {
+    registerComponent();
+}
 
 // Expose global helper untuk trigger detail dari luar scope Alpine (misal: onclick di PHP)
 window.showCompanyDetail = (id) => {

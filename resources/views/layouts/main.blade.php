@@ -11,8 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Vite --}}
+    @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 
+    {{-- Script khusus per halaman --}}
+    @stack('scripts')
 
     <style>
         .gradient-bg {
@@ -77,9 +80,6 @@
     <script src="{{ asset('js/geo-chart.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    {{-- Page-specific scripts dipush setelah Alpine agar alpine:init selalu tertangkap --}}
-    @stack('scripts')
 
     @if(session('error'))
         <script>

@@ -62,12 +62,6 @@ async function handleResponse(response) {
 }
 
 export const apiClient = {
-    /**
-     * HTTP GET Request
-     * @param {string} url Endpoint URL
-     * @param {Object} params Object parameter query
-     * @param {Object} options Opsi fetch tambahan
-     */
     async get(url, params = {}, options = {}) {
         const fullUrl = `${url}${buildQueryString(params)}`;
         const response = await fetch(fullUrl, {
@@ -79,12 +73,6 @@ export const apiClient = {
         return handleResponse(response);
     },
 
-    /**
-     * HTTP POST Request
-     * @param {string} url Endpoint URL
-     * @param {Object|FormData} data Body payload
-     * @param {Object} options Opsi fetch tambahan
-     */
     async post(url, data = {}, options = {}) {
         const isFormData = data instanceof FormData;
         const headers = buildHeaders(options.headers);
@@ -103,12 +91,6 @@ export const apiClient = {
         return handleResponse(response);
     },
 
-    /**
-     * HTTP PUT Request
-     * @param {string} url Endpoint URL
-     * @param {Object} data Body payload
-     * @param {Object} options Opsi fetch tambahan
-     */
     async put(url, data = {}, options = {}) {
         const headers = buildHeaders(options.headers);
         if (!headers['Content-Type']) {
@@ -125,11 +107,6 @@ export const apiClient = {
         return handleResponse(response);
     },
 
-    /**
-     * HTTP DELETE Request
-     * @param {string} url Endpoint URL
-     * @param {Object} options Opsi fetch tambahan
-     */
     async del(url, options = {}) {
         const response = await fetch(url, {
             method: 'DELETE',

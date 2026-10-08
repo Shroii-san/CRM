@@ -7,11 +7,11 @@
  * @param {*} defaultValue Nilai default jika properti tidak ditemukan
  * @returns {*} Nilai properti atau nilai default
  */
-export function getNestedValue(obj, path, defaultValue = '-') {
-    if (!obj || typeof obj !== 'object') return defaultValue;
+export function getNestedValue(obj, path, defaultValue = "-") {
+    if (!obj || typeof obj !== "object") return defaultValue;
     if (!path) return defaultValue;
 
-    const keys = path.split('.');
+    const keys = path.split(".");
     let current = obj;
 
     for (const key of keys) {

@@ -21,25 +21,34 @@ class OrganizationController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $search = $request->input('search');
-        $industryId = $request->input('industry_id') ? (int) $request->input('industry_id') : null;
-        $tier = $request->input('tier');
-        $isActive = $request->has('is_active') ? $request->boolean('is_active') : null;
-        $perPage = (int) $request->input('per_page', 50);
-        $page = (int) $request->input('page', 1);
+        // Collect filters - hanya yang ada di filterDefinitions
+        $filters = array_filter([
+            'industry_id' => $request->input('industry_id')
+                ? (int) $request->input('industry_id')
+                : null,
+            'tier' => $request->input('tier'),
+            'is_active' => $request->has('is_active')
+                ? ($request->boolean('is_active') ? 1 : 0)
+                : null,
+        ], fn($val) => $val !== null && $val !== '');
 
         $organizations = $this->organizationService->list(
-            user: $user,
-            search: $search,
-            industryId: $industryId,
-            tier: $tier,
-            isActive: $isActive,
-            perPage: $perPage,
-            page: $page
+            search: $request->input('search'),
+            filters: $filters,
+            perPage: (int) $request->input('per_page', 50),
+            page: (int) $request->input('page', 1),
+            sortBy: $request->input('sort_by', 'id'),
+            sortDir: $request->input('sort_dir', 'asc'),
         );
 
         return $this->paginatedResponse($organizations, OrganizationResource::class, 'Organization list retrieved successfully');
+    }
+
+    public function filterOptions(): JsonResponse
+    {
+        return response()->json(
+            $this->organizationService->getFilterOptions()
+        );
     }
 
     /**
@@ -85,7 +94,6 @@ class OrganizationController extends Controller
     public function dropdown(Request $request): JsonResponse
     {
         $organizations = $this->organizationService->list(
-            user: $request->user(),
             search: $request->input('search'),
             perPage: 100
         );

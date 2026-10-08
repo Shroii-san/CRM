@@ -1,5 +1,5 @@
-import { debounce } from '../utils/debounce.js';
-import { getNestedValue } from '../utils/getNestedValue.js';
+import { debounce } from "../utils/debounce.js";
+import { getNestedValue } from "../utils/getNestedValue.js";
 
 /**
  * Factory untuk membuat dataTable generic yang kompatibel dengan Alpine.js (x-data).
@@ -16,18 +16,18 @@ export function createDataTable(options = {}) {
     const {
         fetchData,
         columns = [],
-        defaultSort = { field: 'id', dir: 'asc' },
+        defaultSort = { field: "id", dir: "asc" },
         perPage = 10,
-        initialFilters = {}
+        initialFilters = {},
     } = options;
 
     return {
         // State
-        search: '',
+        search: "",
         page: 1,
         perPage: perPage,
-        sortBy: defaultSort.field || 'id',
-        sortDir: defaultSort.dir || 'asc',
+        sortBy: defaultSort.field || "id",
+        sortDir: defaultSort.dir || "asc",
         filters: { ...initialFilters },
 
         items: [],
@@ -41,7 +41,7 @@ export function createDataTable(options = {}) {
             from: 0,
             to: 0,
             total: 0,
-            per_page: perPage
+            per_page: perPage,
         },
 
         // Debounced search handler (dibuat saat init)
@@ -63,8 +63,8 @@ export function createDataTable(options = {}) {
          * Memuat data dengan menyusun query object dan memanggil fetchData()
          */
         async load() {
-            if (typeof fetchData !== 'function') {
-                console.error('[dataTable] fetchData function is required.');
+            if (typeof fetchData !== "function") {
+                console.error("[dataTable] fetchData function is required.");
                 return;
             }
 
@@ -77,7 +77,7 @@ export function createDataTable(options = {}) {
                 per_page: this.perPage,
                 sort_by: this.sortBy,
                 sort_dir: this.sortDir,
-                ...this.filters
+                ...this.filters,
             };
 
             try {
@@ -96,7 +96,7 @@ export function createDataTable(options = {}) {
                         from: response.from || (rawData.length ? 1 : 0),
                         to: response.to || rawData.length,
                         total: response.total || rawData.length,
-                        per_page: response.per_page || this.perPage
+                        per_page: response.per_page || this.perPage,
                     };
                 } else if (response && Array.isArray(response.customers)) {
                     rawData = response.customers;
@@ -109,11 +109,11 @@ export function createDataTable(options = {}) {
                     from: paginationMeta.from || (rawData.length ? 1 : 0),
                     to: paginationMeta.to || rawData.length,
                     total: paginationMeta.total || rawData.length,
-                    per_page: paginationMeta.per_page || this.perPage
+                    per_page: paginationMeta.per_page || this.perPage,
                 };
             } catch (err) {
-                console.error('[dataTable] Error loading data:', err);
-                this.error = err.message || 'Gagal memuat data';
+                console.error("[dataTable] Error loading data:", err);
+                this.error = err.message || "Gagal memuat data";
                 this.items = [];
             } finally {
                 this.loading = false;
@@ -136,10 +136,10 @@ export function createDataTable(options = {}) {
 
         onSort(key) {
             if (this.sortBy === key) {
-                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+                this.sortDir = this.sortDir === "asc" ? "desc" : "asc";
             } else {
                 this.sortBy = key;
-                this.sortDir = 'asc';
+                this.sortDir = "asc";
             }
             this.load();
         },
@@ -158,10 +158,10 @@ export function createDataTable(options = {}) {
          * Mengambil nilai sel untuk kolom tertentu dari item row
          */
         renderCell(row, col, index) {
-            if (typeof col.render === 'function') {
+            if (typeof col.render === "function") {
                 return col.render(row, index);
             }
-            return getNestedValue(row, col.key, '-');
-        }
+            return getNestedValue(row, col.key, "-");
+        },
     };
 }

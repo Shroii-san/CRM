@@ -9,7 +9,7 @@
     <div class="container-expanded mx-auto px-6 lg:px-8 py-8 pt-[60px] mt-4 fade-in">
 
         <!-- Client Management Card dengan Everything Inside -->
-        <div
+        <div x-data="clientTable"
             style="background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; overflow: hidden;">
 
             <!-- Card Header dengan Title dan Action Buttons -->
@@ -84,6 +84,7 @@
     <x-clients.action.edit :provinces="$provinces" />
 
     @push('scripts')
+        @vite(['resources/js/pages/clients.js'])
         <script src="{{ asset('js/Clients.js') }}"></script>
         <script src="{{ asset('js/address-cascade.js') }}"></script>
     @endpush

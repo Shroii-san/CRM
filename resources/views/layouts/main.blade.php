@@ -11,9 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Vite --}}
+    @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 
-    {{-- Di layout utama --}}
+    {{-- Script khusus per halaman --}}
     @stack('scripts')
 
     <style>
@@ -77,8 +78,9 @@
 
 
     <script src="{{ asset('js/geo-chart.js') }}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
     @if(session('error'))
         <script>
             Swal.fire({

@@ -98,13 +98,15 @@ abstract class BaseService
         return $query;
     }
 
-    private function applySearch(Builder $query, string $keyword): Builder
+    protected function applySearch(Builder $query, string $keyword): Builder
     {
-        return $query->where(function (Builder $q) use ($keyword) {
+        $lowerKeyword = mb_strtolower($keyword, 'UTF-8');
+
+        return $query->where(function (Builder $q) use ($lowerKeyword) {
             $searchColumns = $this->getSearchableColumns();
 
             foreach ($searchColumns as $column) {
-                $q->orWhere($column, 'like', "%{$keyword}%");
+                $q->orWhere(\Illuminate\Support\Facades\DB::raw("LOWER({$column})"), 'like', "%{$lowerKeyword}%");
             }
         });
     }
@@ -134,7 +136,7 @@ abstract class BaseService
         return $query;
     }
 
-    private function applySorting(Builder $query, ?string $sortBy, ?string $sortDir): void
+    protected function applySorting(Builder $query, ?string $sortBy, ?string $sortDir): void
     {
         $sortableColumns = $this->getSortableColumns();
         $sortDir = strtolower($sortDir ?? 'asc') === 'desc' ? 'desc' : 'asc';

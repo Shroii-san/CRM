@@ -3,50 +3,61 @@
 namespace App\Services;
 
 use App\Models\Organization;
-use App\Models\User;
+use App\Models\Industry;
 
-class OrganizationService
+class OrganizationService extends BaseService
 {
-    /**
-     * Mendapatkan daftar organisasi murni core (list, search, filter, sort, pagination).
-     */
-    public function list(
-        ?User $user = null,
-        ?string $search = null,
-        ?int $industryId = null,
-        ?string $tier = null,
-        ?bool $isActive = null,
-        int $perPage = 50,
-        int $page = 1,
-        ?string $sortBy = 'name',
-        ?string $sortDir = 'asc'
-    ) {
-        $params = array_filter([
-            'search'      => $search,
-            'industry_id' => $industryId,
-            'tier'        => $tier,
-            'is_active'   => $isActive,
-            'sort_by'     => $sortBy,
-            'sort_dir'    => $sortDir,
-        ], fn ($val) => $val !== null);
+    protected function getModel(): string
+    {
+        return Organization::class;
+    }
 
-        $query = Organization::query()
-            ->with(['industry', 'province', 'regency', 'district', 'village']);
+    protected function getSearchableColumns(): array
+    {
+        return ['name', 'description',];
+    }
 
-        if ($user && method_exists(Organization::class, 'scopeForUser')) {
-            $query->forUser($user);
+    protected function getFilterDefinitions(): array
+    {
+        return [
+            'industry_id' => 'equal',
+            'tier' => 'equal',
+            'is_active' => 'equal',
+        ];
+    }
+
+    protected function getWithRelations(): array
+    {
+        return ['industry'];
+    }
+
+    protected function getSortableColumns(): array
+    {
+        return ['id', 'name', 'created_at', 'tier', 'is_active', 'industry_id', 'industry_name'];
+    }
+
+    protected function applySorting(\Illuminate\Database\Eloquent\Builder $query, ?string $sortBy, ?string $sortDir): void
+    {
+        $sortDir = strtolower($sortDir ?? 'asc') === 'desc' ? 'desc' : 'asc';
+
+        if ($sortBy === 'industry_name') {
+            $query->orderBy(
+                Industry::select('name')->whereColumn('industries.id', 'organizations.industry_id'),
+                $sortDir
+            );
+            return;
         }
 
-        return $query
-            ->applyFilters(
-                params: $params,
-                searchable: ['name', 'email', 'phone', 'address'],
-                filterable: ['industry_id', 'tier', 'is_active'],
-                sortable: ['id', 'name', 'tier', 'created_at', 'updated_at'],
-                defaultSortField: 'name',
-                defaultSortDir: 'asc'
-            )
-            ->paginate($perPage, ['*'], 'page', $page);
+        parent::applySorting($query, $sortBy, $sortDir);
+    }
+
+    public function getFilterOptions(): array
+    {
+        return [
+            'industry_id' => Industry::pluck('name', 'id'),
+            'tier' => ['A', 'B', 'C', 'D'],
+            'is_active' => [true => 'Active', false => 'Inactive'],
+        ];
     }
 
     /**
@@ -56,18 +67,18 @@ class OrganizationService
     {
         return Organization::create([
             'industry_id' => $data['industry_id'],
-            'tier'        => $data['tier'] ?? 'A',
-            'name'        => $data['name'],
-            'email'       => $data['email'] ?? null,
-            'phone'       => $data['phone'] ?? null,
-            'website'     => $data['website'] ?? null,
+            'tier' => $data['tier'] ?? 'A',
+            'name' => $data['name'],
+            'email' => $data['email'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'website' => $data['website'] ?? null,
             'description' => $data['description'] ?? null,
-            'address'     => $data['address'] ?? null,
+            'address' => $data['address'] ?? null,
             'province_id' => $data['province_id'] ?? null,
-            'regency_id'  => $data['regency_id'] ?? null,
+            'regency_id' => $data['regency_id'] ?? null,
             'district_id' => $data['district_id'] ?? null,
-            'village_id'  => $data['village_id'] ?? null,
-            'is_active'   => $data['is_active'] ?? true,
+            'village_id' => $data['village_id'] ?? null,
+            'is_active' => $data['is_active'] ?? true,
         ]);
     }
 
@@ -79,18 +90,18 @@ class OrganizationService
         $organization = Organization::findOrFail($id);
         $organization->update([
             'industry_id' => $data['industry_id'] ?? $organization->industry_id,
-            'tier'        => $data['tier'] ?? $organization->tier,
-            'name'        => $data['name'] ?? $organization->name,
-            'email'       => $data['email'] ?? $organization->email,
-            'phone'       => $data['phone'] ?? $organization->phone,
-            'website'     => $data['website'] ?? $organization->website,
+            'tier' => $data['tier'] ?? $organization->tier,
+            'name' => $data['name'] ?? $organization->name,
+            'email' => $data['email'] ?? $organization->email,
+            'phone' => $data['phone'] ?? $organization->phone,
+            'website' => $data['website'] ?? $organization->website,
             'description' => $data['description'] ?? $organization->description,
-            'address'     => $data['address'] ?? $organization->address,
+            'address' => $data['address'] ?? $organization->address,
             'province_id' => $data['province_id'] ?? $organization->province_id,
-            'regency_id'  => $data['regency_id'] ?? $organization->regency_id,
+            'regency_id' => $data['regency_id'] ?? $organization->regency_id,
             'district_id' => $data['district_id'] ?? $organization->district_id,
-            'village_id'  => $data['village_id'] ?? $organization->village_id,
-            'is_active'   => $data['is_active'] ?? $organization->is_active,
+            'village_id' => $data['village_id'] ?? $organization->village_id,
+            'is_active' => $data['is_active'] ?? $organization->is_active,
         ]);
 
         return $organization->refresh();

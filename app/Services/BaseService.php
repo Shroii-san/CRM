@@ -111,7 +111,7 @@ abstract class BaseService
         });
     }
 
-    private function applyFilters(Builder $query, array $filters): Builder
+    protected function applyFilters(Builder $query, array $filters): Builder
     {
         $definitions = $this->getFilterDefinitions();
 

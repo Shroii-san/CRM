@@ -21,23 +21,33 @@ class ClientController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $search = $request->input('search');
-        $sourceId = $request->input('source_id') ? (int) $request->input('source_id') : null;
-        $isActive = $request->has('is_active') ? $request->boolean('is_active') : null;
-        $perPage = (int) $request->input('per_page', 50);
-        $page = (int) $request->input('page', 1);
+
+        $filters = array_filter([
+            'source_id' => $request->input('source_id')
+                ? (int) $request->input('source_id')
+                : null,
+            'is_active' => $request->has('is_active')
+                ? ($request->boolean('is_active') ? 1 : 0)
+                : null,
+        ], fn($val) => $val !== null && $val !== '');
 
         $clients = $this->clientService->list(
-            user: $user,
-            search: $search,
-            sourceId: $sourceId,
-            isActive: $isActive,
-            perPage: $perPage,
-            page: $page
+            search: $request->input('search'),
+            filters: $filters,
+            perPage: (int) $request->input('per_page', 50),
+            page: (int) $request->input('page', 1),
+            sortBy: $request->input('sort_by', 'id'),
+            sortDir: $request->input('sort_dir', 'asc'),
         );
 
         return $this->paginatedResponse($clients, ClientResource::class, 'Client list retrieved successfully');
+    }
+
+    public function filterOptions(): JsonResponse
+    {
+        return response()->json(
+            $this->clientService->getFilterOptions()
+        );
     }
 
     /**
@@ -83,7 +93,7 @@ class ClientController extends Controller
     public function bulkDelete(Request $request): JsonResponse
     {
         $request->validate([
-            'ids'   => 'required|array',
+            'ids' => 'required|array',
             'ids.*' => 'exists:clients,id',
         ]);
 

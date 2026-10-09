@@ -3,50 +3,62 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class ClientService
+class ClientService extends BaseService
 {
-    /**
-     * Mendapatkan daftar client murni core dengan standard query pattern (search, filter, sort, pagination).
-     */
-    public function list(
-        ?User $user = null,
-        ?string $search = null,
-        ?int $sourceId = null,
-        ?bool $isActive = null,
-        int $perPage = 50,
-        int $page = 1,
-        ?string $sortBy = 'created_at',
-        ?string $sortDir = 'desc'
-    ) {
-        $params = array_filter([
-            'search'    => $search,
-            'source_id' => $sourceId,
-            'is_active' => $isActive,
-            'sort_by'   => $sortBy,
-            'sort_dir'  => $sortDir,
-        ], fn ($val) => $val !== null);
 
-        return Client::query()
-            ->with(['person', 'organization', 'source'])
-            ->applyFilters(
-                params: $params,
-                searchable: [
-                    'person.name',
-                    'person.email',
-                    'person.phone',
-                    'organization.name',
-                    'organization.email',
-                    'organization.phone',
-                ],
-                filterable: ['source_id', 'is_active'],
-                sortable: ['id', 'created_at', 'updated_at'],
-                defaultSortField: 'created_at',
-                defaultSortDir: 'desc'
-            )
-            ->paginate($perPage, ['*'], 'page', $page);
+    protected function getModel(): string
+    {
+        return Client::class;
+    }
+
+    protected function getSearchableColumns(): array
+    {
+        return ['person.name', 'organization.name'];
+    }
+
+    protected function getFilterDefinitions(): array
+    {
+        return [
+            'source_id' => 'equal',
+            'is_active' => 'equal',
+        ];
+    }
+
+    protected function getWithRelations(): array
+    {
+        return ['person', 'organization', 'source'];
+    }
+
+    protected function getSortableColumns(): array
+    {
+        return ['id', 'created_at', 'person.name', 'organization.name'];
+    }
+
+    protected function applySorting(\Illuminate\Database\Eloquent\Builder $query, ?string $sortBy, ?string $sortDir): void
+    {
+        $sortDir = strtolower($sortDir ?? 'asc') === 'desc' ? 'desc' : 'asc';
+
+        if ($sortBy === 'clients_name') {
+            $query->orderBy(
+                Client::select('name')->whereColumn('persons.id', 'clients.person_id'),
+                $sortDir
+            );
+            return;
+        }
+
+        if ($sortBy === 'organizations_name') {
+            $query->orderBy(
+                Organization::select('name')->whereColumn('organizations.id', 'clients.organization_id'),
+                $sortDir
+            );
+            return;
+        }
+
+        parent::applySorting($query, $sortBy, $sortDir);
     }
 
     /**
@@ -55,10 +67,10 @@ class ClientService
     public function create(array $data): Client
     {
         return Client::create([
-            'person_id'       => $data['person_id'] ?? null,
+            'person_id' => $data['person_id'] ?? null,
             'organization_id' => $data['organization_id'] ?? null,
-            'source_id'       => $data['source_id'],
-            'is_active'       => $data['is_active'] ?? true,
+            'source_id' => $data['source_id'],
+            'is_active' => $data['is_active'] ?? true,
         ]);
     }
 
@@ -70,10 +82,14 @@ class ClientService
         $client = Client::findOrFail($id);
 
         $clientUpdate = [];
-        if (array_key_exists('person_id', $data))       $clientUpdate['person_id']       = $data['person_id'];
-        if (array_key_exists('organization_id', $data)) $clientUpdate['organization_id'] = $data['organization_id'];
-        if (array_key_exists('source_id', $data))       $clientUpdate['source_id']       = $data['source_id'];
-        if (array_key_exists('is_active', $data))       $clientUpdate['is_active']       = (bool) $data['is_active'];
+        if (array_key_exists('person_id', $data))
+            $clientUpdate['person_id'] = $data['person_id'];
+        if (array_key_exists('organization_id', $data))
+            $clientUpdate['organization_id'] = $data['organization_id'];
+        if (array_key_exists('source_id', $data))
+            $clientUpdate['source_id'] = $data['source_id'];
+        if (array_key_exists('is_active', $data))
+            $clientUpdate['is_active'] = (bool) $data['is_active'];
 
         if (!empty($clientUpdate)) {
             $client->update($clientUpdate);

@@ -51,21 +51,7 @@
             <!-- Search and Filter Section -->
             <div style="padding: 0.5rem 1.5rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb;">
                 <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-                    <x-globals.filtersearch tableId="ClientsTable" :columns="[
-            'number',
-            'name',
-            'type',
-            'email',
-            'phone',
-            'address',
-            'status',
-            'sales',
-            'actions'
-        ]" :filters="[
-            'Status' => ['Lead', 'Prospect', 'Active', 'Inactive'],
-            'Type' => ['Personal', 'Company'],
-        ]" ajaxUrl="{{ route('clients.search') }}"
-                        placeholder="Cari nama, email, telepon, atau PIC..." />
+                    <x-clients.attribut.filter :sources="$sources" />
                 </div>
             </div>
 

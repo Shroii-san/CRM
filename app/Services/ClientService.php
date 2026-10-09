@@ -15,9 +15,30 @@ class ClientService extends BaseService
         return Client::class;
     }
 
+    /**
+     * Tidak dipakai langsung — search di-override lewat applySearch()
+     * karena kolom pencarian ada di relasi (persons, organizations), bukan tabel clients.
+     */
     protected function getSearchableColumns(): array
     {
-        return ['person.name', 'organization.name'];
+        return [];
+    }
+
+    /**
+     * Override applySearch untuk mencari di kolom relasi person.name dan organization.name
+     * menggunakan whereHas agar tidak membutuhkan join manual.
+     */
+    protected function applySearch(\Illuminate\Database\Eloquent\Builder $query, string $keyword): \Illuminate\Database\Eloquent\Builder
+    {
+        $lower = mb_strtolower($keyword, 'UTF-8');
+
+        return $query->where(function ($q) use ($lower) {
+            $q->whereHas('person', function ($pq) use ($lower) {
+                $pq->where(\Illuminate\Support\Facades\DB::raw('LOWER(persons.name)'), 'like', "%{$lower}%");
+            })->orWhereHas('organization', function ($oq) use ($lower) {
+                $oq->where(\Illuminate\Support\Facades\DB::raw('LOWER(organizations.name)'), 'like', "%{$lower}%");
+            });
+        });
     }
 
     protected function getFilterDefinitions(): array

@@ -4,10 +4,10 @@
         <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
-                    <th class="px-3 py-2 text-left">
+                    <!-- <th class="px-3 py-2 text-left">
                         <input type="checkbox" id="selectAll"
                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5" />
-                    </th>
+                    </th> -->
                     <th class="px-3 py-2 text-left text-[10px] font-medium text-gray-500 uppercase tracking-tight">
                         No
                     </th>

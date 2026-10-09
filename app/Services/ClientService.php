@@ -38,6 +38,30 @@ class ClientService extends BaseService
         return ['id', 'created_at', 'person.name', 'organization.name'];
     }
 
+    /**
+     * Override applyFilters untuk menangani filter 'client_type' secara custom.
+     * Kolom client_type tidak ada di DB; tipe ditentukan dari relasi:
+     *   - 'person'       → person_id IS NOT NULL
+     *   - 'organization' → organization_id IS NOT NULL
+     */
+    protected function applyFilters(\Illuminate\Database\Eloquent\Builder $query, array $filters): \Illuminate\Database\Eloquent\Builder
+    {
+        if (isset($filters['client_type']) && $filters['client_type'] !== '') {
+            $type = $filters['client_type'];
+
+            if ($type === 'person') {
+                $query->whereNotNull('person_id');
+            } elseif ($type === 'organization') {
+                $query->whereNotNull('organization_id');
+            }
+
+            // Hapus dari array agar tidak diteruskan ke parent yang tidak tahu filter ini
+            unset($filters['client_type']);
+        }
+
+        return parent::applyFilters($query, $filters);
+    }
+
     protected function applySorting(\Illuminate\Database\Eloquent\Builder $query, ?string $sortBy, ?string $sortDir): void
     {
         $sortDir = strtolower($sortDir ?? 'asc') === 'desc' ? 'desc' : 'asc';

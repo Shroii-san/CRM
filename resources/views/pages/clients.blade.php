@@ -58,10 +58,8 @@
             <!-- Table Section - NO PADDING! -->
             <x-clients.table.table />
 
-            <!-- Pagination -->
-            <div style="border-top: 1px solid #e5e7eb; background-color: #f9fafb;">
-                <x-globals.pagination />
-            </div>
+            <!-- Dynamic AJAX Pagination Container -->
+            <x-clients.table.footer />
         </div>
     </div>
 

@@ -9,7 +9,7 @@
     <div class="container-expanded mx-auto px-6 lg:px-8 py-8 pt-[60px] mt-4 fade-in">
 
         <!-- Client Management Card dengan Everything Inside -->
-        <div
+        <div x-data="clientTable"
             style="background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; overflow: hidden;">
 
             <!-- Card Header dengan Title dan Action Buttons -->
@@ -51,31 +51,15 @@
             <!-- Search and Filter Section -->
             <div style="padding: 0.5rem 1.5rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb;">
                 <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-                    <x-globals.filtersearch tableId="ClientsTable" :columns="[
-            'number',
-            'name',
-            'type',
-            'email',
-            'phone',
-            'address',
-            'status',
-            'sales',
-            'actions'
-        ]" :filters="[
-            'Status' => ['Lead', 'Prospect', 'Active', 'Inactive'],
-            'Type' => ['Personal', 'Company'],
-        ]" ajaxUrl="{{ route('clients.search') }}"
-                        placeholder="Cari nama, email, telepon, atau PIC..." />
+                    <x-clients.attribut.filter :sources="$sources" />
                 </div>
             </div>
 
             <!-- Table Section - NO PADDING! -->
             <x-clients.table.table />
 
-            <!-- Pagination -->
-            <div style="border-top: 1px solid #e5e7eb; background-color: #f9fafb;">
-                <x-globals.pagination />
-            </div>
+            <!-- Dynamic AJAX Pagination Container -->
+            <x-clients.table.footer />
         </div>
     </div>
 
@@ -84,6 +68,7 @@
     <x-clients.action.edit :provinces="$provinces" />
 
     @push('scripts')
+        @vite(['resources/js/pages/clients.js'])
         <script src="{{ asset('js/Clients.js') }}"></script>
         <script src="{{ asset('js/address-cascade.js') }}"></script>
     @endpush

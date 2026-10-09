@@ -29,6 +29,7 @@ class ClientController extends Controller
             'is_active' => $request->has('is_active')
                 ? ($request->boolean('is_active') ? 1 : 0)
                 : null,
+            'client_type' => $request->input('client_type') ?: null,
         ], fn($val) => $val !== null && $val !== '');
 
         $clients = $this->clientService->list(

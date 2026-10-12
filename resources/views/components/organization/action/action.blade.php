@@ -278,7 +278,7 @@
         <!-- Footer - Fixed at bottom -->
         <div
             style="display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; background-color: #f9fafb; flex-shrink: 0;">
-            <button type="submit" form="addCompanyForm"
+            <button type="button" onclick="submitAddCompanyModal()"
                 style="background-color: #4f46e5; color: white; border: none; border-radius: 0.5rem; padding: 0.5rem 1.25rem; font-weight: 500; font-size: 0.75rem; cursor: pointer; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); transition: all 0.2s;">
                 <i class="fas fa-save" style="margin-right: 0.375rem;"></i>Simpan Data
             </button>

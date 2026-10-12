@@ -30,11 +30,23 @@ class OrganizationController extends Controller
         $totalIndustry      = Organization::distinct()->count('industry_id');
         $tierOrganization   = Organization::distinct()->count('tier');
         $activeOrganization = Organization::where('is_active', true)->count();
+        $allOrganizations   = Organization::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('pages.organizations', array_merge(
-            compact('industries', 'provinces', 'totalOrganizations', 'totalIndustry', 'tierOrganization', 'activeOrganization'),
-            ['companies' => $organizations, 'organizations' => $organizations]
+            compact('industries', 'provinces', 'totalOrganizations', 'totalIndustry', 'tierOrganization', 'activeOrganization', 'allOrganizations'),
+            ['companies' => $organizations, 'organizations' => $organizations, 'organizationList' => $allOrganizations]
         ));
+    }
+
+    /**
+     * Endpoint opsi organisasi (JSON) untuk dropdown/checklist di web view.
+     */
+    public function options()
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => Organization::orderBy('name', 'asc')->get(['id', 'name']),
+        ]);
     }
 
     /**
@@ -213,7 +225,12 @@ class OrganizationController extends Controller
      */
     public function exportPdfSelected(Request $request)
     {
-        $ids = array_filter(explode(',', $request->query('ids', '')));
+        $rawIds = $request->query('ids', '');
+        if (is_array($rawIds)) {
+            $ids = array_map('intval', array_filter($rawIds));
+        } else {
+            $ids = array_map('intval', array_filter(explode(',', (string) $rawIds)));
+        }
 
         return $this->exportService->exportPdfSelected($ids);
     }

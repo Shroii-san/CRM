@@ -36,6 +36,20 @@ class AddressCascade {
         
         this.init();
     }
+
+    // Helper: fetch dengan CSRF token dan session credentials
+    async fetchRegion(url) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        return fetch(url, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+        });
+    }
     
     // Initialize cascade
     init() {
@@ -181,7 +195,7 @@ class AddressCascade {
             const url = `/api/v1/regions/provinces/${provinceId}/regencies`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
-            const response = await fetch(url);
+            const response = await this.fetchRegion(url);
             
             console.log(`📊 [${this.instanceId}] Response status:`, response.status);
             
@@ -226,7 +240,7 @@ class AddressCascade {
             const url = `/api/v1/regions/regencies/${regencyId}/districts`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
-            const response = await fetch(url);
+            const response = await this.fetchRegion(url);
             
             console.log(`📊 [${this.instanceId}] Response status:`, response.status);
             
@@ -269,7 +283,7 @@ class AddressCascade {
             const url = `/api/v1/regions/districts/${districtId}/villages`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
-            const response = await fetch(url);
+            const response = await this.fetchRegion(url);
             
             console.log(`📊 [${this.instanceId}] Response status:`, response.status);
             

@@ -120,6 +120,11 @@
                 <select id="exportPdfOrgSelect"
                     style="width: 100%; padding: 0.625rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.875rem; margin-bottom: 1.25rem;">
                     <option value="">-- Pilih Organisasi --</option>
+                    @if(isset($allOrganizations))
+                        @foreach($allOrganizations as $org)
+                            <option value="{{ $org->id }}">{{ $org->name }}</option>
+                        @endforeach
+                    @endif
                 </select>
             </div>
 
@@ -150,11 +155,31 @@
 
             <!-- Tab 3: Pilih Beberapa Organisasi -->
             <div id="tabContentMulti" style="display: none;">
-                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.75rem;">Centang satu atau lebih
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">Centang satu atau lebih
                     organisasi yang ingin dimasukkan ke dalam daftar PDF.</p>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0 0.125rem;">
+                    <label style="font-size: 0.8rem; color: #4b5563; cursor: pointer; display: flex; align-items: center; gap: 0.375rem; user-select: none;">
+                        <input type="checkbox" id="selectAllExportPdf" onchange="toggleSelectAllExportPdf(this)">
+                        <span>Pilih Semua</span>
+                    </label>
+                    <input type="text" id="searchExportPdfMulti" placeholder="Cari organisasi..." oninput="filterExportPdfMulti(this.value)"
+                        style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; width: 150px; outline: none;">
+                </div>
+
                 <div id="exportPdfMultiList"
                     style="max-height: 220px; overflow-y: auto; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem; margin-bottom: 1.25rem;">
-                    <p style="font-size: 0.8rem; color: #9ca3af; margin: 0.5rem;">Memuat data...</p>
+                    @if(isset($allOrganizations) && $allOrganizations->isNotEmpty())
+                        @foreach($allOrganizations as $org)
+                            <label class="export-multi-item" data-name="{{ strtolower($org->name) }}"
+                                style="display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.25rem; font-size: 0.85rem; color: #374151; cursor: pointer;">
+                                <input type="checkbox" class="export-pdf-checkbox" value="{{ $org->id }}">
+                                <span>{{ $org->name }}</span>
+                            </label>
+                        @endforeach
+                    @else
+                        <p style="font-size: 0.8rem; color: #9ca3af; margin: 0.5rem;">Memuat data...</p>
+                    @endif
                 </div>
             </div>
 
@@ -260,20 +285,30 @@
         }
 
         /**
-         * Memuat daftar organisasi dari API JSON untuk dropdown & checklist.
+         * Memuat daftar organisasi dari endpoint web JSON jika opsi belum ter-render.
          */
         function loadOrgOptionsForExport() {
-            fetch('/api/v1/organizations/dropdown')
+            const select    = document.getElementById('exportPdfOrgSelect');
+            const multiList = document.getElementById('exportPdfMultiList');
+
+            // Jika opsi sudah ter-render oleh Blade, tidak perlu fetch ulang
+            if (select && select.options.length > 1) {
+                return;
+            }
+
+            fetch('{{ route("organization.options") }}', {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
                 .then(res => res.json())
                 .then(res => {
-                    const select    = document.getElementById('exportPdfOrgSelect');
-                    const multiList = document.getElementById('exportPdfMultiList');
-                    const list      = (res.data && res.data.data) ? res.data.data : (res.data || []);
-
-                    select.innerHTML    = '<option value="">-- Pilih Organisasi --</option>';
-                    multiList.innerHTML = '';
-
+                    const list = res.data || [];
                     if (list.length > 0) {
+                        select.innerHTML = '<option value="">-- Pilih Organisasi --</option>';
+                        multiList.innerHTML = '';
+
                         list.forEach(org => {
                             // Dropdown option untuk Tab Detail
                             const option = document.createElement('option');
@@ -283,8 +318,10 @@
 
                             // Checkbox item untuk Tab Multi
                             const label = document.createElement('label');
+                            label.className = 'export-multi-item';
+                            label.setAttribute('data-name', (org.name || '').toLowerCase());
                             label.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.25rem; font-size: 0.85rem; color: #374151; cursor: pointer;';
-                            label.innerHTML = `<input type="checkbox" class="export-pdf-checkbox" value="${org.id}"> ${org.name}`;
+                            label.innerHTML = `<input type="checkbox" class="export-pdf-checkbox" value="${org.id}"> <span>${org.name}</span>`;
                             multiList.appendChild(label);
                         });
                     } else {
@@ -296,6 +333,31 @@
                 });
         }
 
+        /**
+         * Toggle checkbox pilih semua pada Tab Multi.
+         */
+        function toggleSelectAllExportPdf(masterCheckbox) {
+            const items = document.querySelectorAll('.export-multi-item');
+            items.forEach(item => {
+                if (item.style.display !== 'none') {
+                    const cb = item.querySelector('.export-pdf-checkbox');
+                    if (cb) cb.checked = masterCheckbox.checked;
+                }
+            });
+        }
+
+        /**
+         * Filter list organisasi di Tab Multi secara realtime.
+         */
+        function filterExportPdfMulti(query) {
+            const q = query.toLowerCase().trim();
+            const items = document.querySelectorAll('.export-multi-item');
+            items.forEach(item => {
+                const name = item.getAttribute('data-name') || '';
+                item.style.display = name.includes(q) ? 'flex' : 'none';
+            });
+        }
+
         function submitExportPdf() {
             if (currentExportTab === 'detail') {
                 const orgId = document.getElementById('exportPdfOrgSelect').value;
@@ -303,7 +365,8 @@
                     alert('Silakan pilih organisasi terlebih dahulu.');
                     return;
                 }
-                window.open(`{{ url('/organization') }}/${orgId}/pdf`, '_blank');
+                const url = '{{ route("organization.pdf", ["id" => ":id"]) }}'.replace(':id', orgId);
+                window.open(url, '_blank');
 
             } else if (currentExportTab === 'filter') {
                 const industryId = document.getElementById('exportPdfIndustrySelect').value;

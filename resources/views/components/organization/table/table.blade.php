@@ -1,4 +1,4 @@
-@props(['organizations', 'currentMenuId'])
+@props(['organizations' => [], 'currentMenuId' => null])
 
 <div class="fade-in m-0 p-0">
     <!-- Table ONLY -->
@@ -154,14 +154,14 @@
                                     title="Detail">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                @if(auth()->user()->canAccess($currentMenuId, 'update'))
+                                @if(!$currentMenuId || auth()->user()?->canAccess($currentMenuId, 'update'))
                                     <button
                                         :onclick="'openEditCompanyModal(' + JSON.stringify(item).replace(/&quot;/g, '&quot;') + ')'"
                                         class="text-blue-600 mr-2 text-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 @endif
-                                @if(auth()->user()->canAccess($currentMenuId, 'delete'))
+                                @if(!$currentMenuId || auth()->user()?->canAccess($currentMenuId, 'delete'))
                                     <button
                                         @click="deleteCompanyItem(item.id, '/organization/' + item.id, '{{ csrf_token() }}')"
                                         class="text-red-600 text-sm" title="Hapus">

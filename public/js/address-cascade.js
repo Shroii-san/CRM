@@ -178,7 +178,7 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching regencies for province:`, provinceId);
         
         try {
-            const url = `${this.baseUrl}get-regencies/${provinceId}`;
+            const url = `/api/v1/regions/provinces/${provinceId}/regencies`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
             const response = await fetch(url);
@@ -223,7 +223,7 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching districts for regency:`, regencyId);
         
         try {
-            const url = `${this.baseUrl}get-districts/${regencyId}`;
+            const url = `/api/v1/regions/regencies/${regencyId}/districts`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
             const response = await fetch(url);
@@ -266,7 +266,7 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching villages for district:`, districtId);
         
         try {
-            const url = `${this.baseUrl}get-villages/${districtId}`;
+            const url = `/api/v1/regions/districts/${districtId}/villages`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
             const response = await fetch(url);

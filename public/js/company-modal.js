@@ -174,13 +174,12 @@ function initEditAddressCascade() {
         window.editCompanyCascade.destroy();
     }
 
-    // ✅ FIXED: baseUrl harus sesuai dengan route di web.php
+    // ✅ FIXED: URL cascade sekarang absolut di address-cascade.js
     window.editCompanyCascade = new AddressCascade({
         provinceId: 'edit-province',
         regencyId: 'edit-regency',
         districtId: 'edit-district',
         villageId: 'edit-village',
-        baseUrl: '/company/' 
     });
     
     console.log('✅ Edit cascade initialized');
@@ -190,79 +189,61 @@ async function loadEditCompanyData(companyId) {
     console.log('📡 Loading company data for edit...');
     
     try {
-        const response = await fetch(`/company/${companyId}`);
+        const response = await fetch(`/api/v1/organizations/${companyId}`);
         const data = await response.json();
         
         console.log('📦 Company data received:', data);
         
-        if (data.success) {
-            const c = data.company;
-            
-            // Populate contact fields
-            document.getElementById('edit_company_phone').value = c.company_phone && c.company_phone !== '-' ? c.company_phone : '';
-            document.getElementById('edit_company_email').value = c.company_email && c.company_email !== '-' ? c.company_email : '';
-            document.getElementById('edit_company_website').value = c.company_website || '';
-            document.getElementById('edit_company_linkedin').value = c.company_linkedin || '';
-            document.getElementById('edit_company_instagram').value = c.company_instagram || '';
-            
-            // Populate address field
-            const addressField = document.getElementById('edit-address');
-            if (addressField) {
-                addressField.value = c.address && c.address !== '-' ? c.address : '';
-            }
-            
-            // ✅ FIXED: Load address cascade
-            if (window.editCompanyCascade && c.province_id) {
-                console.log('🗺️ Loading cascade with values:', {
-                    province_id: c.province_id,
-                    regency_id: c.regency_id,
-                    district_id: c.district_id,
-                    village_id: c.village_id
-                });
-                
-                try {
-                    await window.editCompanyCascade.loadWithValues(
-                        c.province_id,
-                        c.regency_id,
-                        c.district_id,
-                        c.village_id
-                    );
-                    console.log('✅ Address cascade loaded successfully');
-                } catch (cascadeError) {
-                    console.error('❌ Cascade error:', cascadeError);
-                }
-            } else {
-                console.warn('⚠️ No cascade instance or province_id');
-            }
-            
-            // ✅ FIXED: Logo preview with better error handling
-            const logoPreviewContainer = document.getElementById('editLogoPreviewContainer');
-            const logoPreview = document.getElementById('editLogoPreview');
-            const logoUploadPrompt = document.getElementById('editLogoUploadPrompt');
-            
-            if (c.company_logo && c.company_logo !== null && c.company_logo !== '' && c.company_logo !== '-') {
-                console.log('🖼️ Loading logo:', c.company_logo);
-                
-                const testImg = new Image();
-                testImg.onload = function() {
-                    logoPreview.src = c.company_logo;
-                    logoPreviewContainer.style.display = 'block';
-                    logoUploadPrompt.style.display = 'none';
-                    console.log('✅ Logo loaded');
-                };
-                testImg.onerror = function() {
-                    console.error('❌ Logo failed to load');
-                    logoPreviewContainer.style.display = 'none';
-                    logoUploadPrompt.style.display = 'block';
-                };
-                testImg.src = c.company_logo;
-            } else {
-                logoPreviewContainer.style.display = 'none';
-                logoUploadPrompt.style.display = 'block';
-            }
-            
-            console.log('✅ Company data loaded successfully');
+        // API REST mengembalikan { data: {...} }
+        const c = data.data ?? data.company ?? data ?? {};
+        
+        // Populate contact fields (nama field sesuai skema DB)
+        document.getElementById('edit_company_phone').value   = c.phone   ?? '';
+        document.getElementById('edit_company_email').value   = c.email   ?? '';
+        document.getElementById('edit_company_website').value = c.website ?? '';
+        
+        // Sosial media (opsional, field mungkin tidak ada di form setelah refactor)
+        const linkedinEl   = document.getElementById('edit_company_linkedin');
+        const instagramEl  = document.getElementById('edit_company_instagram');
+        if (linkedinEl || instagramEl) {
+            const socialProfiles = Array.isArray(c.social_profiles) ? c.social_profiles : [];
+            const linkedin  = socialProfiles.find(s => s.platform === 'linkedin');
+            const instagram = socialProfiles.find(s => s.platform === 'instagram');
+            if (linkedinEl)  linkedinEl.value  = linkedin?.url  ?? '';
+            if (instagramEl) instagramEl.value = instagram?.url ?? '';
         }
+        
+        // Populate address field
+        const addressField = document.getElementById('edit-address');
+        if (addressField) {
+            addressField.value = c.address ?? '';
+        }
+        
+        // Load address cascade
+        if (window.editCompanyCascade && c.province_id) {
+            console.log('🗺️ Loading cascade with values:', {
+                province_id: c.province_id,
+                regency_id:  c.regency_id,
+                district_id: c.district_id,
+                village_id:  c.village_id,
+            });
+            
+            try {
+                await window.editCompanyCascade.loadWithValues(
+                    c.province_id,
+                    c.regency_id,
+                    c.district_id,
+                    c.village_id,
+                );
+                console.log('✅ Address cascade loaded successfully');
+            } catch (cascadeError) {
+                console.error('❌ Cascade error:', cascadeError);
+            }
+        } else {
+            console.warn('⚠️ No cascade instance or province_id');
+        }
+        
+        console.log('✅ Company data loaded successfully');
     } catch (error) {
         console.error('❌ Error loading company data:', error);
     }

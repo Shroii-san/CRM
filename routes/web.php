@@ -68,11 +68,11 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // Domain: Master Organization & Contact
     // -----------------------------------------------
     Route::prefix('organization')->name('organization.')->group(function () {
-        // Halaman & data
+        // Halaman utama
         Route::get('/', [OrganizationController::class, 'index'])->name('index');
-        Route::get('/search', [OrganizationController::class, 'search'])->name('search');
+
+        // Endpoint JSON untuk dropdown export
         Route::get('/options', [OrganizationController::class, 'options'])->name('options');
-        Route::post('/', [OrganizationController::class, 'store'])->name('store');
 
         // Export PDF & Excel
         Route::get('/export/pdf-list', [OrganizationController::class, 'exportPdfList'])->name('pdf.list');
@@ -80,11 +80,8 @@ Route::middleware(['auth', 'permission'])->group(function () {
         Route::get('/export/pivot-excel', [OrganizationController::class, 'exportPivotExcel'])->name('pivot.excel');
         Route::get('/{id}/pdf', [OrganizationController::class, 'exportPdf'])->name('pdf')->whereNumber('id');
 
-        // Detail, Pics, Update, Destroy
-        Route::get('/{id}', [OrganizationController::class, 'show'])->name('show')->whereNumber('id');
+        // Endpoint JSON daftar PIC satu organisasi (dipakai modal detail frontend)
         Route::get('/{id}/pics', [OrganizationController::class, 'pics'])->name('pics')->whereNumber('id');
-        Route::put('/{id}', [OrganizationController::class, 'update'])->name('update')->whereNumber('id');
-        Route::delete('/{id}', [OrganizationController::class, 'destroy'])->name('destroy')->whereNumber('id');
     });
 
     // View: pages.pic (OrganizationContactController -> existing blade)

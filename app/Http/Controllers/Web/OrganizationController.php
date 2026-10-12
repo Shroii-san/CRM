@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Industry;
 use App\Models\Organization;
-use App\Models\OrganizationContact;
 use App\Models\Province;
 use App\Services\OrganizationExportService;
 use Illuminate\Http\Request;
@@ -18,11 +17,11 @@ class OrganizationController extends Controller
 
     /**
      * Tampilkan halaman utama Manajemen Organisasi (Blade View).
+     * Data tabel dimuat secara AJAX melalui API, sehingga hanya data KPI
+     * dan master referensi (industri, provinsi, daftar nama org) yang diambil di sini.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $organizations = Organization::with(['industry', 'province', 'regency', 'district', 'village'])
-            ->paginate(10);
         $industries = Industry::where('is_active', true)->orderBy('name')->get();
         $provinces  = Province::orderBy('name', 'asc')->get();
 
@@ -30,16 +29,23 @@ class OrganizationController extends Controller
         $totalIndustry      = Organization::distinct()->count('industry_id');
         $tierOrganization   = Organization::distinct()->count('tier');
         $activeOrganization = Organization::where('is_active', true)->count();
-        $allOrganizations   = Organization::orderBy('name', 'asc')->get(['id', 'name']);
 
-        return view('pages.organizations', array_merge(
-            compact('industries', 'provinces', 'totalOrganizations', 'totalIndustry', 'tierOrganization', 'activeOrganization', 'allOrganizations'),
-            ['companies' => $organizations, 'organizations' => $organizations, 'organizationList' => $allOrganizations]
+        // Hanya id & name untuk opsi dropdown export PDF
+        $allOrganizations = Organization::orderBy('name', 'asc')->get(['id', 'name']);
+
+        return view('pages.organizations', compact(
+            'industries',
+            'provinces',
+            'totalOrganizations',
+            'totalIndustry',
+            'tierOrganization',
+            'activeOrganization',
+            'allOrganizations',
         ));
     }
 
     /**
-     * Endpoint opsi organisasi (JSON) untuk dropdown/checklist di web view.
+     * Endpoint JSON opsi nama organisasi untuk dropdown export PDF di frontend.
      */
     public function options()
     {
@@ -50,25 +56,8 @@ class OrganizationController extends Controller
     }
 
     /**
-     * Tampilkan detail satu organisasi.
-     * Mendukung permintaan JSON (AJAX) maupun blade view.
-     */
-    public function show(Request $request, $id)
-    {
-        $organization = Organization::with(['industry', 'province', 'regency', 'district', 'village'])->findOrFail($id);
-
-        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'company' => $organization,
-            ]);
-        }
-
-        return view('pages.organization-show', compact('organization'));
-    }
-
-    /**
      * Kembalikan daftar PIC (contacts) dari satu organisasi (JSON).
+     * Digunakan oleh modal detail di frontend.
      */
     public function pics($id)
     {
@@ -85,115 +74,6 @@ class OrganizationController extends Controller
                     'email' => $contact->person?->email ?? '-',
                 ];
             })->values(),
-        ]);
-    }
-
-    /**
-     * Cari organisasi dengan pagination (AJAX / JSON).
-     */
-    public function search(Request $request)
-    {
-        $search  = trim((string) $request->input('search', ''));
-        $page    = max(1, (int) $request->input('page', 1));
-        $perPage = max(10, min(50, (int) $request->input('per_page', 10)));
-
-        $query = Organization::query()->with(['industry', 'province', 'regency', 'district', 'village']);
-
-        if ($search !== '') {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        $organizations = $query->orderBy('name', 'asc')->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json([
-            'items'      => $organizations->items(),
-            'pagination' => [
-                'total'        => $organizations->total(),
-                'per_page'     => $organizations->perPage(),
-                'current_page' => $organizations->currentPage(),
-                'last_page'    => $organizations->lastPage(),
-                'has_more_pages' => $organizations->hasMorePages(),
-            ],
-        ]);
-    }
-
-    /**
-     * Simpan organisasi baru.
-     */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'industry_id' => ['required', 'integer', 'exists:industries,id'],
-            'tier'        => ['nullable', 'string', 'max:1'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'email'       => ['nullable', 'email', 'max:255'],
-            'phone'       => ['nullable', 'string', 'max:20'],
-            'website'     => ['nullable', 'url', 'max:255'],
-            'is_active'   => ['nullable', 'boolean'],
-            'address'     => ['nullable', 'string'],
-            'province_id' => ['nullable', 'string'],
-            'regency_id'  => ['nullable', 'string'],
-            'district_id' => ['nullable', 'string'],
-            'village_id'  => ['nullable', 'string'],
-        ]);
-
-        $organization = Organization::create($data);
-
-        return response()->json([
-            'success'      => true,
-            'message'      => 'Organization created successfully.',
-            'organization' => $organization,
-        ], 201);
-    }
-
-    /**
-     * Perbarui data organisasi.
-     */
-    public function update(Request $request, $id)
-    {
-        $organization = Organization::findOrFail($id);
-
-        $data = $request->validate([
-            'name'        => ['nullable', 'string', 'max:255'],
-            'industry_id' => ['nullable', 'integer', 'exists:industries,id'],
-            'tier'        => ['nullable', 'string', 'max:1'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'email'       => ['nullable', 'email', 'max:255'],
-            'phone'       => ['nullable', 'string', 'max:20'],
-            'website'     => ['nullable', 'url', 'max:255'],
-            'is_active'   => ['nullable', 'boolean'],
-            'address'     => ['nullable', 'string'],
-            'province_id' => ['nullable', 'string'],
-            'regency_id'  => ['nullable', 'string'],
-            'district_id' => ['nullable', 'string'],
-            'village_id'  => ['nullable', 'string'],
-        ]);
-
-        $organization->update($data);
-
-        return response()->json([
-            'success'      => true,
-            'message'      => 'Organization updated successfully.',
-            'organization' => $organization,
-        ]);
-    }
-
-    /**
-     * Hapus organisasi.
-     */
-    public function destroy($id)
-    {
-        $organization = Organization::findOrFail($id);
-        $organization->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Organization deleted successfully.',
         ]);
     }
 

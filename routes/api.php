@@ -63,10 +63,11 @@ Route::prefix('v1')->name('api.v1.')->middleware(['auth:sanctum,web'])->group(fu
     // -----------------------------------------------
     Route::prefix('organizations')->name('organizations.')->group(function () {
         Route::get('/', [OrganizationController::class, 'index'])->name('index');
-        Route::post('/', [OrganizationController::class, 'store'])->name('store');
-        Route::put('/{id}', [OrganizationController::class, 'update'])->name('update');
-        Route::delete('/{id}', [OrganizationController::class, 'destroy'])->name('destroy');
         Route::get('/dropdown', [OrganizationController::class, 'dropdown'])->name('dropdown');
+        Route::get('/{id}', [OrganizationController::class, 'show'])->name('show')->whereNumber('id');
+        Route::post('/', [OrganizationController::class, 'store'])->name('store');
+        Route::put('/{id}', [OrganizationController::class, 'update'])->name('update')->whereNumber('id');
+        Route::delete('/{id}', [OrganizationController::class, 'destroy'])->name('destroy')->whereNumber('id');
 
         // Sub-resource: Organization Contacts (PICs)
         Route::get('/{organizationId}/contacts', [OrganizationContactController::class, 'byOrganization'])->name('contacts.byOrganization');
@@ -209,14 +210,16 @@ Route::prefix('v1')->name('api.v1.')->middleware(['auth:sanctum,web'])->group(fu
         Route::delete('/{id}', [ExternalConversationController::class, 'destroy'])->name('destroy');
     });
 
-    // ----------------------------------
-    // Domain: Reference Data (Wilayah)
-    // ----------------------------------
-    Route::prefix('regions')->name('regions.')->group(function () {
-        Route::get('/countries', [RegionController::class, 'countries'])->name('countries');
-        Route::get('/provinces', [RegionController::class, 'provinces'])->name('provinces');
-        Route::get('/provinces/{provinceId}/regencies', [RegionController::class, 'regencies'])->name('regencies');
-        Route::get('/regencies/{regencyId}/districts', [RegionController::class, 'districts'])->name('districts');
-        Route::get('/districts/{districtId}/villages', [RegionController::class, 'villages'])->name('villages');
-    });
+});
+
+// ----------------------------------
+// Domain: Reference Data (Wilayah)
+// Data master publik, tidak memerlukan autentikasi
+// ----------------------------------
+Route::prefix('v1/regions')->name('api.v1.regions.')->group(function () {
+    Route::get('/countries', [RegionController::class, 'countries'])->name('countries');
+    Route::get('/provinces', [RegionController::class, 'provinces'])->name('provinces');
+    Route::get('/provinces/{provinceId}/regencies', [RegionController::class, 'regencies'])->name('regencies');
+    Route::get('/regencies/{regencyId}/districts', [RegionController::class, 'districts'])->name('districts');
+    Route::get('/districts/{districtId}/villages', [RegionController::class, 'villages'])->name('villages');
 });

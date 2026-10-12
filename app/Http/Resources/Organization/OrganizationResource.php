@@ -53,6 +53,28 @@ class OrganizationResource extends JsonResource
                     'name' => $this->village->name,
                 ];
             }),
+            'contacts' => $this->whenLoaded('contacts', function () {
+                return $this->contacts->map(function ($contact) {
+                    return [
+                        'id' => $contact->id,
+                        'name' => $contact->person?->name ?? '-',
+                        'role' => $contact->job_title ?? '-',
+                        'phone' => $contact->person?->phone ?? '-',
+                        'email' => $contact->person?->email ?? '-',
+                        'is_primary' => (bool) $contact->is_primary,
+                    ];
+                });
+            }),
+            'social_profiles' => $this->whenLoaded('socialProfiles', function () {
+                return $this->socialProfiles->map(function ($profile) {
+                    return [
+                        'id' => $profile->id,
+                        'platform' => $profile->platform,
+                        'url' => $profile->url,
+                        'username' => $profile->username,
+                    ];
+                });
+            }),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

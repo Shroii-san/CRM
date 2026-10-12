@@ -1,4 +1,4 @@
-@props(['organizations', 'currentMenuId'])
+@props(['organizations' => [], 'currentMenuId' => null])
 
 <div class="fade-in m-0 p-0">
     <!-- Table ONLY -->
@@ -154,16 +154,14 @@
                                     title="Detail">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                @if(auth()->user()->canAccess($currentMenuId, 'update'))
-                                    <button
-                                        :onclick="'openEditCompanyModal(' + JSON.stringify(item).replace(/&quot;/g, '&quot;') + ')'"
+                                @if(!$currentMenuId || auth()->user()?->canAccess($currentMenuId, 'update'))
+                                    <button @click="openEditCompanyModal(item)"
                                         class="text-blue-600 mr-2 text-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 @endif
-                                @if(auth()->user()->canAccess($currentMenuId, 'delete'))
-                                    <button
-                                        @click="deleteCompanyItem(item.id, '/organization/' + item.id, '{{ csrf_token() }}')"
+                                @if(!$currentMenuId || auth()->user()?->canAccess($currentMenuId, 'delete'))
+                                    <button @click="deleteCompanyItem(item.id)"
                                         class="text-red-600 text-sm" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -180,20 +178,32 @@
 
 {{-- Company Detail Modal - ROUNDED KONSISTEN --}}
 <div id="companyDetailModal"
-    class="hidden fixed inset-0 w-full h-full bg-black/50 z-[9999] items-center justify-center">
-    <div class="bg-white rounded-3xl w-[95%] max-w-[700px] max-h-[90vh] flex flex-col shadow-xl overflow-hidden">
+    onclick="if (event.target === this) closeCompanyDetailModal()"
+    class="hidden fixed inset-0 w-full h-full bg-black/50 z-[9999] items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-[700px] max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-modal-in">
 
         {{-- Modal Header - FIXED --}}
-        <div class="flex justify-between items-center p-6 bg-gradient-to-r from-indigo-600 to-purple-600 shrink-0">
-            <h3 class="text-xl font-semibold text-white m-0">Detail Perusahaan</h3>
-            <button onclick="closeCompanyDetailModal()"
-                class="text-white bg-transparent border-0 text-2xl cursor-pointer p-0">
-                <i class="fas fa-times"></i>
-            </button>
+        <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 1rem 1.5rem; flex-shrink: 0;">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div style="width: 2.5rem; height: 2.5rem; background-color: rgba(255, 255, 255, 0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-building text-white text-base"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white m-0 leading-tight">Detail Perusahaan</h3>
+                        <p class="text-xs text-indigo-100 mt-0.5 m-0">Informasi profil dan kontak organisasi</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCompanyDetailModal()"
+                    class="text-white hover:bg-white/20 rounded-full w-9 h-9 flex items-center justify-center transition-colors cursor-pointer border-0 bg-transparent"
+                    title="Tutup">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
         </div>
 
-        {{-- Modal Body - SCROLLABLE WITH BORDER RADIUS AT BOTTOM --}}
-        <div class="overflow-y-auto flex-1 p-6 flex flex-col gap-6 rounded-b-3xl">
+        {{-- Modal Body - SCROLLABLE --}}
+        <div class="overflow-y-auto flex-1 p-6 flex flex-col gap-6">
 
             {{-- Logo --}}
             <div class="text-center">
@@ -306,105 +316,17 @@
 </div>
 
 <script>
+    // Proxy ke Alpine organizationTable.showDetail (didefinisikan di organizations.js)
     function showCompanyDetail(companyId) {
+        if (window.showCompanyDetail) {
+            window.showCompanyDetail(companyId);
+        }
+    }
+
+    function closeCompanyDetailModal() {
         const modal = document.getElementById('companyDetailModal');
-        modal.style.display = 'flex';
-
-        document.getElementById('picsContainer').innerHTML = `
-        <div style="text-align: center; padding: 1rem; color: #6b7280;">
-            <i class="fas fa-spinner fa-spin"></i> Loading...
-        </div>
-    `;
-
-        Promise.all([
-            fetch(`/organization/${companyId}`),
-            fetch(`/organization/${companyId}/pics`)
-        ])
-            .then(async ([companyResponse, picsResponse]) => {
-                const companyData = await companyResponse.json();
-                const picsData = await picsResponse.json();
-                const c = companyData.company || {};
-                const pics = Array.isArray(picsData.pics) ? picsData.pics : [];
-
-                document.getElementById('detailCompanyName').textContent = c.name || '-';
-                document.getElementById('detailCompanyType').textContent = c.industry?.name || '-';
-                document.getElementById('detailCompanyTier').textContent = c.tier || '-';
-                document.getElementById('detailCompanyDescription').textContent = c.description || '-';
-
-                const statusBadge = document.getElementById('detailCompanyStatus');
-                const statusText = c.is_active ? 'Active' : 'Inactive';
-                statusBadge.textContent = statusText;
-                if (c.is_active) {
-                    statusBadge.style.backgroundColor = '#d1fae5';
-                    statusBadge.style.color = '#065f46';
-                } else {
-                    statusBadge.style.backgroundColor = '#fee2e2';
-                    statusBadge.style.color = '#991b1b';
-                }
-
-                document.getElementById('detailProvince').textContent = c.province?.name || '-';
-                document.getElementById('detailRegency').textContent = c.regency?.name || '-';
-                document.getElementById('detailDistrict').textContent = c.district?.name || '-';
-                document.getElementById('detailVillage').textContent = c.village?.name || '-';
-                document.getElementById('detailFullAddress').textContent = c.address || '-';
-                document.getElementById('detailCompanyPhone').textContent = c.phone || '-';
-                document.getElementById('detailCompanyEmail').textContent = c.email || '-';
-
-                const websiteLink = document.getElementById('detailCompanyWebsiteLink');
-                const websiteWrap = document.getElementById('detailCompanyWebsite');
-                if (c.website) {
-                    websiteLink.href = c.website;
-                    websiteLink.textContent = c.website;
-                    websiteWrap.innerHTML = '';
-                } else {
-                    websiteWrap.innerHTML = '<span style="color: #111827;">-</span>';
-                }
-
-                const linkedinLink = document.getElementById('detailCompanyLinkedinLink');
-                const linkedinWrap = document.getElementById('detailCompanyLinkedin');
-                linkedinLink.href = '#';
-                linkedinLink.textContent = '-';
-                linkedinWrap.innerHTML = '<span style="color: #111827;">-</span>';
-
-                const instagramLink = document.getElementById('detailCompanyInstagramLink');
-                const instagramWrap = document.getElementById('detailCompanyInstagram');
-                instagramLink.href = '#';
-                instagramLink.textContent = '-';
-                instagramWrap.innerHTML = '<span style="color: #111827;">-</span>';
-
-                const logoContainer = document.getElementById('detailLogoContainer');
-                logoContainer.innerHTML = '<div style="width: 120px; height: 120px; background-color: #e5e7eb; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-building" style="font-size: 2.5rem; color: #9ca3af;"></i></div>';
-
-                const picsContainer = document.getElementById('picsContainer');
-                const picCount = document.getElementById('picCount');
-
-                if (pics.length > 0) {
-                    picCount.textContent = String(pics.length);
-                    picsContainer.innerHTML = pics.map(pic => `
-                    <div style="border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.5rem; background-color: #f9fafb; display: flex; gap: 0.5rem; align-items: flex-start;">
-                        <div style="flex-shrink: 0; width: 2rem; height: 2rem; border-radius: 0.75rem; background: linear-gradient(135deg, #4f46e5, #7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
-                            ${(pic.name || 'P').charAt(0).toUpperCase()}
-                        </div>
-                        <div style="flex: 1; min-width: 0;">
-                            <p style="font-size: 0.8125rem; font-weight: 600; color: #111827; margin: 0 0 0.125rem 0;">${pic.name || '-'}</p>
-                            <p style="font-size: 0.75rem; color: #6b7280; margin: 0 0 0.25rem 0;">${pic.role || '-'}</p>
-                            <div style="display: flex; gap: 0.5rem; font-size: 0.7rem; flex-wrap: wrap;">
-                                <a href="tel:${pic.phone || ''}" style="color: #3b82f6; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${pic.phone || '-'}</a>
-                                <span style="color: #d1d5db;">•</span>
-                                <a href="mailto:${pic.email || ''}" style="color: #3b82f6; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${pic.email || '-'}</a>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                } else {
-                    picCount.textContent = '0';
-                    picsContainer.innerHTML = '<p style="text-align: center; color: #9ca3af; font-size: 0.875rem; margin: 0;">Belum ada PIC</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('picsContainer').innerHTML = '<div style="text-align: center; color: #dc2626; font-size: 0.875rem;">Gagal memuat data</div>';
-            });
+        if (modal) modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 </script>
 

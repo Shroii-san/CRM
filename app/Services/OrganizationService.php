@@ -61,6 +61,22 @@ class OrganizationService extends BaseService
     }
 
     /**
+     * Mengambil detail satu organisasi beserta seluruh relasinya.
+     */
+    public function findWithDetails(int $id): Organization
+    {
+        return Organization::with([
+            'industry',
+            'province',
+            'regency',
+            'district',
+            'village',
+            'contacts.person',
+            'socialProfiles',
+        ])->findOrFail($id);
+    }
+
+    /**
      * Membuat organisasi baru.
      */
     public function create(array $data): Organization

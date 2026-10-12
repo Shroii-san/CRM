@@ -23,11 +23,11 @@ class OrganizationController extends Controller
     {
         // Collect filters - hanya yang ada di filterDefinitions
         $filters = array_filter([
-            'industry_id' => $request->input('industry_id')
+            'industry_id' => $request->filled('industry_id')
                 ? (int) $request->input('industry_id')
                 : null,
             'tier' => $request->input('tier'),
-            'is_active' => $request->has('is_active')
+            'is_active' => $request->filled('is_active')
                 ? ($request->boolean('is_active') ? 1 : 0)
                 : null,
         ], fn($val) => $val !== null && $val !== '');
@@ -42,6 +42,19 @@ class OrganizationController extends Controller
         );
 
         return $this->paginatedResponse($organizations, OrganizationResource::class, 'Organization list retrieved successfully');
+    }
+
+    /**
+     * Mendapatkan detail satu organisasi (JSON API).
+     */
+    public function show(int|string $id): JsonResponse
+    {
+        $organization = $this->organizationService->findWithDetails((int) $id);
+
+        return $this->successResponse(
+            OrganizationResource::make($organization),
+            'Organization details retrieved successfully'
+        );
     }
 
     public function filterOptions(): JsonResponse

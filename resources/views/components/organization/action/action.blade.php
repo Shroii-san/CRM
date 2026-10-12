@@ -17,8 +17,8 @@
 
         <!-- Body - Two Column Layout with Independent Scrolling -->
         <div class="flex-1 overflow-hidden flex" style="background-color: #f3f4f6;">
-            <form id="addCompanyForm" action="/company" method="POST" enctype="multipart/form-data"
-                class="w-full flex overflow-hidden">
+            {{-- form: action dan enctype dihapus, submit ditangani via AJAX (organizations.js) --}}
+            <form id="addCompanyForm" class="w-full flex overflow-hidden">
                 @csrf
 
                 <!-- LEFT COLUMN - Company Basic Info & PICs & Address -->
@@ -42,7 +42,7 @@
                                     style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
                                     Nama Perusahaan <span style="color: #ef4444;">*</span>
                                 </label>
-                                <input type="text" name="company_name"
+                                <input type="text" id="add_name" name="name"
                                     style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Masukkan nama perusahaan" required>
                             </div>
@@ -53,7 +53,7 @@
                                     style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
                                     Jenis Perusahaan <span style="color: #ef4444;">*</span>
                                 </label>
-                                <select name="industry_id"
+                                <select id="add_industry_id" name="industry_id"
                                     style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     required>
                                     <option value="">-- Pilih Jenis --</option>
@@ -69,7 +69,7 @@
                                         margin-bottom: 0.375rem;">
                                     Tier
                                 </label>
-                                <select name="tier"
+                                <select id="add_tier" name="tier"
                                     style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
                                     <option value="">-- Pilih Tier --</option>
                                     <option value="A">Tier A</option>
@@ -85,10 +85,10 @@
                                     style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
                                     Status
                                 </label>
-                                <select name="status"
+                                <select id="add_is_active" name="is_active"
                                     style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
                                 </select>
                             </div>
 
@@ -98,7 +98,7 @@
                                     style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
                                     Deskripsi
                                 </label>
-                                <textarea name="description" rows="3"
+                                <textarea id="add_description" name="description" rows="3"
                                     style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; resize: none;"
                                     placeholder="Tambahkan keterangan tentang perusahaan..."></textarea>
                             </div>
@@ -241,7 +241,7 @@
                                     <i class="fas fa-phone" style="margin-right: 0.375rem; color: #059669;"></i>
                                     Nomor Telepon Perusahaan
                                 </label>
-                                <input type="tel" name="company_phone"
+                                <input type="tel" id="add_phone" name="phone"
                                     style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Contoh: 021-12345678 atau +62212345678">
                             </div>
@@ -253,7 +253,7 @@
                                     <i class="fas fa-envelope" style="margin-right: 0.375rem; color: #2563eb;"></i>
                                     Email Perusahaan
                                 </label>
-                                <input type="email" name="company_email"
+                                <input type="email" id="add_email" name="email"
                                     style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Contoh: info@company.com">
                             </div>
@@ -265,79 +265,9 @@
                                     <i class="fas fa-globe" style="margin-right: 0.375rem; color: #7c3aed;"></i>
                                     Website
                                 </label>
-                                <input type="url" name="company_website"
+                                <input type="url" id="add_website" name="website"
                                     style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Contoh: https://www.company.com">
-                            </div>
-                        </div>
-
-                        <!-- SECTION 2: SOCIAL MEDIA -->
-                        <div
-                            style="padding-top: 0.75rem; border-top: 2px solid #e5e7eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.75rem;">
-                            <h5
-                                style="font-size: 0.8125rem; font-weight: 600; color: #1f2937; margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-share-alt" style="color: #2563eb;"></i>
-                                Media Sosial
-                            </h5>
-
-                            <!-- LinkedIn -->
-                            <div style="margin-bottom: 0.75rem;">
-                                <label
-                                    style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
-                                    <i class="fab fa-linkedin" style="margin-right: 0.375rem; color: #0a66c2;"></i>
-                                    LinkedIn
-                                </label>
-                                <input type="url" name="company_linkedin"
-                                    style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
-                                    placeholder="https://linkedin.com/company/...">
-                            </div>
-
-                            <!-- Instagram -->
-                            <div>
-                                <label
-                                    style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
-                                    <i class="fab fa-instagram" style="margin-right: 0.375rem; color: #e1306c;"></i>
-                                    Instagram
-                                </label>
-                                <input type="text" name="company_instagram"
-                                    style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
-                                    placeholder="@company_name">
-                            </div>
-                        </div>
-
-                        <!-- SECTION 3: LOGO UPLOAD -->
-                        <div>
-                            <h5
-                                style="font-size: 0.8125rem; font-weight: 600; color: #1f2937; margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-image" style="color: #f59e0b;"></i>
-                                Logo Perusahaan
-                            </h5>
-
-                            <!-- File Upload Area -->
-                            <div style="border: 2px dashed #d1d5db; border-radius: 0.5rem; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #fafafa;"
-                                id="logoDropZone"
-                                onmouseover="this.style.borderColor='#3b82f6'; this.style.backgroundColor='#eff6ff';"
-                                onmouseout="this.style.borderColor='#d1d5db'; this.style.backgroundColor='#fafafa';">
-                                <input type="file" id="company_logo" name="company_logo" accept="image/*"
-                                    style="display: none;" onchange="previewLogo(event)">
-
-                                <div id="logoPreviewContainer" style="display: none;">
-                                    <img id="logoPreview" src=""
-                                        style="max-width: 100%; max-height: 150px; margin-bottom: 0.75rem; border-radius: 0.375rem;">
-                                    <button type="button" onclick="clearLogoPreview()"
-                                        style="background-color: #ef4444; color: white; border: none; border-radius: 0.375rem; padding: 0.375rem 0.75rem; font-size: 0.6875rem; cursor: pointer;">
-                                        <i class="fas fa-trash" style="margin-right: 0.25rem;"></i>Hapus
-                                    </button>
-                                </div>
-
-                                <div id="logoUploadPrompt">
-                                    <i class="fas fa-cloud-upload-alt"
-                                        style="font-size: 2rem; color: #9ca3af; margin-bottom: 0.5rem; display: block;"></i>
-                                    <p style="font-size: 0.8125rem; color: #6b7280; margin: 0;">Klik atau drag file
-                                        gambar di sini</p>
-                                    <p style="font-size: 0.7rem; color: #9ca3af; margin: 0.25rem 0 0 0;">PNG, JPG, atau
-                                        GIF (Max 5MB)</p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -348,7 +278,7 @@
         <!-- Footer - Fixed at bottom -->
         <div
             style="display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; background-color: #f9fafb; flex-shrink: 0;">
-            <button type="submit" form="addCompanyForm"
+            <button type="button" onclick="submitAddCompanyModal()"
                 style="background-color: #4f46e5; color: white; border: none; border-radius: 0.5rem; padding: 0.5rem 1.25rem; font-weight: 500; font-size: 0.75rem; cursor: pointer; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); transition: all 0.2s;">
                 <i class="fas fa-save" style="margin-right: 0.375rem;"></i>Simpan Data
             </button>

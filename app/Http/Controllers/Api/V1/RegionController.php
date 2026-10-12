@@ -33,7 +33,7 @@ class RegionController extends Controller
      */
     public function provinces(Request $request): JsonResponse
     {
-        $countryId = $request->input('country_id') ? (int) $request->input('country_id') : null;
+        $countryId = $request->filled('country_id') ? (string) $request->input('country_id') : null;
         $search = $request->input('search');
 
         $provinces = $this->regionService->getProvinces(countryId: $countryId, search: $search);
@@ -50,7 +50,7 @@ class RegionController extends Controller
     public function regencies(Request $request, int|string $provinceId): JsonResponse
     {
         $search = $request->input('search');
-        $regencies = $this->regionService->getRegencies(provinceId: (int) $provinceId, search: $search);
+        $regencies = $this->regionService->getRegencies(provinceId: (string) $provinceId, search: $search);
 
         return $this->successResponse(
             RegionResource::collection($regencies),
@@ -64,7 +64,7 @@ class RegionController extends Controller
     public function districts(Request $request, int|string $regencyId): JsonResponse
     {
         $search = $request->input('search');
-        $districts = $this->regionService->getDistricts(regencyId: (int) $regencyId, search: $search);
+        $districts = $this->regionService->getDistricts(regencyId: (string) $regencyId, search: $search);
 
         return $this->successResponse(
             RegionResource::collection($districts),
@@ -78,7 +78,7 @@ class RegionController extends Controller
     public function villages(Request $request, int|string $districtId): JsonResponse
     {
         $search = $request->input('search');
-        $villages = $this->regionService->getVillages(districtId: (int) $districtId, search: $search);
+        $villages = $this->regionService->getVillages(districtId: (string) $districtId, search: $search);
 
         return $this->successResponse(
             RegionResource::collection($villages),

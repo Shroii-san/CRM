@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Web\DashboardController;
-use App\Http\Controllers\OrganizationChartController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Controllers
@@ -58,22 +57,6 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    Route::prefix('api/geographic/bar')->group(function () {
-        Route::get('/distribution', [OrganizationChartController::class, 'getGeoDistributionBar']);
-        Route::get('/tier/{tier}', [OrganizationChartController::class, 'getTierDetailBar']);
-        Route::get('/export', [OrganizationChartController::class, 'exportGeoDataBar']);
-    });
-
-    // ==========================
-    // PIE CHART ROUTES
-    // ==========================
-    Route::prefix('api/geographic/pie')->group(function () {
-        Route::get('/distribution', [OrganizationChartController::class, 'getGeoDistributionPie']);
-        Route::get('/tier/{tier}', [OrganizationChartController::class, 'getTierDetailPie']);
-        Route::get('/export', [OrganizationChartController::class, 'exportGeoDataPie']);
-    });
-
-
     // -----------------------------------------------
     // Domain: Auth & User Management
     // -----------------------------------------------
@@ -84,14 +67,22 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Domain: Master Organization & Contact
     // -----------------------------------------------
-    // View: pages.organization (OrganizationController -> existing blade)
-    Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
-    Route::get('/organization/search', [OrganizationController::class, 'search'])->name('organization.search');
-    Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
-    Route::get('/organization/{id}', [OrganizationController::class, 'show'])->name('organization.show');
-    Route::get('/organization/{id}/pics', [OrganizationController::class, 'pics'])->name('organization.pics');
-    Route::put('/organization/{id}', [OrganizationController::class, 'update'])->name('organization.update');
-    Route::delete('/organization/{id}', [OrganizationController::class, 'destroy'])->name('organization.destroy');
+    Route::prefix('organization')->name('organization.')->group(function () {
+        // Halaman utama
+        Route::get('/', [OrganizationController::class, 'index'])->name('index');
+
+        // Endpoint JSON untuk dropdown export
+        Route::get('/options', [OrganizationController::class, 'options'])->name('options');
+
+        // Export PDF & Excel
+        Route::get('/export/pdf-list', [OrganizationController::class, 'exportPdfList'])->name('pdf.list');
+        Route::get('/export/pdf-selected', [OrganizationController::class, 'exportPdfSelected'])->name('pdf.selected');
+        Route::get('/export/pivot-excel', [OrganizationController::class, 'exportPivotExcel'])->name('pivot.excel');
+        Route::get('/{id}/pdf', [OrganizationController::class, 'exportPdf'])->name('pdf')->whereNumber('id');
+
+        // Endpoint JSON daftar PIC satu organisasi (dipakai modal detail frontend)
+        Route::get('/{id}/pics', [OrganizationController::class, 'pics'])->name('pics')->whereNumber('id');
+    });
 
     // View: pages.pic (OrganizationContactController -> existing blade)
     Route::get('/pic', [OrganizationContactController::class, 'index'])->name('pic');
@@ -99,7 +90,6 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Domain: Client Management
     // -----------------------------------------------
-    // View: pages.clients (ClientController -> existing blade)
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
     Route::get('/clients/search', [ClientController::class, 'search'])->name('clients.search');
     Route::get('/clients/export', [ClientController::class, 'export'])->name('clients.export');
@@ -107,41 +97,26 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     // Domain: Sales Pipeline & Deals
     // -----------------------------------------------
-    // View: pages.pipeline (PipelineController -> existing blade)
     Route::get('/pipeline', [PipelineController::class, 'index'])->name('pipeline');
-
-    // View: pages.transaksi (DealController -> existing blade)
     Route::get('/transaksi', [DealController::class, 'index'])->name('transaksi');
-
-    // View: pages.salesvisit (SalesVisitController -> existing blade)
     Route::get('/salesvisit', [SalesVisitController::class, 'index'])->name('salesvisit');
 
     // -----------------------------------------------
     // Domain: Task, Communication & Audit
     // -----------------------------------------------
-    // View: pages.task (new blade)
     Route::get('/task', [TaskController::class, 'index'])->name('task');
-
-    // View: pages.interaction (new blade)
     Route::get('/interaction', [InteractionController::class, 'index'])->name('interaction');
-
-    // View: pages.note (new blade)
     Route::get('/note', [NoteController::class, 'index'])->name('note');
-
-    // View: pages.activity_log (new blade)
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log');
 
     // -----------------------------------------------
     // Domain: Integration & Files
     // -----------------------------------------------
-    // View: pages.attachment (new blade)
     Route::get('/attachment', [AttachmentController::class, 'index'])->name('attachment');
-
-    // View: pages.external_conversation (new blade)
     Route::get('/external-conversation', [ExternalConversationController::class, 'index'])->name('external-conversation');
 
     // -----------------------------------------------
     // Calendar (React SPA shell)
     // -----------------------------------------------
-    Route::get('/calendar', fn() => view('layout.react'))->name('calendar');
+    Route::get('/calendar', fn() => view('layouts.react'))->name('calendar');
 });

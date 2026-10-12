@@ -11,11 +11,19 @@ export function getOrganizations(params = {}) {
     return apiClient.get(BASE_URL, params);
 }
 
+/**
+ * Ambil detail satu organisasi beserta relasi industri, wilayah, contacts, dan social profiles.
+ * Menggunakan endpoint REST API yang terstandar.
+ */
 export function getOrganization(id) {
-    return apiClient.get(`/organization/${id}`);
+    return apiClient.get(`${BASE_URL}/${id}`);
 }
 
-export function getOrganizationContacts(id) {
+/**
+ * Ambil daftar PIC (contacts) dari satu organisasi.
+ * Tetap menggunakan endpoint web /organization/{id}/pics karena format responnya spesifik.
+ */
+export function getOrganizationPics(id) {
     return apiClient.get(`/organization/${id}/pics`);
 }
 

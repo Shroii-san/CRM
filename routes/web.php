@@ -71,17 +71,20 @@ Route::middleware(['auth', 'permission'])->group(function () {
         // Halaman & data
         Route::get('/', [OrganizationController::class, 'index'])->name('index');
         Route::get('/search', [OrganizationController::class, 'search'])->name('search');
+        Route::get('/options', [OrganizationController::class, 'options'])->name('options');
         Route::post('/', [OrganizationController::class, 'store'])->name('store');
-        Route::get('/{id}', [OrganizationController::class, 'show'])->name('show');
-        Route::get('/{id}/pics', [OrganizationController::class, 'pics'])->name('pics');
-        Route::put('/{id}', [OrganizationController::class, 'update'])->name('update');
-        Route::delete('/{id}', [OrganizationController::class, 'destroy'])->name('destroy');
 
         // Export PDF & Excel
         Route::get('/export/pdf-list', [OrganizationController::class, 'exportPdfList'])->name('pdf.list');
         Route::get('/export/pdf-selected', [OrganizationController::class, 'exportPdfSelected'])->name('pdf.selected');
         Route::get('/export/pivot-excel', [OrganizationController::class, 'exportPivotExcel'])->name('pivot.excel');
-        Route::get('/{id}/pdf', [OrganizationController::class, 'exportPdf'])->name('pdf');
+        Route::get('/{id}/pdf', [OrganizationController::class, 'exportPdf'])->name('pdf')->whereNumber('id');
+
+        // Detail, Pics, Update, Destroy
+        Route::get('/{id}', [OrganizationController::class, 'show'])->name('show')->whereNumber('id');
+        Route::get('/{id}/pics', [OrganizationController::class, 'pics'])->name('pics')->whereNumber('id');
+        Route::put('/{id}', [OrganizationController::class, 'update'])->name('update')->whereNumber('id');
+        Route::delete('/{id}', [OrganizationController::class, 'destroy'])->name('destroy')->whereNumber('id');
     });
 
     // View: pages.pic (OrganizationContactController -> existing blade)

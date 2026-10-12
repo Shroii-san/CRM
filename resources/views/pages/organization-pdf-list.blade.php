@@ -179,7 +179,7 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $org->name ?? '-' }}</td>
-                        <td>{{ $org->industry->name ?? '-' }}</td>
+                        <td>{{ $org->industry?->name ?? '-' }}</td>
                         <td class="col-tier">{{ $org->tier ?? '-' }}</td>
                         <td>{{ $org->address ?? '-' }}</td>
                         <td>{{ $org->phone ?? '-' }}</td>

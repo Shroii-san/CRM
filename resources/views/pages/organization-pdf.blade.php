@@ -206,7 +206,7 @@
     <div class="subject-box">
         <div class="subject-info">
             <h3>{{ $organization->name }}</h3>
-            <p>{{ $organization->industry->name ?? '-' }} &middot; Tier {{ $organization->tier ?? '-' }}</p>
+            <p>{{ $organization->industry?->name ?? '-' }} &middot; Tier {{ $organization->tier ?? '-' }}</p>
         </div>
     </div>
 
@@ -222,7 +222,7 @@
             <tr>
                 <td class="label">Industri</td>
                 <td class="colon">:</td>
-                <td>{{ $organization->industry->name ?? '-' }}</td>
+                <td>{{ $organization->industry?->name ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="label">Tier</td>
@@ -258,22 +258,22 @@
             <tr>
                 <td class="label">Provinsi</td>
                 <td class="colon">:</td>
-                <td>{{ $organization->province->name ?? '-' }}</td>
+                <td>{{ $organization->province?->name ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="label">Kabupaten/Kota</td>
                 <td class="colon">:</td>
-                <td>{{ $organization->regency->name ?? '-' }}</td>
+                <td>{{ $organization->regency?->name ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="label">Kecamatan</td>
                 <td class="colon">:</td>
-                <td>{{ $organization->district->name ?? '-' }}</td>
+                <td>{{ $organization->district?->name ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="label">Desa/Kelurahan</td>
                 <td class="colon">:</td>
-                <td>{{ $organization->village->name ?? '-' }}</td>
+                <td>{{ $organization->village?->name ?? '-' }}</td>
             </tr>
         </table>
     </div>
@@ -325,10 +325,10 @@
                 <tbody>
                     @foreach($contacts as $contact)
                         <tr>
-                            <td>{{ $contact->person->name ?? '-' }}</td>
+                            <td>{{ $contact->person?->name ?? '-' }}</td>
                             <td>{{ $contact->job_title ?? '-' }}</td>
-                            <td>{{ $contact->person->phone ?? '-' }}</td>
-                            <td>{{ $contact->person->email ?? '-' }}</td>
+                            <td>{{ $contact->person?->phone ?? '-' }}</td>
+                            <td>{{ $contact->person?->email ?? '-' }}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -22,7 +22,7 @@
 
         <!-- Body - Two Column Layout with Independent Scrolling -->
         <div class="flex-1 overflow-hidden flex" style="background-color: #f3f4f6;">
-            <form id="editCompanyForm" method="POST" enctype="multipart/form-data" class="w-full flex overflow-hidden">
+            <form id="editCompanyForm" class="w-full flex overflow-hidden">
                 @csrf
                 @method('PUT')
                 <input type="hidden" id="edit_company_id" name="company_id">
@@ -51,7 +51,7 @@
                                 <div style="position: relative;">
                                     <i class="fas fa-building"
                                         style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.75rem;"></i>
-                                    <input type="text" id="edit_company_name" name="company_name"
+                                    <input type="text" id="edit_company_name" name="name"
                                         style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem 0.5rem 2.25rem; font-size: 0.875rem;"
                                         placeholder="Masukkan nama perusahaan" required>
                                 </div>
@@ -66,7 +66,7 @@
                                 <div style="position: relative;">
                                     <i class="fas fa-tag"
                                         style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.75rem; z-index: 1; pointer-events: none;"></i>
-                                    <select id="edit_company_type_id" name="company_type_id"
+                                    <select id="edit_industry_id" name="industry_id"
                                         style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 2rem 0.5rem 2.25rem; font-size: 0.875rem; appearance: none;"
                                         required>
                                         <option value="">-- Pilih Jenis --</option>
@@ -111,10 +111,10 @@
                                 <div style="position: relative;">
                                     <i class="fas fa-toggle-on"
                                         style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.75rem; z-index: 1; pointer-events: none;"></i>
-                                    <select id="edit_status" name="status"
+                                    <select id="edit_is_active" name="is_active"
                                         style="width: 100%; background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 2rem 0.5rem 2.25rem; font-size: 0.875rem; appearance: none;">
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
+                                        <option value="1">Active</option>
+                                        <option value="0">Inactive</option>
                                     </select>
                                     <i class="fas fa-chevron-down"
                                         style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.75rem; pointer-events: none;"></i>
@@ -274,7 +274,7 @@
                                     <i class="fas fa-phone" style="margin-right: 0.375rem; color: #059669;"></i>
                                     Nomor Telepon Perusahaan
                                 </label>
-                                <input type="tel" id="edit_company_phone" name="company_phone"
+                                <input type="tel" id="edit_company_phone" name="phone"
                                     style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Contoh: 021-12345678 atau +62212345678">
                             </div>
@@ -286,7 +286,7 @@
                                     <i class="fas fa-envelope" style="margin-right: 0.375rem; color: #2563eb;"></i>
                                     Email Perusahaan
                                 </label>
-                                <input type="email" id="edit_company_email" name="company_email"
+                                <input type="email" id="edit_company_email" name="email"
                                     style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Contoh: info@company.com">
                             </div>
@@ -298,7 +298,7 @@
                                     <i class="fas fa-globe" style="margin-right: 0.375rem; color: #7c3aed;"></i>
                                     Website
                                 </label>
-                                <input type="url" id="edit_company_website" name="company_website"
+                                <input type="url" id="edit_company_website" name="website"
                                     style="width: 100%; background-color: #f9fafb; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;"
                                     placeholder="Contoh: https://www.company.com">
                             </div>
@@ -338,41 +338,6 @@
                             </div>
                         </div>
 
-                        <!-- SECTION 3: LOGO UPLOAD -->
-                        <div>
-                            <h5
-                                style="font-size: 0.8125rem; font-weight: 600; color: #1f2937; margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-image" style="color: #f59e0b;"></i>
-                                Logo Perusahaan
-                            </h5>
-
-                            <!-- File Upload Area -->
-                            <div style="border: 2px dashed #d1d5db; border-radius: 0.5rem; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #fafafa;"
-                                id="editLogoDropZone"
-                                onmouseover="this.style.borderColor='#3b82f6'; this.style.backgroundColor='#eff6ff';"
-                                onmouseout="this.style.borderColor='#d1d5db'; this.style.backgroundColor='#fafafa';">
-                                <input type="file" id="edit_company_logo" name="company_logo" accept="image/*"
-                                    style="display: none;" onchange="previewEditLogo(event)">
-
-                                <div id="editLogoPreviewContainer" style="display: none;">
-                                    <img id="editLogoPreview" src=""
-                                        style="max-width: 100%; max-height: 150px; margin-bottom: 0.75rem; border-radius: 0.375rem;">
-                                    <button type="button" onclick="clearEditLogoPreview()"
-                                        style="background-color: #ef4444; color: white; border: none; border-radius: 0.375rem; padding: 0.375rem 0.75rem; font-size: 0.6875rem; cursor: pointer;">
-                                        <i class="fas fa-trash" style="margin-right: 0.25rem;"></i>Hapus
-                                    </button>
-                                </div>
-
-                                <div id="editLogoUploadPrompt">
-                                    <i class="fas fa-cloud-upload-alt"
-                                        style="font-size: 2rem; color: #9ca3af; margin-bottom: 0.5rem; display: block;"></i>
-                                    <p style="font-size: 0.8125rem; color: #6b7280; margin: 0;">Klik atau drag file
-                                        gambar di sini</p>
-                                    <p style="font-size: 0.7rem; color: #9ca3af; margin: 0.25rem 0 0 0;">PNG, JPG, atau
-                                        GIF (Max 5MB)</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </form>
@@ -381,7 +346,7 @@
         <!-- Footer - Fixed at bottom -->
         <div
             style="display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; background-color: #f9fafb; flex-shrink: 0;">
-            <button type="submit" form="editCompanyForm"
+            <button type="button" onclick="submitEditCompanyModal()"
                 style="background-color: #3b82f6; color: white; border: none; border-radius: 0.5rem; padding: 0.5rem 1.25rem; font-weight: 500; font-size: 0.75rem; cursor: pointer; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); transition: all 0.2s;">
                 <i class="fas fa-save" style="margin-right: 0.375rem;"></i>Simpan Perubahan
             </button>

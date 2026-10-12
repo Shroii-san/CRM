@@ -28,22 +28,29 @@ function openAddCompanyModal() {
 function closeAddCompanyModal() {
     console.log('❌ Closing Add Company Modal...');
     
-    document.getElementById('addCompanyModal').classList.add('hidden');
-    document.getElementById('addCompanyForm').reset();
+    const modal = document.getElementById('addCompanyModal');
+    if (modal) modal.classList.add('hidden');
+
+    const form = document.getElementById('addCompanyForm');
+    if (form) form.reset();
+
     document.body.style.overflow = 'auto';
     
     // Reset PIC section
-    document.getElementById('pic-fields-container').innerHTML = '';
+    const picContainer = document.getElementById('pic-fields-container');
+    if (picContainer) picContainer.innerHTML = '';
     picCounter = 0;
     
     const content = document.getElementById('pic-content');
     const icon = document.getElementById('pic-toggle-icon');
     const statusText = document.getElementById('pic-status');
     
-    content.classList.add('hidden');
-    icon.style.transform = 'rotate(0deg)';
-    statusText.textContent = 'Belum diisi';
-    statusText.style.color = '#6b7280';
+    if (content) content.classList.add('hidden');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+    if (statusText) {
+        statusText.textContent = 'Belum diisi';
+        statusText.style.color = '#6b7280';
+    }
 
     // Clear logo preview
     clearLogoPreview();
@@ -139,12 +146,17 @@ async function openEditCompanyModal(companyId, companyName, companyTypeId, tier,
 function closeEditCompanyModal() {
     console.log('❌ Closing Edit Company Modal...');
     
-    document.getElementById('editCompanyModal').classList.add('hidden');
+    const modal = document.getElementById('editCompanyModal');
+    if (modal) modal.classList.add('hidden');
+
     document.body.style.overflow = 'auto';
-    document.getElementById('editCompanyForm').reset();
+
+    const form = document.getElementById('editCompanyForm');
+    if (form) form.reset();
     
     // Reset PIC section
-    document.getElementById('edit-pic-fields-container').innerHTML = '';
+    const picContainer = document.getElementById('edit-pic-fields-container');
+    if (picContainer) picContainer.innerHTML = '';
     editPicCounter = 0;
     currentEditCompanyId = null;
     
@@ -152,10 +164,12 @@ function closeEditCompanyModal() {
     const icon = document.getElementById('edit-pic-toggle-icon');
     const statusText = document.getElementById('edit-pic-status');
     
-    content.classList.add('hidden');
-    icon.style.transform = 'rotate(0deg)';
-    statusText.textContent = 'Loading...';
-    statusText.style.color = '#6b7280';
+    if (content) content.classList.add('hidden');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+    if (statusText) {
+        statusText.textContent = 'Loading...';
+        statusText.style.color = '#6b7280';
+    }
 
     // Clear logo preview
     clearEditLogoPreview();
@@ -560,53 +574,67 @@ function checkEditPICCompletion() {
 // ==================== LOGO MANAGEMENT ====================
 
 function previewLogo(event) {
-    const file = event.target.files[0];
+    const file = event?.target?.files?.[0];
     if (file) {
         if (file.size > 5 * 1024 * 1024) {
             alert('Ukuran file terlalu besar! Maksimal 5MB');
-            document.getElementById('company_logo').value = '';
+            const logoInput = document.getElementById('company_logo');
+            if (logoInput) logoInput.value = '';
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('logoPreview').src = e.target.result;
-            document.getElementById('logoPreviewContainer').style.display = 'block';
-            document.getElementById('logoUploadPrompt').style.display = 'none';
+            const preview = document.getElementById('logoPreview');
+            if (preview) preview.src = e.target.result;
+            const container = document.getElementById('logoPreviewContainer');
+            if (container) container.style.display = 'block';
+            const prompt = document.getElementById('logoUploadPrompt');
+            if (prompt) prompt.style.display = 'none';
         };
         reader.readAsDataURL(file);
     }
 }
 
 function clearLogoPreview() {
-    document.getElementById('company_logo').value = '';
-    document.getElementById('logoPreviewContainer').style.display = 'none';
-    document.getElementById('logoUploadPrompt').style.display = 'block';
+    const logoInput = document.getElementById('company_logo');
+    if (logoInput) logoInput.value = '';
+    const container = document.getElementById('logoPreviewContainer');
+    if (container) container.style.display = 'none';
+    const prompt = document.getElementById('logoUploadPrompt');
+    if (prompt) prompt.style.display = 'block';
 }
 
 function previewEditLogo(event) {
-    const file = event.target.files[0];
+    const file = event?.target?.files?.[0];
     if (file) {
         if (file.size > 5 * 1024 * 1024) {
             alert('Ukuran file terlalu besar! Maksimal 5MB');
-            document.getElementById('edit_company_logo').value = '';
+            const editLogoInput = document.getElementById('edit_company_logo');
+            if (editLogoInput) editLogoInput.value = '';
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('editLogoPreview').src = e.target.result;
-            document.getElementById('editLogoPreviewContainer').style.display = 'block';
-            document.getElementById('editLogoUploadPrompt').style.display = 'none';
+            const preview = document.getElementById('editLogoPreview');
+            if (preview) preview.src = e.target.result;
+            const container = document.getElementById('editLogoPreviewContainer');
+            if (container) container.style.display = 'block';
+            const prompt = document.getElementById('editLogoUploadPrompt');
+            if (prompt) prompt.style.display = 'none';
         };
         reader.readAsDataURL(file);
     }
 }
 
 function clearEditLogoPreview() {
-    document.getElementById('edit_company_logo').value = '';
-    document.getElementById('editLogoPreviewContainer').style.display = 'none';
-    document.getElementById('editLogoUploadPrompt').style.display = 'block';
+    const editLogoInput = document.getElementById('edit_company_logo');
+    if (editLogoInput) editLogoInput.value = '';
+    const container = document.getElementById('editLogoPreviewContainer');
+    if (container) container.style.display = 'none';
+    const prompt = document.getElementById('editLogoUploadPrompt');
+    if (prompt) prompt.style.display = 'block';
 }
 
 // ==================== DRAG AND DROP SETUP ====================

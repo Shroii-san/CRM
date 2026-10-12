@@ -50,42 +50,55 @@ const organizationColumns = [
     }
 ];
 
+// ─── Helper: sanitasi data form agar string kosong menjadi null ──────────────
+function cleanFormData(rawData) {
+    const data = {};
+    for (const [key, value] of Object.entries(rawData)) {
+        if (value === '' || value === undefined) {
+            data[key] = null;
+        } else {
+            data[key] = value;
+        }
+    }
+    return data;
+}
+
 // ─── Helper: kumpulkan data dari form add ────────────────────────────────────
 function collectAddFormData() {
-    return {
+    return cleanFormData({
         name:        document.getElementById('add_name')?.value?.trim() ?? '',
-        industry_id: document.getElementById('add_industry_id')?.value ?? '',
-        tier:        document.getElementById('add_tier')?.value ?? '',
+        industry_id: document.getElementById('add_industry_id')?.value || null,
+        tier:        document.getElementById('add_tier')?.value || null,
         is_active:   document.getElementById('add_is_active')?.value ?? '1',
-        description: document.getElementById('add_description')?.value?.trim() ?? '',
-        phone:       document.getElementById('add_phone')?.value?.trim() ?? '',
-        email:       document.getElementById('add_email')?.value?.trim() ?? '',
-        website:     document.getElementById('add_website')?.value?.trim() ?? '',
-        province_id: document.getElementById('create-province')?.value ?? '',
-        regency_id:  document.getElementById('create-regency')?.value ?? '',
-        district_id: document.getElementById('create-district')?.value ?? '',
-        village_id:  document.getElementById('create-village')?.value ?? '',
-        address:     document.getElementById('create-address')?.value?.trim() ?? '',
-    };
+        description: document.getElementById('add_description')?.value?.trim() || null,
+        phone:       document.getElementById('add_phone')?.value?.trim() || null,
+        email:       document.getElementById('add_email')?.value?.trim() || null,
+        website:     document.getElementById('add_website')?.value?.trim() || null,
+        province_id: document.getElementById('create-province')?.value || null,
+        regency_id:  document.getElementById('create-regency')?.value || null,
+        district_id: document.getElementById('create-district')?.value || null,
+        village_id:  document.getElementById('create-village')?.value || null,
+        address:     document.getElementById('create-address')?.value?.trim() || null,
+    });
 }
 
 // ─── Helper: kumpulkan data dari form edit ────────────────────────────────────
 function collectEditFormData() {
-    return {
+    return cleanFormData({
         name:        document.getElementById('edit_company_name')?.value?.trim() ?? '',
-        industry_id: document.getElementById('edit_industry_id')?.value ?? '',
-        tier:        document.getElementById('edit_tier')?.value ?? '',
+        industry_id: document.getElementById('edit_industry_id')?.value || null,
+        tier:        document.getElementById('edit_tier')?.value || null,
         is_active:   document.getElementById('edit_is_active')?.value ?? '1',
-        description: document.getElementById('edit_description')?.value?.trim() ?? '',
-        phone:       document.getElementById('edit_company_phone')?.value?.trim() ?? '',
-        email:       document.getElementById('edit_company_email')?.value?.trim() ?? '',
-        website:     document.getElementById('edit_company_website')?.value?.trim() ?? '',
-        province_id: document.getElementById('edit-province')?.value ?? '',
-        regency_id:  document.getElementById('edit-regency')?.value ?? '',
-        district_id: document.getElementById('edit-district')?.value ?? '',
-        village_id:  document.getElementById('edit-village')?.value ?? '',
-        address:     document.getElementById('edit-address')?.value?.trim() ?? '',
-    };
+        description: document.getElementById('edit_description')?.value?.trim() || null,
+        phone:       document.getElementById('edit_company_phone')?.value?.trim() || null,
+        email:       document.getElementById('edit_company_email')?.value?.trim() || null,
+        website:     document.getElementById('edit_company_website')?.value?.trim() || null,
+        province_id: document.getElementById('edit-province')?.value || null,
+        regency_id:  document.getElementById('edit-regency')?.value || null,
+        district_id: document.getElementById('edit-district')?.value || null,
+        village_id:  document.getElementById('edit-village')?.value || null,
+        address:     document.getElementById('edit-address')?.value?.trim() || null,
+    });
 }
 
 // ─── Helper: isi form edit dengan data item ──────────────────────────────────
@@ -128,6 +141,17 @@ function populateEditForm(item) {
     }
 }
 
+// ─── Helper: ekstrak pesan error dari response API / validation ──────────────
+function formatErrorMessage(err, defaultMsg = 'Terjadi kesalahan') {
+    if (err?.payload?.errors && typeof err.payload.errors === 'object') {
+        const errorList = Object.values(err.payload.errors).flat();
+        if (errorList.length > 0) {
+            return errorList.join('<br>');
+        }
+    }
+    return err?.payload?.message || err?.message || defaultMsg;
+}
+
 // ─── Helper: tampilkan toast sederhana ───────────────────────────────────────
 function showToast(message, type = 'success') {
     if (typeof Swal !== 'undefined') {
@@ -135,11 +159,13 @@ function showToast(message, type = 'success') {
             toast: true,
             position: 'top-end',
             icon: type,
-            title: message,
+            html: message,
             showConfirmButton: false,
-            timer: 3000,
+            timer: 4500,
             timerProgressBar: true,
         });
+    } else {
+        alert(message.replace(/<br>/g, '\n'));
     }
 }
 
@@ -157,7 +183,10 @@ function buildTableComponent() {
         // ── Detail Modal ────────────────────────────────────────────────────
         async showDetail(companyId) {
             const modal = document.getElementById('companyDetailModal');
-            if (modal) modal.style.display = 'flex';
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
 
             const picsContainer = document.getElementById('picsContainer');
             if (picsContainer) {
@@ -285,8 +314,9 @@ function buildTableComponent() {
                 }
                 this.refresh();
             } catch (err) {
-                console.error('Error creating organization:', err);
-                showToast('Gagal menambahkan organisasi', 'error');
+                console.error('Error creating organization:', err, err?.payload?.errors || err?.payload);
+                const msg = formatErrorMessage(err, 'Gagal menambahkan organisasi');
+                showToast(msg, 'error');
             }
         },
 
@@ -344,8 +374,9 @@ function buildTableComponent() {
                 }
                 this.refresh();
             } catch (err) {
-                console.error('Error updating organization:', err);
-                showToast('Gagal memperbarui organisasi', 'error');
+                console.error('Error updating organization:', err, err?.payload?.errors || err?.payload);
+                const msg = formatErrorMessage(err, 'Gagal memperbarui organisasi');
+                showToast(msg, 'error');
             }
         },
 

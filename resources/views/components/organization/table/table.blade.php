@@ -178,20 +178,32 @@
 
 {{-- Company Detail Modal - ROUNDED KONSISTEN --}}
 <div id="companyDetailModal"
-    class="hidden fixed inset-0 w-full h-full bg-black/50 z-[9999] items-center justify-center">
-    <div class="bg-white rounded-3xl w-[95%] max-w-[700px] max-h-[90vh] flex flex-col shadow-xl overflow-hidden">
+    onclick="if (event.target === this) closeCompanyDetailModal()"
+    class="hidden fixed inset-0 w-full h-full bg-black/50 z-[9999] items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-[700px] max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-modal-in">
 
         {{-- Modal Header - FIXED --}}
-        <div class="flex justify-between items-center p-6 bg-gradient-to-r from-indigo-600 to-purple-600 shrink-0">
-            <h3 class="text-xl font-semibold text-white m-0">Detail Perusahaan</h3>
-            <button onclick="closeCompanyDetailModal()"
-                class="text-white bg-transparent border-0 text-2xl cursor-pointer p-0">
-                <i class="fas fa-times"></i>
-            </button>
+        <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 1rem 1.5rem; flex-shrink: 0;">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div style="width: 2.5rem; height: 2.5rem; background-color: rgba(255, 255, 255, 0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-building text-white text-base"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white m-0 leading-tight">Detail Perusahaan</h3>
+                        <p class="text-xs text-indigo-100 mt-0.5 m-0">Informasi profil dan kontak organisasi</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCompanyDetailModal()"
+                    class="text-white hover:bg-white/20 rounded-full w-9 h-9 flex items-center justify-center transition-colors cursor-pointer border-0 bg-transparent"
+                    title="Tutup">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
         </div>
 
-        {{-- Modal Body - SCROLLABLE WITH BORDER RADIUS AT BOTTOM --}}
-        <div class="overflow-y-auto flex-1 p-6 flex flex-col gap-6 rounded-b-3xl">
+        {{-- Modal Body - SCROLLABLE --}}
+        <div class="overflow-y-auto flex-1 p-6 flex flex-col gap-6">
 
             {{-- Logo --}}
             <div class="text-center">
@@ -314,6 +326,7 @@
     function closeCompanyDetailModal() {
         const modal = document.getElementById('companyDetailModal');
         if (modal) modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 </script>
 

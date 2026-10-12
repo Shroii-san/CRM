@@ -192,7 +192,7 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching regencies for province:`, provinceId);
         
         try {
-            const url = `/api/v1/regions/provinces/${provinceId}/regencies`;
+            const url = `/api/v1/regions/provinces/${encodeURIComponent(provinceId)}/regencies`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
             const response = await this.fetchRegion(url);
@@ -237,7 +237,7 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching districts for regency:`, regencyId);
         
         try {
-            const url = `/api/v1/regions/regencies/${regencyId}/districts`;
+            const url = `/api/v1/regions/regencies/${encodeURIComponent(regencyId)}/districts`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
             const response = await this.fetchRegion(url);
@@ -280,7 +280,7 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching villages for district:`, districtId);
         
         try {
-            const url = `/api/v1/regions/districts/${districtId}/villages`;
+            const url = `/api/v1/regions/districts/${encodeURIComponent(districtId)}/villages`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
             const response = await this.fetchRegion(url);

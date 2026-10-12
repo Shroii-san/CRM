@@ -27,12 +27,12 @@ class RegionService
     /**
      * Mendapatkan daftar provinsi.
      */
-    public function getProvinces(?int $countryId = null, ?string $search = null)
+    public function getProvinces(int|string|null $countryId = null, ?string $search = null)
     {
         $query = Province::query()->orderBy('name', 'asc');
 
-        if ($countryId) {
-            $query->where('country_id', $countryId);
+        if ($countryId !== null && $countryId !== '') {
+            $query->where('country_id', (string) $countryId);
         }
 
         if ($search) {
@@ -45,12 +45,12 @@ class RegionService
     /**
      * Mendapatkan daftar kabupaten/kota berdasarkan provinsi.
      */
-    public function getRegencies(?int $provinceId = null, ?string $search = null)
+    public function getRegencies(int|string|null $provinceId = null, ?string $search = null)
     {
         $query = Regency::query()->orderBy('name', 'asc');
 
-        if ($provinceId) {
-            $query->where('province_id', $provinceId);
+        if ($provinceId !== null && $provinceId !== '') {
+            $query->where('province_id', (string) $provinceId);
         }
 
         if ($search) {
@@ -63,12 +63,12 @@ class RegionService
     /**
      * Mendapatkan daftar kecamatan berdasarkan kabupaten/kota.
      */
-    public function getDistricts(?int $regencyId = null, ?string $search = null)
+    public function getDistricts(int|string|null $regencyId = null, ?string $search = null)
     {
         $query = District::query()->orderBy('name', 'asc');
 
-        if ($regencyId) {
-            $query->where('regency_id', $regencyId);
+        if ($regencyId !== null && $regencyId !== '') {
+            $query->where('regency_id', (string) $regencyId);
         }
 
         if ($search) {
@@ -81,12 +81,12 @@ class RegionService
     /**
      * Mendapatkan daftar kelurahan/desa berdasarkan kecamatan.
      */
-    public function getVillages(?int $districtId = null, ?string $search = null)
+    public function getVillages(int|string|null $districtId = null, ?string $search = null)
     {
         $query = Village::query()->orderBy('name', 'asc');
 
-        if ($districtId) {
-            $query->where('district_id', $districtId);
+        if ($districtId !== null && $districtId !== '') {
+            $query->where('district_id', (string) $districtId);
         }
 
         if ($search) {

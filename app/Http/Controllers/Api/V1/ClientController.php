@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\StoreClientRequest;
+use App\Http\Requests\Client\UpdateClientRequest;
+use App\Http\Resources\Client\ClientResource;
+use App\Services\ClientService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class ClientController extends Controller
+{
+    public function __construct(private ClientService $clientService)
+    {
+    }
+
+    /**
+     * Mendapatkan daftar client prospect (JSON API).
+     */
+    public function index(Request $request): JsonResponse
+    {
+
+        $filters = array_filter([
+            'source_id' => $request->input('source_id')
+                ? (int) $request->input('source_id')
+                : null,
+            'is_active' => $request->has('is_active')
+                ? ($request->boolean('is_active') ? 1 : 0)
+                : null,
+            'client_type' => $request->input('client_type') ?: null,
+        ], fn($val) => $val !== null && $val !== '');
+
+        $clients = $this->clientService->list(
+            search: $request->input('search'),
+            filters: $filters,
+            perPage: (int) $request->input('per_page', 50),
+            page: (int) $request->input('page', 1),
+            sortBy: $request->input('sort_by', 'id'),
+            sortDir: $request->input('sort_dir', 'asc'),
+        );
+
+        return $this->paginatedResponse($clients, ClientResource::class, 'Client list retrieved successfully');
+    }
+
+    public function filterOptions(): JsonResponse
+    {
+        return response()->json(
+            $this->clientService->getFilterOptions()
+        );
+    }
+
+    /**
+     * Membuat data client baru.
+     */
+    public function store(StoreClientRequest $request): JsonResponse
+    {
+        $client = $this->clientService->create($request->validated());
+
+        return $this->successResponse(
+            ClientResource::make($client),
+            'Client created successfully',
+            201
+        );
+    }
+
+    /**
+     * Memperbarui data client.
+     */
+    public function update(UpdateClientRequest $request, int|string $id): JsonResponse
+    {
+        $client = $this->clientService->update((int) $id, $request->validated());
+
+        return $this->successResponse(
+            ClientResource::make($client),
+            'Client updated successfully'
+        );
+    }
+
+    /**
+     * Menghapus data client.
+     */
+    public function destroy(int|string $id): JsonResponse
+    {
+        $this->clientService->delete((int) $id);
+
+        return $this->successResponse(null, 'Client deleted successfully');
+    }
+
+    /**
+     * Menghapus banyak data client sekaligus (Bulk Delete).
+     */
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:clients,id',
+        ]);
+
+        $this->clientService->bulkDelete($request->input('ids'));
+
+        return $this->successResponse(null, 'Clients bulk deleted successfully');
+    }
+}

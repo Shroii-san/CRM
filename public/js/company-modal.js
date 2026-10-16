@@ -28,22 +28,29 @@ function openAddCompanyModal() {
 function closeAddCompanyModal() {
     console.log('❌ Closing Add Company Modal...');
     
-    document.getElementById('addCompanyModal').classList.add('hidden');
-    document.getElementById('addCompanyForm').reset();
+    const modal = document.getElementById('addCompanyModal');
+    if (modal) modal.classList.add('hidden');
+
+    const form = document.getElementById('addCompanyForm');
+    if (form) form.reset();
+
     document.body.style.overflow = 'auto';
     
     // Reset PIC section
-    document.getElementById('pic-fields-container').innerHTML = '';
+    const picContainer = document.getElementById('pic-fields-container');
+    if (picContainer) picContainer.innerHTML = '';
     picCounter = 0;
     
     const content = document.getElementById('pic-content');
     const icon = document.getElementById('pic-toggle-icon');
     const statusText = document.getElementById('pic-status');
     
-    content.classList.add('hidden');
-    icon.style.transform = 'rotate(0deg)';
-    statusText.textContent = 'Belum diisi';
-    statusText.style.color = '#6b7280';
+    if (content) content.classList.add('hidden');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+    if (statusText) {
+        statusText.textContent = 'Belum diisi';
+        statusText.style.color = '#6b7280';
+    }
 
     // Clear logo preview
     clearLogoPreview();
@@ -139,12 +146,17 @@ async function openEditCompanyModal(companyId, companyName, companyTypeId, tier,
 function closeEditCompanyModal() {
     console.log('❌ Closing Edit Company Modal...');
     
-    document.getElementById('editCompanyModal').classList.add('hidden');
+    const modal = document.getElementById('editCompanyModal');
+    if (modal) modal.classList.add('hidden');
+
     document.body.style.overflow = 'auto';
-    document.getElementById('editCompanyForm').reset();
+
+    const form = document.getElementById('editCompanyForm');
+    if (form) form.reset();
     
     // Reset PIC section
-    document.getElementById('edit-pic-fields-container').innerHTML = '';
+    const picContainer = document.getElementById('edit-pic-fields-container');
+    if (picContainer) picContainer.innerHTML = '';
     editPicCounter = 0;
     currentEditCompanyId = null;
     
@@ -152,10 +164,12 @@ function closeEditCompanyModal() {
     const icon = document.getElementById('edit-pic-toggle-icon');
     const statusText = document.getElementById('edit-pic-status');
     
-    content.classList.add('hidden');
-    icon.style.transform = 'rotate(0deg)';
-    statusText.textContent = 'Loading...';
-    statusText.style.color = '#6b7280';
+    if (content) content.classList.add('hidden');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+    if (statusText) {
+        statusText.textContent = 'Loading...';
+        statusText.style.color = '#6b7280';
+    }
 
     // Clear logo preview
     clearEditLogoPreview();
@@ -174,13 +188,12 @@ function initEditAddressCascade() {
         window.editCompanyCascade.destroy();
     }
 
-    // ✅ FIXED: baseUrl harus sesuai dengan route di web.php
+    // ✅ FIXED: URL cascade sekarang absolut di address-cascade.js
     window.editCompanyCascade = new AddressCascade({
         provinceId: 'edit-province',
         regencyId: 'edit-regency',
         districtId: 'edit-district',
         villageId: 'edit-village',
-        baseUrl: '/company/' 
     });
     
     console.log('✅ Edit cascade initialized');
@@ -190,79 +203,61 @@ async function loadEditCompanyData(companyId) {
     console.log('📡 Loading company data for edit...');
     
     try {
-        const response = await fetch(`/company/${companyId}`);
+        const response = await fetch(`/api/v1/organizations/${companyId}`);
         const data = await response.json();
         
         console.log('📦 Company data received:', data);
         
-        if (data.success) {
-            const c = data.company;
-            
-            // Populate contact fields
-            document.getElementById('edit_company_phone').value = c.company_phone && c.company_phone !== '-' ? c.company_phone : '';
-            document.getElementById('edit_company_email').value = c.company_email && c.company_email !== '-' ? c.company_email : '';
-            document.getElementById('edit_company_website').value = c.company_website || '';
-            document.getElementById('edit_company_linkedin').value = c.company_linkedin || '';
-            document.getElementById('edit_company_instagram').value = c.company_instagram || '';
-            
-            // Populate address field
-            const addressField = document.getElementById('edit-address');
-            if (addressField) {
-                addressField.value = c.address && c.address !== '-' ? c.address : '';
-            }
-            
-            // ✅ FIXED: Load address cascade
-            if (window.editCompanyCascade && c.province_id) {
-                console.log('🗺️ Loading cascade with values:', {
-                    province_id: c.province_id,
-                    regency_id: c.regency_id,
-                    district_id: c.district_id,
-                    village_id: c.village_id
-                });
-                
-                try {
-                    await window.editCompanyCascade.loadWithValues(
-                        c.province_id,
-                        c.regency_id,
-                        c.district_id,
-                        c.village_id
-                    );
-                    console.log('✅ Address cascade loaded successfully');
-                } catch (cascadeError) {
-                    console.error('❌ Cascade error:', cascadeError);
-                }
-            } else {
-                console.warn('⚠️ No cascade instance or province_id');
-            }
-            
-            // ✅ FIXED: Logo preview with better error handling
-            const logoPreviewContainer = document.getElementById('editLogoPreviewContainer');
-            const logoPreview = document.getElementById('editLogoPreview');
-            const logoUploadPrompt = document.getElementById('editLogoUploadPrompt');
-            
-            if (c.company_logo && c.company_logo !== null && c.company_logo !== '' && c.company_logo !== '-') {
-                console.log('🖼️ Loading logo:', c.company_logo);
-                
-                const testImg = new Image();
-                testImg.onload = function() {
-                    logoPreview.src = c.company_logo;
-                    logoPreviewContainer.style.display = 'block';
-                    logoUploadPrompt.style.display = 'none';
-                    console.log('✅ Logo loaded');
-                };
-                testImg.onerror = function() {
-                    console.error('❌ Logo failed to load');
-                    logoPreviewContainer.style.display = 'none';
-                    logoUploadPrompt.style.display = 'block';
-                };
-                testImg.src = c.company_logo;
-            } else {
-                logoPreviewContainer.style.display = 'none';
-                logoUploadPrompt.style.display = 'block';
-            }
-            
-            console.log('✅ Company data loaded successfully');
+        // API REST mengembalikan { data: {...} }
+        const c = data.data ?? data.company ?? data ?? {};
+        
+        // Populate contact fields (nama field sesuai skema DB)
+        document.getElementById('edit_company_phone').value   = c.phone   ?? '';
+        document.getElementById('edit_company_email').value   = c.email   ?? '';
+        document.getElementById('edit_company_website').value = c.website ?? '';
+        
+        // Sosial media (opsional, field mungkin tidak ada di form setelah refactor)
+        const linkedinEl   = document.getElementById('edit_company_linkedin');
+        const instagramEl  = document.getElementById('edit_company_instagram');
+        if (linkedinEl || instagramEl) {
+            const socialProfiles = Array.isArray(c.social_profiles) ? c.social_profiles : [];
+            const linkedin  = socialProfiles.find(s => s.platform === 'linkedin');
+            const instagram = socialProfiles.find(s => s.platform === 'instagram');
+            if (linkedinEl)  linkedinEl.value  = linkedin?.url  ?? '';
+            if (instagramEl) instagramEl.value = instagram?.url ?? '';
         }
+        
+        // Populate address field
+        const addressField = document.getElementById('edit-address');
+        if (addressField) {
+            addressField.value = c.address ?? '';
+        }
+        
+        // Load address cascade
+        if (window.editCompanyCascade && c.province_id) {
+            console.log('🗺️ Loading cascade with values:', {
+                province_id: c.province_id,
+                regency_id:  c.regency_id,
+                district_id: c.district_id,
+                village_id:  c.village_id,
+            });
+            
+            try {
+                await window.editCompanyCascade.loadWithValues(
+                    c.province_id,
+                    c.regency_id,
+                    c.district_id,
+                    c.village_id,
+                );
+                console.log('✅ Address cascade loaded successfully');
+            } catch (cascadeError) {
+                console.error('❌ Cascade error:', cascadeError);
+            }
+        } else {
+            console.warn('⚠️ No cascade instance or province_id');
+        }
+        
+        console.log('✅ Company data loaded successfully');
     } catch (error) {
         console.error('❌ Error loading company data:', error);
     }
@@ -579,53 +574,67 @@ function checkEditPICCompletion() {
 // ==================== LOGO MANAGEMENT ====================
 
 function previewLogo(event) {
-    const file = event.target.files[0];
+    const file = event?.target?.files?.[0];
     if (file) {
         if (file.size > 5 * 1024 * 1024) {
             alert('Ukuran file terlalu besar! Maksimal 5MB');
-            document.getElementById('company_logo').value = '';
+            const logoInput = document.getElementById('company_logo');
+            if (logoInput) logoInput.value = '';
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('logoPreview').src = e.target.result;
-            document.getElementById('logoPreviewContainer').style.display = 'block';
-            document.getElementById('logoUploadPrompt').style.display = 'none';
+            const preview = document.getElementById('logoPreview');
+            if (preview) preview.src = e.target.result;
+            const container = document.getElementById('logoPreviewContainer');
+            if (container) container.style.display = 'block';
+            const prompt = document.getElementById('logoUploadPrompt');
+            if (prompt) prompt.style.display = 'none';
         };
         reader.readAsDataURL(file);
     }
 }
 
 function clearLogoPreview() {
-    document.getElementById('company_logo').value = '';
-    document.getElementById('logoPreviewContainer').style.display = 'none';
-    document.getElementById('logoUploadPrompt').style.display = 'block';
+    const logoInput = document.getElementById('company_logo');
+    if (logoInput) logoInput.value = '';
+    const container = document.getElementById('logoPreviewContainer');
+    if (container) container.style.display = 'none';
+    const prompt = document.getElementById('logoUploadPrompt');
+    if (prompt) prompt.style.display = 'block';
 }
 
 function previewEditLogo(event) {
-    const file = event.target.files[0];
+    const file = event?.target?.files?.[0];
     if (file) {
         if (file.size > 5 * 1024 * 1024) {
             alert('Ukuran file terlalu besar! Maksimal 5MB');
-            document.getElementById('edit_company_logo').value = '';
+            const editLogoInput = document.getElementById('edit_company_logo');
+            if (editLogoInput) editLogoInput.value = '';
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('editLogoPreview').src = e.target.result;
-            document.getElementById('editLogoPreviewContainer').style.display = 'block';
-            document.getElementById('editLogoUploadPrompt').style.display = 'none';
+            const preview = document.getElementById('editLogoPreview');
+            if (preview) preview.src = e.target.result;
+            const container = document.getElementById('editLogoPreviewContainer');
+            if (container) container.style.display = 'block';
+            const prompt = document.getElementById('editLogoUploadPrompt');
+            if (prompt) prompt.style.display = 'none';
         };
         reader.readAsDataURL(file);
     }
 }
 
 function clearEditLogoPreview() {
-    document.getElementById('edit_company_logo').value = '';
-    document.getElementById('editLogoPreviewContainer').style.display = 'none';
-    document.getElementById('editLogoUploadPrompt').style.display = 'block';
+    const editLogoInput = document.getElementById('edit_company_logo');
+    if (editLogoInput) editLogoInput.value = '';
+    const container = document.getElementById('editLogoPreviewContainer');
+    if (container) container.style.display = 'none';
+    const prompt = document.getElementById('editLogoUploadPrompt');
+    if (prompt) prompt.style.display = 'block';
 }
 
 // ==================== DRAG AND DROP SETUP ====================

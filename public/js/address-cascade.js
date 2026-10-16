@@ -36,6 +36,20 @@ class AddressCascade {
         
         this.init();
     }
+
+    // Helper: fetch dengan CSRF token dan session credentials
+    async fetchRegion(url) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        return fetch(url, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+        });
+    }
     
     // Initialize cascade
     init() {
@@ -178,10 +192,10 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching regencies for province:`, provinceId);
         
         try {
-            const url = `${this.baseUrl}get-regencies/${provinceId}`;
+            const url = `/api/v1/regions/provinces/${encodeURIComponent(provinceId)}/regencies`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
-            const response = await fetch(url);
+            const response = await this.fetchRegion(url);
             
             console.log(`📊 [${this.instanceId}] Response status:`, response.status);
             
@@ -223,10 +237,10 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching districts for regency:`, regencyId);
         
         try {
-            const url = `${this.baseUrl}get-districts/${regencyId}`;
+            const url = `/api/v1/regions/regencies/${encodeURIComponent(regencyId)}/districts`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
-            const response = await fetch(url);
+            const response = await this.fetchRegion(url);
             
             console.log(`📊 [${this.instanceId}] Response status:`, response.status);
             
@@ -266,10 +280,10 @@ class AddressCascade {
         console.log(`📥 [${this.instanceId}] Fetching villages for district:`, districtId);
         
         try {
-            const url = `${this.baseUrl}get-villages/${districtId}`;
+            const url = `/api/v1/regions/districts/${encodeURIComponent(districtId)}/villages`;
             console.log(`🌐 [${this.instanceId}] Request URL:`, url);
             
-            const response = await fetch(url);
+            const response = await this.fetchRegion(url);
             
             console.log(`📊 [${this.instanceId}] Response status:`, response.status);
             

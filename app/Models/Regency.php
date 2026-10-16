@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Regency extends Model
 {
-    protected $fillable = ['id', 'province_id', 'name'];
+    protected $table = 'regencies';
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
@@ -19,10 +19,5 @@ class Regency extends Model
     public function districts()
     {
         return $this->hasMany(District::class, 'regency_id', 'id');
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class, 'regency_id', 'id');
     }
 }

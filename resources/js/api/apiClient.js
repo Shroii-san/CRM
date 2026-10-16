@@ -92,6 +92,11 @@ export const apiClient = {
     },
 
     async put(url, data = {}, options = {}) {
+        if (data instanceof FormData) {
+            data.append('_method', 'PUT');
+            return this.post(url, data, options);
+        }
+
         const headers = buildHeaders(options.headers);
         if (!headers['Content-Type']) {
             headers['Content-Type'] = 'application/json';

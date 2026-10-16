@@ -16,6 +16,7 @@ class StoreAttachmentRequest extends FormRequest
         return [
             'file'            => 'required|file|max:10240', // Maks 10MB
             'description'     => 'nullable|string',
+            'attachment_type' => 'nullable|string|max:100',
             'attachable_type' => 'required|string|max:255',
             'attachable_id'   => 'required|integer',
         ];

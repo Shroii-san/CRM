@@ -16,6 +16,7 @@ class Attachment extends Model
     protected $fillable = [
         'file_name',
         'description',
+        'attachment_type',
         'mime_type',
         'file_size',
         'storage_reference',
@@ -23,6 +24,19 @@ class Attachment extends Model
         'attachable_type',
         'attachable_id',
     ];
+
+    /**
+     * URL publik berkas lampiran.
+     */
+    public function getFileUrlAttribute(): ?string
+    {
+        return $this->storage_reference ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->storage_reference) : null;
+    }
+
+    public function scopeOfType($query, string $type)
+    {
+        return $query->where('attachment_type', $type);
+    }
 
     public function attachable()
     {

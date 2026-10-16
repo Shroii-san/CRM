@@ -74,16 +74,10 @@ Route::middleware(['auth', 'permission'])->group(function () {
         // Endpoint JSON untuk dropdown export
         Route::get('/options', [OrganizationController::class, 'options'])->name('options');
 
-        // Export Import Excel
-        Route::get('/import/excel', [OrganizationController::class, 'importExcel'])->name('import.excel');
-        Route::get('/import/template/excel', [OrganizationController::class, 'downloadTemplate'])->name('import.template');
-        Route::get('/export/excel', [OrganizationController::class, 'exportExcel'])->name('export.excel');
-        Route::get('/export/pivot-excel', [OrganizationController::class, 'exportPivotExcel'])->name('pivot.excel');
-
-
         // Export PDF & Excel
         Route::get('/export/pdf-list', [OrganizationController::class, 'exportPdfList'])->name('pdf.list');
         Route::get('/export/pdf-selected', [OrganizationController::class, 'exportPdfSelected'])->name('pdf.selected');
+        Route::get('/export/pivot-excel', [OrganizationController::class, 'exportPivotExcel'])->name('pivot.excel');
         Route::get('/{id}/pdf', [OrganizationController::class, 'exportPdf'])->name('pdf')->whereNumber('id');
 
         // Endpoint JSON daftar PIC satu organisasi (dipakai modal detail frontend)

@@ -1,9 +1,9 @@
 @props([
-'tableId',
-'ajaxUrl',
-'filters' => [],
-'columns' => [],
-'placeholder' => 'Cari sesuatu...',
+    'tableId',
+    'ajaxUrl',
+    'filters' => [],
+    'columns' => [],
+    'placeholder' => 'Cari sesuatu...',
 ])
 
 <div class="flex flex-col md:flex-row md:items-center gap-3">
@@ -14,22 +14,13 @@
             id="searchInput"
             data-search
             placeholder="{{ $placeholder }}"
-            class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" />
+            class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+        />
         <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-sm"></i>
     </div>
 
     {{-- Dynamic Filters - ✅ FIXED: Add data-filter attribute --}}
     @foreach($filters as $filterName => $filterOptions)
-    @php
-    $filterId = Str::slug($filterName, '_');
-    $filterKey = strtolower($filterName); // ✅ For data-filter attribute
-    @endphp
-    <select
-        id="filter{{ $filterName }}"
-        data-filter="{{ $filterKey }}"
-        class="px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all bg-white">
-        <option value="">Semua {{ $filterName }}</option>
-        @foreach($filterOptions as $option)
         @php
             $filterKey = strtolower($filterName);
             $filterTitle = match($filterKey) {
@@ -39,7 +30,7 @@
                 default => ucfirst(str_replace('_', ' ', $filterName))
             };
         @endphp
-        <select
+        <select 
             id="filter{{ Str::studly($filterName) }}"
             data-filter="{{ $filterKey }}"
             class="px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all bg-white">
@@ -63,7 +54,7 @@
     @endforeach
 
     {{-- Per Page Selector --}}
-    <select
+    <select 
         data-per-page
         class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all bg-white">
         <option value="10" selected>10 / halaman</option>
@@ -79,3 +70,16 @@
     </div>
     @endif
 </div>
+
+{{-- ✅ Debug Info (hapus setelah testing) --}}
+@if(config('app.debug'))
+<script>
+    console.log('🔍 FilterSearch Component Loaded:', {
+        tableId: '{{ $tableId }}',
+        ajaxUrl: '{{ $ajaxUrl }}',
+        filters: @json(array_keys($filters)),
+        searchInputId: 'searchInput',
+        filterElements: @json(array_map(fn($key) => strtolower($key), array_keys($filters)))
+    });
+</script>
+@endif

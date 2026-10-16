@@ -7440,7 +7440,7 @@ COPY public.menus (id, parent_id, icon_id, name, slug, route, position, is_activ
 30	22	\N	User	user	user	3	t	2025-09-19 10:01:23.079404	2025-09-19 10:01:23.079404
 35	41	\N	CategoryCompany	category-company	categorycompany	6	t	2025-09-23 11:33:04.83515	2025-09-23 11:33:04.83515
 37	\N	\N	Sales	sales	\N	9	t	2025-10-06 11:08:05.388592	2025-10-06 11:08:05.388592
-38	37	\N	Organization	organization	organization.index	7	t	2025-10-06 11:09:59.099679	2025-10-06 11:09:59.099679
+38	37	\N	Organization	organization	organization	7	t	2025-10-06 11:09:59.099679	2025-10-06 11:09:59.099679
 40	37	\N	Canvassing	salesvisit	salesvisit	9	t	2025-10-06 11:11:43.844727	2025-10-06 11:11:43.844727
 41	\N	\N	Marketing	marketing	\N	5	t	2025-10-06 11:29:44.272069	2025-10-06 11:29:44.272069
 42	41	\N	Manage Sales	manage-sales	marketing	10001	t	2025-10-06 11:31:46.5014	2025-10-06 11:31:46.5014
@@ -8097,7 +8097,7 @@ COPY public.deals (id, client_id, pipeline_id, current_stage_id, assigned_user_i
 --
 
 COPY public.users (id, role_id, name, email, phone, password, is_active, remember_token, last_activity_at, created_at, updated_at) FROM stdin;
-1	1	superadmin	\N	\N	$2y$12$CLzpVMvVH/i2lgJ/PzCM5.VixVFZNlvB87lDM/.GWyueeca..Nzle	t	\N	2025-11-28 09:09:45	2025-09-08 10:44:30.321085	2025-11-28 09:09:45
+1	1	superadmin	\N	\N	$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi	t	\N	2025-11-28 09:09:45	2025-09-08 10:44:30.321085	2025-11-28 09:09:45
 11	7	ihsan	\N	\N	$2y$12$vk16wPJkoMU8DoXZkO1Wp.nhDq/SSy5ncc4v0TWYkqDXnrq7QzJfu	t	\N	2025-10-06 03:26:16	2025-09-18 05:35:13	2025-10-06 03:26:16
 32	12	annisanurulfajri	annisanurulfajri120494@gmail.com	6283829719550	$2y$12$JRWtNfmscXHVOSPiffsd9uqgB6YdX9CN82s/5EsyJiXW7dbcaYVWK	f	\N	2025-10-03 03:26:10	2025-10-03 10:17:16.510074	2025-11-17 03:03:22
 33	12	siskasriwahyuni	siskasriwahyuni2004@gmail.com	6281461243726	$2y$12$75h6xiF5UHahdtnE95J4vu6uNODhXmSoL0kGSdmps/AbMUIU4gnMm	f	\N	2025-10-03 03:37:03	2025-10-03 10:17:16.510074	2025-11-17 03:01:52

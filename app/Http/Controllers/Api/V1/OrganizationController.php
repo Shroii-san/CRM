@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Organization\StoreOrganizationRequest;
 use App\Http\Requests\Organization\UpdateOrganizationRequest;
 use App\Http\Resources\Organization\OrganizationResource;
-use App\Services\organization\OrganizationService;
+use App\Services\OrganizationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -69,11 +69,7 @@ class OrganizationController extends Controller
      */
     public function store(StoreOrganizationRequest $request): JsonResponse
     {
-        $organization = $this->organizationService->create(
-            $request->validated(),
-            $request->file('logo'),
-            $request->user()
-        );
+        $organization = $this->organizationService->create($request->validated());
 
         return $this->successResponse(
             OrganizationResource::make($organization),
@@ -87,12 +83,7 @@ class OrganizationController extends Controller
      */
     public function update(UpdateOrganizationRequest $request, int|string $id): JsonResponse
     {
-        $organization = $this->organizationService->update(
-            (int) $id,
-            $request->validated(),
-            $request->file('logo'),
-            $request->user()
-        );
+        $organization = $this->organizationService->update((int) $id, $request->validated());
 
         return $this->successResponse(
             OrganizationResource::make($organization),

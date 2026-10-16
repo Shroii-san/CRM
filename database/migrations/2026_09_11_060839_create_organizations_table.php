@@ -22,13 +22,8 @@ return new class extends Migration {
             $table->string('phone', 20)->nullable()->unique();
             $table->string('website', 255)->nullable();
             $table->string('description', 255)->nullable();
-            $table->string('sp_number', 50)->nullable();
-            $table->string('kemkes_link', 255)->nullable();
             $table->boolean('is_active')->default(true);
             $table->text('address')->nullable();
-
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
 
             $table->string('province_id', 20)->nullable();
             $table->foreign('province_id')->references('id')->on('provinces');

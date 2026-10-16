@@ -65,68 +65,40 @@ function cleanFormData(rawData) {
 
 // ─── Helper: kumpulkan data dari form add ────────────────────────────────────
 function collectAddFormData() {
-    const fd = new FormData();
-    const raw = {
+    return cleanFormData({
         name:        document.getElementById('add_name')?.value?.trim() ?? '',
-        industry_id: document.getElementById('add_industry_id')?.value || '',
-        tier:        document.getElementById('add_tier')?.value || '',
+        industry_id: document.getElementById('add_industry_id')?.value || null,
+        tier:        document.getElementById('add_tier')?.value || null,
         is_active:   document.getElementById('add_is_active')?.value ?? '1',
-        description: document.getElementById('add_description')?.value?.trim() || '',
-        phone:       document.getElementById('add_phone')?.value?.trim() || '',
-        email:       document.getElementById('add_email')?.value?.trim() || '',
-        website:     document.getElementById('add_website')?.value?.trim() || '',
-        province_id: document.getElementById('create-province')?.value || '',
-        regency_id:  document.getElementById('create-regency')?.value || '',
-        district_id: document.getElementById('create-district')?.value || '',
-        village_id:  document.getElementById('create-village')?.value || '',
-        address:     document.getElementById('create-address')?.value?.trim() || '',
-    };
-
-    for (const [key, val] of Object.entries(raw)) {
-        if (val !== '' && val !== null && val !== undefined) {
-            fd.append(key, val);
-        }
-    }
-
-    const logoInput = document.getElementById('add_logo');
-    if (logoInput && logoInput.files && logoInput.files[0]) {
-        fd.append('logo', logoInput.files[0]);
-    }
-
-    return fd;
+        description: document.getElementById('add_description')?.value?.trim() || null,
+        phone:       document.getElementById('add_phone')?.value?.trim() || null,
+        email:       document.getElementById('add_email')?.value?.trim() || null,
+        website:     document.getElementById('add_website')?.value?.trim() || null,
+        province_id: document.getElementById('create-province')?.value || null,
+        regency_id:  document.getElementById('create-regency')?.value || null,
+        district_id: document.getElementById('create-district')?.value || null,
+        village_id:  document.getElementById('create-village')?.value || null,
+        address:     document.getElementById('create-address')?.value?.trim() || null,
+    });
 }
 
 // ─── Helper: kumpulkan data dari form edit ────────────────────────────────────
 function collectEditFormData() {
-    const fd = new FormData();
-    const raw = {
+    return cleanFormData({
         name:        document.getElementById('edit_company_name')?.value?.trim() ?? '',
-        industry_id: document.getElementById('edit_industry_id')?.value || '',
-        tier:        document.getElementById('edit_tier')?.value || '',
+        industry_id: document.getElementById('edit_industry_id')?.value || null,
+        tier:        document.getElementById('edit_tier')?.value || null,
         is_active:   document.getElementById('edit_is_active')?.value ?? '1',
-        description: document.getElementById('edit_description')?.value?.trim() || '',
-        phone:       document.getElementById('edit_company_phone')?.value?.trim() || '',
-        email:       document.getElementById('edit_company_email')?.value?.trim() || '',
-        website:     document.getElementById('edit_company_website')?.value?.trim() || '',
-        province_id: document.getElementById('edit-province')?.value || '',
-        regency_id:  document.getElementById('edit-regency')?.value || '',
-        district_id: document.getElementById('edit-district')?.value || '',
-        village_id:  document.getElementById('edit-village')?.value || '',
-        address:     document.getElementById('edit-address')?.value?.trim() || '',
-    };
-
-    for (const [key, val] of Object.entries(raw)) {
-        if (val !== '' && val !== null && val !== undefined) {
-            fd.append(key, val);
-        }
-    }
-
-    const logoInput = document.getElementById('edit_logo');
-    if (logoInput && logoInput.files && logoInput.files[0]) {
-        fd.append('logo', logoInput.files[0]);
-    }
-
-    return fd;
+        description: document.getElementById('edit_description')?.value?.trim() || null,
+        phone:       document.getElementById('edit_company_phone')?.value?.trim() || null,
+        email:       document.getElementById('edit_company_email')?.value?.trim() || null,
+        website:     document.getElementById('edit_company_website')?.value?.trim() || null,
+        province_id: document.getElementById('edit-province')?.value || null,
+        regency_id:  document.getElementById('edit-regency')?.value || null,
+        district_id: document.getElementById('edit-district')?.value || null,
+        village_id:  document.getElementById('edit-village')?.value || null,
+        address:     document.getElementById('edit-address')?.value?.trim() || null,
+    });
 }
 
 // ─── Helper: isi form edit dengan data item ──────────────────────────────────
@@ -143,26 +115,6 @@ function populateEditForm(item) {
     setVal('edit_company_email', item.email);
     setVal('edit_company_website', item.website);
     setVal('edit-address',      item.address);
-
-    // Reset logo file input & set existing preview
-    const logoInput = document.getElementById('edit_logo');
-    if (logoInput) logoInput.value = '';
-
-    const logoPreview = document.getElementById('edit_logo_preview');
-    const placeholderIcon = document.getElementById('edit_logo_placeholder_icon');
-    if (item.logo_url) {
-        if (logoPreview) {
-            logoPreview.src = item.logo_url;
-            logoPreview.style.display = 'block';
-        }
-        if (placeholderIcon) placeholderIcon.style.display = 'none';
-    } else {
-        if (logoPreview) {
-            logoPreview.src = '';
-            logoPreview.style.display = 'none';
-        }
-        if (placeholderIcon) placeholderIcon.style.display = 'block';
-    }
 
     // Select: industry_id
     const industrySelect = document.getElementById('edit_industry_id');
@@ -308,11 +260,7 @@ function buildTableComponent() {
 
                 const logoContainer = document.getElementById('detailLogoContainer');
                 if (logoContainer) {
-                    if (c.logo_url) {
-                        logoContainer.innerHTML = `<div style="width:120px;height:120px;background-color:#f9fafb;border:1px solid #e5e7eb;border-radius:0.75rem;padding:0.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.05);"><img src="${c.logo_url}" alt="${c.name || 'Logo'}" style="max-width:100%;max-height:100%;object-fit:contain;"></div>`;
-                    } else {
-                        logoContainer.innerHTML = '<div style="width:120px;height:120px;background-color:#e5e7eb;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;"><i class="fas fa-building" style="font-size:2.5rem;color:#9ca3af;"></i></div>';
-                    }
+                    logoContainer.innerHTML = '<div style="width:120px;height:120px;background-color:#e5e7eb;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;"><i class="fas fa-building" style="font-size:2.5rem;color:#9ca3af;"></i></div>';
                 }
 
                 const picCount = document.getElementById('picCount');
@@ -351,13 +299,6 @@ function buildTableComponent() {
 
         // ── Add Modal ───────────────────────────────────────────────────────
         openAddCompanyModal() {
-            const addLogoInput = document.getElementById('add_logo');
-            if (addLogoInput) addLogoInput.value = '';
-            const addLogoPreview = document.getElementById('add_logo_preview');
-            if (addLogoPreview) { addLogoPreview.src = ''; addLogoPreview.style.display = 'none'; }
-            const addLogoIcon = document.getElementById('add_logo_placeholder_icon');
-            if (addLogoIcon) addLogoIcon.style.display = 'block';
-
             if (typeof window.openAddCompanyModal === 'function') {
                 window.openAddCompanyModal();
             }

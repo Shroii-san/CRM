@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Organization;
 
-use App\Http\Resources\Attachment\AttachmentResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrganizationResource extends JsonResource
@@ -11,8 +10,6 @@ class OrganizationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'organization_code' => $this->organization_code,
-            'organization_full_code' => $this->organization_full_code,
             'industry_id' => $this->industry_id,
             'tier' => $this->tier,
             'name' => $this->name,
@@ -21,10 +18,6 @@ class OrganizationResource extends JsonResource
             'website' => $this->website,
             'description' => $this->description,
             'address' => $this->address,
-            'logo_url' => $this->logo_url,
-            'logo' => $this->whenLoaded('logo', function () {
-                return AttachmentResource::make($this->logo);
-            }),
             'province_id' => $this->province_id,
             'regency_id' => $this->regency_id,
             'district_id' => $this->district_id,

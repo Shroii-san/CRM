@@ -1,6 +1,6 @@
 <!-- Search and Filter Section -->
-<div style="padding: 0.5rem 1.5rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb;">
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+<div class="px-6 py-2 bg-gray-50 border-b border-gray-200">
+    <div class="flex flex-wrap gap-4 items-center">
         <div class="flex flex-col md:flex-row md:items-center gap-3">
 
             <!-- Search input -->

@@ -27,6 +27,7 @@ class StoreOrganizationRequest extends FormRequest
             'district_id' => 'nullable|exists:districts,id',
             'village_id'  => 'nullable|exists:villages,id',
             'is_active'   => 'nullable|boolean',
+            'logo'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ];
     }
 }

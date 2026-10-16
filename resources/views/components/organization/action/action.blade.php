@@ -270,6 +270,34 @@
                                     placeholder="Contoh: https://www.company.com">
                             </div>
                         </div>
+
+                        <!-- SECTION 2: LOGO PERUSAHAAN -->
+                        <div style="padding-top: 0.75rem; border-top: 2px solid #e5e7eb;">
+                            <h4
+                                style="font-size: 0.9375rem; font-weight: 600; color: #1f2937; margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-image" style="color: #4f46e5;"></i>
+                                Logo Perusahaan
+                            </h4>
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; font-weight: 500; color: #374151; margin-bottom: 0.375rem;">
+                                    Upload Logo (JPG, PNG, GIF, WebP - Maks 5MB)
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div id="add_logo_preview_wrap" style="width: 4rem; height: 4rem; border-radius: 0.5rem; background-color: #f3f4f6; border: 1px dashed #d1d5db; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                                        <i id="add_logo_placeholder_icon" class="fas fa-building" style="color: #9ca3af; font-size: 1.25rem;"></i>
+                                        <img id="add_logo_preview" src="" alt="Preview" style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <input type="file" id="add_logo" name="logo" accept="image/jpeg,image/png,image/gif,image/webp"
+                                            onchange="if(this.files && this.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('add_logo_preview').src=e.target.result;document.getElementById('add_logo_preview').style.display='block';document.getElementById('add_logo_placeholder_icon').style.display='none';};r.readAsDataURL(this.files[0]);}"
+                                            style="width: 100%; font-size: 0.75rem; color: #4b5563;">
+                                        <p style="font-size: 0.7rem; color: #6b7280; margin-top: 0.25rem; margin-bottom: 0;">
+                                            Gambar akan otomatis dikompresi di server untuk efisiensi penyimpanan.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>

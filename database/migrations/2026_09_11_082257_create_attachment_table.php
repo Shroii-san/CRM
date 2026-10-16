@@ -15,6 +15,7 @@ return new class extends Migration {
 
             $table->string('file_name', 255);
             $table->text('description')->nullable();
+            $table->string('attachment_type', 100);
             $table->string('mime_type', 100);
             $table->unsignedBigInteger('file_size'); // Ukuran dalam bytes
             $table->string('storage_reference', 255);

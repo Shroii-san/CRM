@@ -37,5 +37,8 @@ class Candidate extends Model
         return $this->hasMany(FamilyMember::class, 'candidate_id', 'id');
     }
 
-
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
 }

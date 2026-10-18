@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Attachment;
 use App\Models\Candidate;
 use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
@@ -44,9 +45,26 @@ class EmployeeService
                     'birth_date',
                     'status',
                 ]));
-            };
+            }
+
+            $this->duplicateAttachments($candidate, $employee);
 
             return $employee;
+        });
+    }
+
+    protected function duplicateAttachments(Candidate $candidate, Employee $employee): void
+    {
+        $candidate->attachments()->get()->each(function (Attachment $attachment) use ($employee): void {
+            $employee->attachments()->create([
+                'file_name' => $attachment->file_name,
+                'description' => $attachment->description,
+                'attachment_type' => $attachment->attachment_type,
+                'mime_type' => $attachment->mime_type,
+                'file_size' => $attachment->file_size,
+                'storage_reference' => $attachment->storage_reference,
+                'uploaded_by' => $attachment->uploaded_by,
+            ]);
         });
     }
 }

@@ -7,7 +7,7 @@ import path from 'path'
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.jsx'], // ✅ app.jsx bukan app.js
+            input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/pages/organizations.js'],
             refresh: true,
         }),
         react(),

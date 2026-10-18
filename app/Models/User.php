@@ -2,113 +2,93 @@
 
 namespace App\Models;
 
+use App\Services\PermissionService;
+use App\Traits\HasActivityLogs;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable; // ✅ Tambahkan ini
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable; 
+    use HasApiTokens, HasActivityLogs, Notifiable, HasFactory;
 
     protected $table = 'users';
-    protected $primaryKey = 'user_id';
-    public $timestamps = true;
-
     protected $fillable = [
-        'username', 
         'role_id',
-        'is_active', 
+        'name',
         'email',
-        'password_hash',
         'phone',
-        'address',
-        'birth_date',
-        'province_id',
-        'regency_id',
-        'district_id',
-        'village_id'
+        'password',
+        'is_active',
+        'last_activity_at',
     ];
 
-    protected $hidden = ['password_hash'];
+    protected $casts = [
+        'is_active' => 'boolean',
+        'last_activity_at' => 'datetime',
+    ];
 
+    protected $hidden = ['password', 'remember_token'];
 
-    public function setUsernameAttribute($value)
+    public function role()
     {
-        $this->attributes['username'] = strtolower(str_replace(' ', '_', $value));
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    public function getUsernameAttribute($value)
+    public function deals()
     {
-        return strtoupper(str_replace('_', ' ', $value));
+        return $this->hasMany(Deal::class, 'assigned_user_id', 'id');
     }
 
-    public function province()
+    public function tasks()
     {
-        return $this->belongsTo(Province::class, 'province_id', 'id');
+        return $this->hasMany(Task::class, 'assigned_user_id', 'id');
     }
 
-    public function regency()
+    public function changeStageHistories()
     {
-        return $this->belongsTo(Regency::class, 'regency_id', 'id');
+        return $this->hasMany(DealStageHistory::class, 'changed_by_user_id', 'id');
     }
 
-    public function district()
+    public function notes()
     {
-        return $this->belongsTo(District::class, 'district_id', 'id');
+        return $this->hasMany(Note::class, 'created_by', 'id');
     }
 
-    public function village()
+    public function attachments()
     {
-        return $this->belongsTo(Village::class, 'village_id', 'id');
+        return $this->hasMany(Attachment::class, 'uploaded_by', 'id');
+    }
+
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
     }
 
     public function getAuthPassword()
     {
-        return $this->password_hash;
+        return $this->password;
     }
 
-    public function role()
+    public function setPasswordAttribute($value)
     {
-        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+        $this->attributes['password'] = Hash::make($value);
     }
 
-    public function canAccess($menuId, $action)
+    public function canAccess(int|string $menuIdOrRoute, string $action): bool
     {
-        if ($this->role && $this->role->role_name === 'superadmin') {
-            return true;
-        }
-
-        if (!$this->role) return false;
-
-        // PERBAIKAN: Gunakan where() bukan wherePivot()
-        $roleMenu = $this->role->menus()
-                            ->where('menu.menu_id', $menuId)
-                            ->first();
-
-        if (!$roleMenu) return false;
-
-        return match($action) {
-            'view' => (bool) $roleMenu->pivot->can_view,
-            'create' => (bool) $roleMenu->pivot->can_create,
-            'edit' => (bool) $roleMenu->pivot->can_edit,
-            'delete' => (bool) $roleMenu->pivot->can_delete,
-            'assign' => (bool) $roleMenu->pivot->can_assign,
-            default => false
-        };
+        return app(PermissionService::class)->hasPermission($this, $menuIdOrRoute, $action);
     }
 
-    public function canAccessCurrent($action)
+    public function setNameAttribute($value)
     {
-        $menuId = currentMenuId();
-        if (!$menuId) return false;
-        return $this->canAccess($menuId, $action);
+        $this->attributes['name'] = strtolower(str_replace(' ', '_', $value));
     }
 
-    // TAMBAHAN: Helper method untuk cek multiple permissions sekaligus
-    public function hasAnyAccess($menuId)
+    public function getNameAttribute($value)
     {
-        return $this->canAccess($menuId, 'view') || 
-                $this->canAccess($menuId, 'create') || 
-                $this->canAccess($menuId, 'edit') || 
-                $this->canAccess($menuId, 'delete');
+        return strtoupper(str_replace('_', ' ', $value));
     }
 }

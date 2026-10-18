@@ -12,7 +12,7 @@ class UpdateLastActivity
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $user->last_activity = Carbon::now();
+            $user->last_activity_at = Carbon::now();
             $user->save();
         }
 

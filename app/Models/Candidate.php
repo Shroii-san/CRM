@@ -9,6 +9,8 @@ class Candidate extends Model
 {
     use HasFactory;
 
+    public const STATUS_ACCEPTED = 2;
+
     protected $fillable = [
         'full_name',
         'nik',
@@ -17,7 +19,7 @@ class Candidate extends Model
         'application_date',
         'npwp',
         'no_bpjs',
-        'status',
+        'status',  // 1 = pending, 2 = accepted, 3 = rejected
     ];
 
     public function educationHistories()

@@ -23,6 +23,8 @@ use App\Http\Controllers\Web\NoteController;
 use App\Http\Controllers\Web\ActivityLogController;
 use App\Http\Controllers\Web\AttachmentController;
 use App\Http\Controllers\Web\ExternalConversationController;
+use App\Http\Controllers\Web\FamilyMemberController;
+use App\Http\Controllers\Web\HrdController;
 
 // ==========================
 // Public Routes (Guest Only)
@@ -126,9 +128,10 @@ Route::middleware(['auth', 'permission'])->group(function () {
     // -----------------------------------------------
     Route::get('/calendar', fn() => view('layouts.react'))->name('calendar');
 
-    Route::post('/karyawan/{karyawan}/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');
-    Route::put('/keluarga/{keluarga}', [KeluargaController::class, 'update'])->name('keluarga.update');
-    Route::delete('/keluarga/{keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
+    Route::get('/family', [FamilyMemberController::class, 'index'])->name('family.index');
+    Route::post('/employee/{employee}/family', [FamilyMemberController::class, 'store'])->name('family.store');
+    Route::put('/family/{family}', [FamilyMemberController::class, 'update'])->name('family.update');
+    Route::delete('/family/{family}', [FamilyMemberController::class, 'destroy'])->name('family.destroy');
 
     // ==========================
     // HRD Routes
@@ -139,8 +142,8 @@ Route::middleware(['auth', 'permission'])->group(function () {
         Route::put('/{id}', [HrdController::class, 'update'])->name('update');
         Route::delete('/{id}', [HrdController::class, 'destroy'])->name('destroy');
 
-        Route::post('/{id}/jadikan-karyawan', [HrdController::class, 'jadikanKaryawan'])
-            ->name('jadikan-karyawan');
+        Route::post('/{id}/promote', [HrdController::class, 'promoteToEmployee'])
+            ->name('promote.to.employee');
     });
 
 

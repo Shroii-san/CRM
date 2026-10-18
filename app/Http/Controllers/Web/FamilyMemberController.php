@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Requests\FamilyMember\StoreFamilyMemberRequest;
 use App\Http\Requests\FamilyMember\UpdateFamilyMemberRequest;
 use App\Models\Employee;
 use App\Models\FamilyMember;
 use App\Services\FamilyMemberService;
+use App\Http\Controllers\Controller;
 
 class FamilyMemberController extends Controller
 {

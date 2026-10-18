@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Requests\Hrd\StoreCandidateRequest;
 use App\Http\Requests\Hrd\UpdateCandidateRequest;
@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Throwable;
+use App\Http\Controllers\Controller;
 
 class HrdController extends Controller
 {

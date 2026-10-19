@@ -22,8 +22,9 @@ class HrdController extends Controller
     public function index()
     {
         $candidates = $this->hrdService->index();
+        $divisions = $this->hrdService->getFilterOptions()['division'] ?? [];
 
-        return view('hrd.index', compact('candidates'));
+        return view('pages.hrd', compact('candidates', 'divisions'));
     }
 
     public function store(StoreCandidateRequest $request): RedirectResponse

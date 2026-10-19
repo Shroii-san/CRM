@@ -19,8 +19,8 @@ class FamilyMemberController extends Controller
     {
         $familyMembers = $this->familyMemberService->index();
 
-        return view('keluarga.index', [
-            'keluarga' => $familyMembers,
+        return view('pages.family', [
+            'familyMembers' => $familyMembers,
         ]);
     }
 

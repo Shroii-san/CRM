@@ -4,21 +4,55 @@ namespace App\Services;
 
 use App\Models\Candidate;
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Throwable;
+use RuntimeException;
 
-class HrdService
+class HrdService extends BaseService
 {
+    protected function getModel(): string
+    {
+        return Candidate::class;
+    }
+
+    protected function getSearchableColumns(): array
+    {
+        return ['full_name', 'nik', 'division', 'phone_number'];
+    }
+
+    protected function getFilterDefinitions(): array
+    {
+        return [
+            'status' => 'equal',
+            'division' => 'equal',
+        ];
+    }
+
+    protected function getWithRelations(): array
+    {
+        return ['educationHistories', 'families', 'employee.families', 'attachments'];
+    }
+
+    protected function getSortableColumns(): array
+    {
+        return ['id', 'full_name', 'nik', 'division', 'status', 'application_date', 'created_at'];
+    }
+
     public function index()
     {
         return Candidate::query()
-            ->with(['educationHistories', 'families', 'employee'])
+            ->with(['educationHistories', 'families', 'employee.families', 'attachments'])
             ->latest()
             ->get();
     }
 
-    public function store(array $data): Candidate
+    public function findWithDetails(int $id): Candidate
+    {
+        return Candidate::with(['educationHistories', 'families', 'employee.families', 'attachments'])
+            ->findOrFail($id);
+    }
+
+    public function create(array $data): Candidate
     {
         return DB::transaction(function () use ($data) {
             $candidate = Candidate::query()->create([
@@ -40,12 +74,14 @@ class HrdService
                 $candidate->families()->createMany($data['families']);
             }
 
-            return $candidate;
+            return $candidate->fresh(['educationHistories', 'families', 'employee']);
         });
     }
 
-    public function update(Candidate $candidate, array $data): Candidate
+    public function update(Candidate|int $candidate, array $data): Candidate
     {
+        $candidate = is_int($candidate) ? Candidate::findOrFail($candidate) : $candidate;
+
         return DB::transaction(function () use ($candidate, $data) {
             $candidate->update([
                 'full_name' => $data['full_name'],
@@ -55,7 +91,7 @@ class HrdService
                 'application_date' => $data['application_date'],
                 'npwp' => $data['npwp'] ?? null,
                 'no_bpjs' => $data['no_bpjs'] ?? null,
-                'status' => (int) $data['status'],
+                'status' => (int) ($data['status'] ?? $candidate->status),
             ]);
 
             if (array_key_exists('education_histories', $data)) {
@@ -74,14 +110,16 @@ class HrdService
                 }
             }
 
-            return $candidate->fresh();
+            return $candidate->fresh(['educationHistories', 'families', 'employee']);
         });
     }
 
-    public function destroy(Candidate $candidate): void
+    public function delete(Candidate|int $candidate): void
     {
+        $candidate = is_int($candidate) ? Candidate::findOrFail($candidate) : $candidate;
+
         if ($candidate->employee()->exists()) {
-            throw new \RuntimeException('Tidak dapat menghapus kandidat yang sudah menjadi karyawan.');
+            throw new RuntimeException('Tidak dapat menghapus kandidat yang sudah menjadi karyawan.');
         }
 
         DB::transaction(function () use ($candidate) {
@@ -95,5 +133,23 @@ class HrdService
     public function promoteCandidateToEmployee(Candidate $candidate): Employee
     {
         return app(EmployeeService::class)->promote($candidate);
+    }
+
+    public function getFilterOptions(): array
+    {
+        return [
+            'status' => [
+                1 => 'Pending',
+                2 => 'Accepted',
+                3 => 'Rejected',
+            ],
+            'division' => Candidate::query()
+                ->whereNotNull('division')
+                ->where('division', '!=', '')
+                ->distinct()
+                ->orderBy('division')
+                ->pluck('division')
+                ->all(),
+        ];
     }
 }

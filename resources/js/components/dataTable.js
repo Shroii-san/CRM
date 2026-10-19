@@ -80,7 +80,7 @@ export function createDataTable(options = {}) {
                 per_page: this.perPage,
                 sort_by: this.sortBy,
                 sort_dir: this.sortDir,
-                ...this.filters
+                ...this.filters,
             };
 
             try {
@@ -174,6 +174,6 @@ export function createDataTable(options = {}) {
                 return col.render(row, index);
             }
             return getNestedValue(row, col.key, "-");
-        }
+        },
     };
 }

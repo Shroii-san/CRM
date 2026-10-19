@@ -78,6 +78,11 @@ class HrdService extends BaseService
         });
     }
 
+    public function store(array $data): Candidate
+    {
+        return $this->create($data);
+    }
+
     public function update(Candidate|int $candidate, array $data): Candidate
     {
         $candidate = is_int($candidate) ? Candidate::findOrFail($candidate) : $candidate;
@@ -128,6 +133,11 @@ class HrdService extends BaseService
             $candidate->attachments()->delete();
             $candidate->delete();
         });
+    }
+
+    public function destroy(Candidate|int $candidate): void
+    {
+        $this->delete($candidate);
     }
 
     public function promoteCandidateToEmployee(Candidate $candidate): Employee

@@ -78,12 +78,16 @@ function buildTableComponent() {
         },
 
         handleOpenEdit(item) {
-            this.dispatchWindowEvent("open-editModal", item);
+            this.dispatchWindowEvent("open-edit-modal", item || {});
         },
 
         handleOpenPromote(item) {
             const payload = {
-                url: item?.url || item?.action || item?.promoteUrl || (item?.id ? `/hrd/${item.id}/promote` : ""),
+                url:
+                    item?.url ||
+                    item?.action ||
+                    item?.promoteUrl ||
+                    (item?.id ? `/hrd/${item.id}/promote` : ""),
                 nama: item?.nama || item?.full_name || "",
             };
             this.dispatchWindowEvent("open-karyawan-modal", payload);

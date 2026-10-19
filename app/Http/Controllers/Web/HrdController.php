@@ -30,7 +30,7 @@ class HrdController extends Controller
     public function store(StoreCandidateRequest $request): RedirectResponse
     {
         try {
-            $this->hrdService->store($request->validated());
+            $this->hrdService->create($request->validated());
 
             return redirect()->route('hrd.index')->with('success', 'Calon karyawan berhasil ditambahkan!');
         } catch (Throwable $e) {
@@ -65,7 +65,7 @@ class HrdController extends Controller
     public function destroy(Candidate $candidate): RedirectResponse
     {
         try {
-            $this->hrdService->destroy($candidate);
+            $this->hrdService->delete($candidate);
 
             return redirect()->route('hrd.index')->with('success', 'Data kandidat berhasil dihapus!');
         } catch (RuntimeException $e) {

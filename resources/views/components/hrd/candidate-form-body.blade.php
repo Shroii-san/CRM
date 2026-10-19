@@ -15,8 +15,7 @@
     $allDivisions = collect($divisions)->merge($defaultDivisions)->unique()->filter()->values();
 @endphp
 
-<div id="{{ $modalId }}"
-    x-data="{
+<div id="{{ $modalId }}" x-data="{
         open: false,
         step: 1,
         totalSteps: 3,
@@ -54,24 +53,19 @@
         closeModal() {
             this.open = false;
         }
-    }"
-    x-show="open"
-    x-cloak
-    @open-{{ $modalId }}.window="
+    }" x-show="open" x-cloak @if($isEdit) @open-edit-modal.window="
+        open = true;
+        step = 1;
+        $nextTick(() => window.populateCandidateEditForm?.($event.detail));
+    " @else @open-modal.window="
         open = true;
         step = 1;
         $nextTick(() => {
-            @if(!$isEdit)
-                const f = document.getElementById('{{ $formId }}');
-                if (f) f.reset();
-                window.kosongkanPendidikan?.('pendidikanRowsAdd', false);
-            @else
-                window.populateCandidateEditForm?.($event.detail);
-            @endif
+            const f = document.getElementById('{{ $formId }}');
+            if (f) f.reset();
+            window.kosongkanPendidikan?.('pendidikanRowsAdd', false);
         });
-    "
-    @keydown.escape.window="closeModal()"
-    @click.self="closeModal()"
+    " @endif @keydown.escape.window="closeModal()" @click.self="closeModal()"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
     <div class="w-full max-w-5xl max-h-[94vh] flex min-h-0 flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
         <div class="flex shrink-0 items-center justify-between rounded-t-xl px-5 py-3 text-white"
@@ -172,7 +166,8 @@
                     </h3>
                     <div id="{{ $isEdit ? 'pendidikanRowsEdit' : 'pendidikanRowsAdd' }}" class="space-y-2"
                         data-index="0"></div>
-                    <button type="button" @click="window.tambahPendidikan?.('{{ $isEdit ? 'pendidikanRowsEdit' : 'pendidikanRowsAdd' }}')"
+                    <button type="button"
+                        @click="window.tambahPendidikan?.('{{ $isEdit ? 'pendidikanRowsEdit' : 'pendidikanRowsAdd' }}')"
                         class="text-sm text-blue-600 hover:text-blue-800"><i class="fas fa-plus mr-1"></i> Tambah
                         Pendidikan</button>
                 </section>
@@ -250,8 +245,7 @@
             </div>
 
             <div class="flex shrink-0 items-center justify-between gap-2 border-t px-4 py-3">
-                <button type="button"
-                    x-show="step > 1"
+                <button type="button" x-show="step > 1"
                     class="rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
                     @click="prevStep()">
                     <i class="fas fa-arrow-left mr-1"></i> Kembali
@@ -259,14 +253,12 @@
                 <div x-show="step === 1" class="w-16"></div>
 
                 <div class="flex gap-2">
-                    <button type="button"
-                        x-show="step < totalSteps"
+                    <button type="button" x-show="step < totalSteps"
                         class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
                         @click="nextStep()">
                         Berikutnya <i class="fas fa-arrow-right ml-1"></i>
                     </button>
-                    <button type="submit"
-                        x-show="step === totalSteps"
+                    <button type="submit" x-show="step === totalSteps"
                         class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
                         <i class="fas fa-save mr-1"></i> {{ $submitText }}
                     </button>

@@ -46,13 +46,13 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">ID Departemen</label>
-                <input type="number" name="departemen_id" placeholder="Kosongkan kalau belum ada"
+                <input type="number" name="department_id" placeholder="Kosongkan kalau belum ada"
                     class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Tanggal Masuk</label>
-                <input type="date" name="tanggal_masuk" value="{{ now()->format('Y-m-d') }}"
+                <input type="date" name="join_date" value="{{ now()->format('Y-m-d') }}"
                     class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
             </div>
 

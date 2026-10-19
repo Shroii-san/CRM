@@ -41,4 +41,34 @@ class Candidate extends Model
     {
         return $this->morphMany(Attachment::class, 'attachable');
     }
+
+    public function foto()
+    {
+        return $this->morphOne(Attachment::class, 'attachable')->where('attachment_type', 'foto');
+    }
+
+    public function scanKtp()
+    {
+        return $this->morphOne(Attachment::class, 'attachable')->where('attachment_type', 'scan_ktp');
+    }
+
+    public function cv()
+    {
+        return $this->morphOne(Attachment::class, 'attachable')->where('attachment_type', 'cv');
+    }
+
+    public function getFotoUrlAttribute(): ?string
+    {
+        return $this->foto?->file_url;
+    }
+
+    public function getScanKtpUrlAttribute(): ?string
+    {
+        return $this->scanKtp?->file_url;
+    }
+
+    public function getCvUrlAttribute(): ?string
+    {
+        return $this->cv?->file_url;
+    }
 }

@@ -25,14 +25,14 @@ class CandidateResource extends JsonResource
                 default => 'Unknown',
             },
             'foto' => $this->relationLoaded('attachments')
-                ? $this->attachments->firstWhere('attachment_type', 'foto')?->file_url ?? ($this->foto ? asset('storage/' . $this->foto) : null)
-                : ($this->foto ? asset('storage/' . $this->foto) : null),
+                ? $this->attachments->firstWhere('attachment_type', 'foto')?->file_url
+                : $this->foto_url,
             'scan_ktp' => $this->relationLoaded('attachments')
-                ? $this->attachments->firstWhere('attachment_type', 'scan_ktp')?->file_url ?? ($this->scan_ktp ? asset('storage/' . $this->scan_ktp) : null)
-                : ($this->scan_ktp ? asset('storage/' . $this->scan_ktp) : null),
+                ? $this->attachments->firstWhere('attachment_type', 'scan_ktp')?->file_url
+                : $this->scan_ktp_url,
             'cv' => $this->relationLoaded('attachments')
-                ? $this->attachments->firstWhere('attachment_type', 'cv')?->file_url ?? ($this->cv ? asset('storage/' . $this->cv) : null)
-                : ($this->cv ? asset('storage/' . $this->cv) : null),
+                ? $this->attachments->firstWhere('attachment_type', 'cv')?->file_url
+                : $this->cv_url,
             'education_histories' => $this->whenLoaded('educationHistories', function () {
                 return $this->educationHistories->map(function ($education) {
                     return [

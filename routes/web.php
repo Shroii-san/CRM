@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'permission'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // -----------------------------------------------
     // Domain: Auth & User Management
@@ -125,11 +125,12 @@ Route::middleware(['auth', 'permission'])->group(function () {
 
     // -----------------------------------------------
     // Calendar (React SPA shell)
+
     // -----------------------------------------------
     Route::get('/calendar', fn() => view('layouts.react'))->name('calendar');
 
     Route::get('/family', [FamilyMemberController::class, 'index'])->name('family.index');
-    Route::post('/employee/{employee}/family', [FamilyMemberController::class, 'store'])->name('family.store');
+    Route::post('/family/{employee}/family', [FamilyMemberController::class, 'store'])->name('family.store');
     Route::put('/family/{family}', [FamilyMemberController::class, 'update'])->name('family.update');
     Route::delete('/family/{family}', [FamilyMemberController::class, 'destroy'])->name('family.destroy');
 
@@ -139,10 +140,10 @@ Route::middleware(['auth', 'permission'])->group(function () {
     Route::prefix('hrd')->name('hrd.')->group(function () {
         Route::get('/', [HrdController::class, 'index'])->name('index');
         Route::post('/', [HrdController::class, 'store'])->name('store');
-        Route::put('/{id}', [HrdController::class, 'update'])->name('update');
-        Route::delete('/{id}', [HrdController::class, 'destroy'])->name('destroy');
+        Route::put('/{candidate}', [HrdController::class, 'update'])->name('update');
+        Route::delete('/{candidate}', [HrdController::class, 'destroy'])->name('destroy');
 
-        Route::post('/{id}/promote', [HrdController::class, 'promoteToEmployee'])
+        Route::post('/{candidate}/promote', [HrdController::class, 'promoteToEmployee'])
             ->name('promote.to.employee');
     });
 

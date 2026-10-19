@@ -21,25 +21,32 @@ class AttachmentService
         ?string $sortBy = 'created_at',
         ?string $sortDir = 'desc'
     ) {
-        $params = array_filter([
-            'attachable_type' => $attachableType,
-            'attachable_id'   => $attachableId,
-            'search'          => $search,
-            'sort_by'         => $sortBy,
-            'sort_dir'        => $sortDir,
-        ], fn ($val) => $val !== null);
-
-        return Attachment::query()
+        $query = Attachment::query()
             ->with(['uploader', 'attachable'])
-            ->applyFilters(
-                params: $params,
-                searchable: ['file_name', 'description', 'mime_type'],
-                filterable: ['attachable_type', 'attachable_id', 'uploaded_by'],
-                sortable: ['id', 'file_name', 'file_size', 'created_at'],
-                defaultSortField: 'created_at',
-                defaultSortDir: 'desc'
-            )
-            ->paginate($perPage, ['*'], 'page', $page);
+            ->when($attachableType !== null, fn($q) => $q->where('attachable_type', $attachableType))
+            ->when($attachableId !== null, fn($q) => $q->where('attachable_id', $attachableId))
+            ->when($search !== null && $search !== '', function ($q) use ($search) {
+                $q->where(function ($subQuery) use ($search) {
+                    $subQuery->where('file_name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('mime_type', 'like', "%{$search}%");
+                });
+            });
+
+        $sortBy = in_array($sortBy, ['id', 'file_name', 'file_size', 'created_at'], true) ? $sortBy : 'created_at';
+        $sortDir = strtolower((string) $sortDir) === 'asc' ? 'asc' : 'desc';
+
+        return $query->orderBy($sortBy, $sortDir)->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function store(array $data, UploadedFile $file, User $uploader): Attachment
+    {
+        return $this->create($data, $file, $uploader);
+    }
+
+    public function destroy(int $id): void
+    {
+        $this->delete($id);
     }
 
     /**
@@ -67,15 +74,15 @@ class AttachmentService
         $attachmentType = $data['attachment_type'] ?? ($isImage ? 'image' : 'file');
 
         return Attachment::create([
-            'file_name'         => $file->getClientOriginalName(),
-            'description'       => $data['description'] ?? null,
-            'attachment_type'   => $attachmentType,
-            'mime_type'         => $storedData['mime_type'],
-            'file_size'         => $storedData['file_size'],
+            'file_name' => $file->getClientOriginalName(),
+            'description' => $data['description'] ?? null,
+            'attachment_type' => $attachmentType,
+            'mime_type' => $storedData['mime_type'],
+            'file_size' => $storedData['file_size'],
             'storage_reference' => $storedData['path'],
-            'uploaded_by'       => $uploader->id,
-            'attachable_type'   => $data['attachable_type'],
-            'attachable_id'     => $data['attachable_id'],
+            'uploaded_by' => $uploader->id,
+            'attachable_type' => $data['attachable_type'],
+            'attachable_id' => $data['attachable_id'],
         ]);
     }
 
@@ -93,10 +100,10 @@ class AttachmentService
 
             if ($image !== false) {
                 $ext = match ($mime) {
-                    'image/png'  => 'png',
+                    'image/png' => 'png',
                     'image/webp' => 'webp',
-                    'image/gif'  => 'gif',
-                    default      => 'jpg',
+                    'image/gif' => 'gif',
+                    default => 'jpg',
                 };
 
                 ob_start();
@@ -126,7 +133,7 @@ class AttachmentService
                         Storage::disk('public')->put($path, $compressedContent);
 
                         return [
-                            'path'      => $path,
+                            'path' => $path,
                             'file_size' => $compressedSize,
                             'mime_type' => $ext === 'jpg' ? 'image/jpeg' : "image/{$ext}",
                         ];
@@ -147,7 +154,7 @@ class AttachmentService
         $path = $file->store('attachments', 'public');
 
         return [
-            'path'      => $path,
+            'path' => $path,
             'file_size' => $file->getSize(),
             'mime_type' => $file->getClientMimeType() ?? 'application/octet-stream',
         ];
@@ -183,7 +190,8 @@ class AttachmentService
         $attachment = Attachment::findOrFail($id);
 
         $updateData = [];
-        if (array_key_exists('description', $data)) $updateData['description'] = $data['description'];
+        if (array_key_exists('description', $data))
+            $updateData['description'] = $data['description'];
 
         if (!empty($updateData)) {
             $attachment->update($updateData);
@@ -199,7 +207,7 @@ class AttachmentService
     {
         $attachment = Attachment::findOrFail($id);
 
-        if (Storage::disk('public')->exists($attachment->storage_reference)) {
+        if ($attachment->storage_reference && Storage::disk('public')->exists($attachment->storage_reference)) {
             Storage::disk('public')->delete($attachment->storage_reference);
         }
 

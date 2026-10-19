@@ -28,10 +28,7 @@
         @endif
 
         <!-- HRD Card -->
-        <div x-data="hrdTable" @open-add-candidate-modal.window="openAddModal()"
-            @open-edit-modal.window="handleOpenEdit($event.detail)"
-            @open-edit-candidate-modal.window="handleOpenEdit($event.detail)"
-            @open-promote-candidate-modal.window="handleOpenPromote($event.detail)"
+        <div x-data="hrdTable"
             class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-2">
 
             <!-- Card Header -->

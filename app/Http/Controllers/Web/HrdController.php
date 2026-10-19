@@ -30,7 +30,8 @@ class HrdController extends Controller
     public function store(StoreCandidateRequest $request): RedirectResponse
     {
         try {
-            $this->hrdService->create($request->validated());
+            $data = array_merge($request->validated(), $request->allFiles());
+            $this->hrdService->create($data);
 
             return redirect()->route('hrd.index')->with('success', 'Calon karyawan berhasil ditambahkan!');
         } catch (Throwable $e) {
@@ -38,14 +39,17 @@ class HrdController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->withInput()->with('error', 'Data kandidat gagal disimpan. Periksa kembali data yang diisi.');
+            return back()->withInput()->with('error', 'Data kandidat gagal disimpan: ' . $e->getMessage());
         }
     }
 
-    public function update(UpdateCandidateRequest $request, Candidate $candidate): RedirectResponse
+    public function update(UpdateCandidateRequest $request, Candidate|int|string $candidate): RedirectResponse
     {
+        $candidate = $candidate instanceof Candidate ? $candidate : Candidate::findOrFail((int) $candidate);
+
         try {
-            $this->hrdService->update($candidate, $request->validated());
+            $data = array_merge($request->validated(), $request->allFiles());
+            $this->hrdService->update($candidate, $data);
 
             if ((int) $candidate->fresh()->status === Candidate::STATUS_ACCEPTED) {
                 $this->hrdService->promoteCandidateToEmployee($candidate);
@@ -58,12 +62,14 @@ class HrdController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->withInput()->with('error', 'Data kandidat gagal diperbarui. Silakan cek kembali isian Anda.');
+            return back()->withInput()->with('error', 'Data kandidat gagal diperbarui: ' . $e->getMessage());
         }
     }
 
-    public function destroy(Candidate $candidate): RedirectResponse
+    public function destroy(Candidate|int|string $candidate): RedirectResponse
     {
+        $candidate = $candidate instanceof Candidate ? $candidate : Candidate::findOrFail((int) $candidate);
+
         try {
             $this->hrdService->delete($candidate);
 
@@ -80,8 +86,10 @@ class HrdController extends Controller
         }
     }
 
-    public function promoteToEmployee(Request $request, Candidate $candidate): RedirectResponse
+    public function promoteToEmployee(Request $request, Candidate|int|string $candidate): RedirectResponse
     {
+        $candidate = $candidate instanceof Candidate ? $candidate : Candidate::findOrFail((int) $candidate);
+
         $validated = $request->validate([
             'department_id' => ['nullable', 'integer'],
             'join_date' => ['nullable', 'date'],

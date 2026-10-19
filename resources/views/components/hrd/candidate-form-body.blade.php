@@ -180,13 +180,17 @@
                                 <span class="text-xs font-normal text-gray-400">(kosongkan kalau tidak diganti)</span>
                             @endif
                         </h3>
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Foto <span
                                         class="text-xs font-normal text-gray-400">{{ $isEdit ? '(kosongkan kalau tidak diganti, maksimal 2 MB)' : '(JPG, PNG, maksimal 2 MB)' }}</span></label>
                                 @if($isEdit)
-                                    <div id="editFotoWrap" class="mb-1 hidden">
+                                    <div id="editFotoWrap" class="my-1.5 hidden flex items-center gap-3 p-2 bg-gray-50 border border-gray-200 rounded-lg">
                                         <img id="editFotoImg" class="h-14 w-14 rounded-lg border object-cover">
+                                        <div class="text-xs text-gray-500">
+                                            <span class="font-medium text-gray-700 block">Foto saat ini</span>
+                                            <span>Pilih file baru di bawah jika ingin mengganti</span>
+                                        </div>
                                     </div>
                                 @endif
                                 <input type="file" name="foto" accept="image/*"
@@ -195,8 +199,13 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Scan KTP</label>
                                 @if($isEdit)
-                                    <a id="editKtpLink" href="#" target="_blank"
-                                        class="hidden text-xs text-blue-600 hover:underline">Lihat KTP saat ini</a>
+                                    <div class="my-1">
+                                        <a id="editKtpLink" href="#" target="_blank"
+                                            class="hidden inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 transition-colors">
+                                            <i class="fas fa-id-card"></i>
+                                            <span>Lihat Scan KTP saat ini</span>
+                                        </a>
+                                    </div>
                                 @endif
                                 <input type="file" name="scan_ktp" accept="image/*,.pdf"
                                     class="block w-full text-xs text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-blue-700 hover:file:bg-blue-100">
@@ -204,8 +213,13 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">CV</label>
                                 @if($isEdit)
-                                    <a id="editCvLink" href="#" target="_blank"
-                                        class="hidden text-xs text-indigo-600 hover:underline">Lihat CV saat ini</a>
+                                    <div class="my-1">
+                                        <a id="editCvLink" href="#" target="_blank"
+                                            class="hidden inline-flex items-center gap-1.5 rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>Lihat CV saat ini</span>
+                                        </a>
+                                    </div>
                                 @endif
                                 <input type="file" name="cv" accept=".pdf,.doc,.docx"
                                     class="block w-full text-xs text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-blue-700 hover:file:bg-blue-100">

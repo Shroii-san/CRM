@@ -146,7 +146,11 @@
 
                             <td class="px-3 py-2 whitespace-nowrap">
                                 <template x-if="item.foto">
-                                    <img :src="item.foto" class="h-12 w-12 rounded-lg border border-gray-200 object-cover" alt="Foto">
+                                    <button type="button" @click="previewPhoto(item.foto, item.full_name)"
+                                        class="block rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                                        title="Klik untuk melihat foto">
+                                        <img :src="item.foto" class="h-10 w-10 rounded-lg border border-gray-200 object-cover shadow-sm hover:opacity-80 transition-opacity" alt="Foto">
+                                    </button>
                                 </template>
                                 <template x-if="!item.foto">
                                     <span class="text-xs text-gray-400">-</span>
@@ -156,8 +160,9 @@
                             <td class="px-3 py-2 whitespace-nowrap">
                                 <template x-if="item.scan_ktp">
                                     <a :href="item.scan_ktp" target="_blank"
-                                        class="text-sm text-blue-600 hover:underline">
-                                        <i class="fas fa-id-card mr-1"></i>Lihat
+                                        class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 transition-colors">
+                                        <i class="fas fa-id-card"></i>
+                                        <span>Lihat</span>
                                     </a>
                                 </template>
                                 <template x-if="!item.scan_ktp">
@@ -168,8 +173,9 @@
                             <td class="px-3 py-2 whitespace-nowrap">
                                 <template x-if="item.cv">
                                     <a :href="item.cv" target="_blank"
-                                        class="text-sm text-indigo-600 hover:underline">
-                                        <i class="fas fa-file-pdf mr-1"></i>Lihat
+                                        class="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>Lihat</span>
                                     </a>
                                 </template>
                                 <template x-if="!item.cv">

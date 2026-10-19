@@ -136,9 +136,9 @@ function populateCandidateEditForm(buttonOrItem) {
             npwp: item.npwp,
             no_bpjs: item.no_bpjs,
             status: item.status,
-            foto: item.foto,
-            ktp: item.scan_ktp,
-            cv: item.cv,
+            foto: item.foto || item.foto_url || "",
+            ktp: item.scan_ktp || item.scanKtp || item.scan_ktp_url || "",
+            cv: item.cv || item.cv_url || "",
             pendidikan: JSON.stringify(
                 item.education_histories || item.educationHistories || [],
             ),
@@ -150,6 +150,12 @@ function populateCandidateEditForm(buttonOrItem) {
     if (!form) return;
 
     form.action = data.updateUrl;
+
+    // Reset any previously selected file inputs
+    form.querySelectorAll('input[type="file"]').forEach((input) => {
+        input.value = "";
+    });
+
     const setValue = (name, value) => {
         const input = form.querySelector(`[name="${name}"]`);
         if (input)
@@ -171,9 +177,11 @@ function populateCandidateEditForm(buttonOrItem) {
         if (data.foto) {
             fotoImg.src = data.foto;
             fotoWrap.classList.remove("hidden");
+            fotoWrap.classList.add("flex");
         } else {
             fotoImg.src = "";
             fotoWrap.classList.add("hidden");
+            fotoWrap.classList.remove("flex");
         }
     }
 

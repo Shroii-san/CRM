@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\ActivityLogController;
 use App\Http\Controllers\Api\V1\AttachmentController;
 use App\Http\Controllers\Api\V1\ExternalConversationController;
+use App\Http\Controllers\Api\V1\HrdController;
 use App\Http\Controllers\Api\V1\RegionController;
 use App\Http\Controllers\AuthController;
 
@@ -85,6 +86,15 @@ Route::prefix('v1')->name('api.v1.')->middleware(['auth:sanctum,web'])->group(fu
         Route::post('/', [OrganizationSocialProfileController::class, 'store'])->name('store');
         Route::put('/{id}', [OrganizationSocialProfileController::class, 'update'])->name('update');
         Route::delete('/{id}', [OrganizationSocialProfileController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('hrd')->name('hrd.')->group(function () {
+        Route::get('/', [HrdController::class, 'index'])->name('index');
+        Route::get('/{id}', [HrdController::class, 'show'])->name('show')->whereNumber('id');
+        Route::post('/', [HrdController::class, 'store'])->name('store');
+        Route::put('/{id}', [HrdController::class, 'update'])->name('update')->whereNumber('id');
+        Route::delete('/{id}', [HrdController::class, 'destroy'])->name('destroy')->whereNumber('id');
+        Route::post('/{id}/promote', [HrdController::class, 'promoteToEmployee'])->name('promoteToEmployee');
     });
 
     Route::prefix('industries')->name('industries.')->group(function () {

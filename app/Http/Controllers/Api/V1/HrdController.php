@@ -55,10 +55,11 @@ class HrdController extends Controller
     public function store(StoreCandidateRequest $request): JsonResponse
     {
         try {
-            $candidate = $this->hrdService->create($request->validated());
+            $data = array_merge($request->validated(), $request->allFiles());
+            $candidate = $this->hrdService->create($data);
 
             return $this->successResponse(
-                CandidateResource::make($candidate->fresh(['educationHistories', 'families', 'employee'])),
+                CandidateResource::make($candidate->fresh(['educationHistories', 'families', 'employee', 'attachments'])),
                 'Candidate created successfully',
                 201
             );
@@ -74,14 +75,15 @@ class HrdController extends Controller
     public function update(UpdateCandidateRequest $request, int $id): JsonResponse
     {
         try {
-            $candidate = $this->hrdService->update($id, $request->validated());
+            $data = array_merge($request->validated(), $request->allFiles());
+            $candidate = $this->hrdService->update($id, $data);
 
             if ((int) $candidate->fresh()->status === Candidate::STATUS_ACCEPTED) {
                 $this->hrdService->promoteCandidateToEmployee($candidate);
             }
 
             return $this->successResponse(
-                CandidateResource::make($candidate->fresh(['educationHistories', 'families', 'employee'])),
+                CandidateResource::make($candidate->fresh(['educationHistories', 'families', 'employee', 'attachments'])),
                 'Candidate updated successfully'
             );
         } catch (Throwable $e) {

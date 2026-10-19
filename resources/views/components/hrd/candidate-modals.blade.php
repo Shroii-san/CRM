@@ -65,3 +65,26 @@
         </form>
     </div>
 </div>
+
+<div id="photoPreviewModal" x-data="{ open: false, url: '', name: '' }" x-show="open" x-cloak
+    @keydown.escape.window="open = false" @click.self="open = false"
+    @open-photo-preview.window="url = $event.detail.url; name = $event.detail.name || 'Foto Kandidat'; open = true"
+    class="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4">
+    <div class="relative max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden p-4">
+        <div class="flex items-center justify-between pb-3 border-b mb-3">
+            <h3 class="text-sm font-semibold text-gray-800" x-text="name"></h3>
+            <button type="button" @click="open = false" class="text-gray-400 hover:text-gray-600 text-xl font-bold leading-none">&times;</button>
+        </div>
+        <div class="flex justify-center items-center bg-gray-50 border border-gray-100 rounded-lg overflow-hidden max-h-[70vh] p-2">
+            <img :src="url" class="max-h-[65vh] max-w-full object-contain rounded-lg shadow-sm" :alt="name">
+        </div>
+        <div class="mt-3 flex justify-end gap-2">
+            <a :href="url" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium">
+                <i class="fas fa-external-link-alt"></i> Buka Tab Baru
+            </a>
+            <button type="button" @click="open = false" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>

@@ -77,6 +77,10 @@ function buildTableComponent() {
             this.dispatchWindowEvent("open-modal");
         },
 
+        previewPhoto(url, name) {
+            this.dispatchWindowEvent("open-photo-preview", { url, name });
+        },
+
         handleOpenEdit(item) {
             this.dispatchWindowEvent("open-edit-modal", item || {});
         },

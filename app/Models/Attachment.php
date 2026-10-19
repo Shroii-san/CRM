@@ -30,7 +30,11 @@ class Attachment extends Model
      */
     public function getFileUrlAttribute(): ?string
     {
-        return $this->storage_reference ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->storage_reference) : null;
+        if (!$this->storage_reference) {
+            return null;
+        }
+
+        return asset('storage/' . ltrim($this->storage_reference, '/'));
     }
 
     public function scopeOfType($query, string $type)

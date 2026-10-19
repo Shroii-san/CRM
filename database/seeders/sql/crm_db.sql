@@ -7447,6 +7447,8 @@ COPY public.menus (id, parent_id, icon_id, name, slug, route, position, is_activ
 43	\N	\N	Calendar	calendar	calendar	12	t	2025-10-06 12:52:05.84553	2025-10-06 12:52:05.84553
 44	\N	\N	Deals	deals	deals	6	t	2025-11-18 14:13:38.280643	2025-11-18 14:13:38.280643
 45	\N	\N	Pipeline	pipeline	pipeline	7	t	2025-11-24 08:52:30.931008	2025-11-24 08:52:30.931008
+46	\N	\N	HRD	hrd	hrd.index	8	t	\N	\N
+47	\N	\N	Family	family	family.index	10	t	\N	\N
 \.
 
 --

@@ -1,12 +1,14 @@
-const hrdKeluargaState = { karyawanId: null, records: [] };
+const hrdKeluargaState = { karyawanId: null, candidateId: null, records: [] };
 
 function hrdKeluargaStatusClass(status) {
-    return status === "Suami"
-        ? "bg-blue-100 text-blue-800"
-        : status === "Istri"
-          ? "bg-pink-100 text-pink-800"
-          : "bg-amber-100 text-amber-800";
+    const s = String(status);
+    if (s === "2" || s === "Suami" || s === "Istri" || s === "Pasangan")
+        return "bg-blue-100 text-blue-800";
+    if (s === "3" || s === "Anak")
+        return "bg-green-100 text-green-800";
+    return "bg-amber-100 text-amber-800"; // 1 = Orang Tua / Ayah / Ibu
 }
+
 
 function hrdFormatTanggal(value) {
     const normalized = window.normalisasiTanggal(value);
@@ -37,9 +39,9 @@ function renderHrdKeluargaList() {
                 <div class="text-xs text-gray-500">${window.escapeHtml(record.tempat_lahir)}, ${hrdFormatTanggal(record.tanggal_lahir)} &middot; ${window.hitungUsia(record.tanggal_lahir)}</div>
             </div>
             <div class="flex shrink-0 items-center gap-3">
-                <span class="rounded-full px-2 py-1 text-xs font-medium ${hrdKeluargaStatusClass(record.status)}">${window.escapeHtml(record.status)}</span>
+                <span class="rounded-full px-2 py-1 text-xs font-medium ${hrdKeluargaStatusClass(record.status)}">${window.escapeHtml(record.status_label || record.status)}</span>
                 <button type="button" onclick="editHrdKeluarga(${record.id})" class="text-blue-600 hover:text-blue-800" title="Edit"><i class="fas fa-edit"></i></button>
-                <form action="/keluarga/${record.id}" method="POST" class="inline" onsubmit="openHrdKeluargaDelete(event, this)">
+                <form action="/family/${record.id}" method="POST" class="inline" onsubmit="openHrdKeluargaDelete(event, this)">
                     <input type="hidden" name="_token" value="${csrfToken}">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash"></i></button>
@@ -56,7 +58,7 @@ function resetHrdKeluargaForm() {
     if (!form) return;
 
     form.reset();
-    form.action = `/karyawan/${hrdKeluargaState.karyawanId}/keluarga`;
+    form.action = `/family/${hrdKeluargaState.karyawanId}/family`;
     document.getElementById("hrdKeluargaMethod").value = "POST";
     document.getElementById("hrdKeluargaFormTitle").innerHTML =
         '<i class="fas fa-plus-circle mr-2"></i>Tambah Anggota Keluarga';
@@ -118,21 +120,23 @@ function editHrdKeluarga(id) {
     const record = hrdKeluargaState.records.find((item) => item.id === id);
     if (!record) return;
 
-    document.getElementById("hrdKeluargaForm").action = `/keluarga/${id}`;
+    document.getElementById("hrdKeluargaForm").action = `/family/${id}`;
     document.getElementById("hrdKeluargaMethod").value = "PUT";
     document.getElementById("hrdKeluargaFormTitle").innerHTML =
         '<i class="fas fa-edit mr-2"></i>Edit Anggota Keluarga';
-    document.getElementById("hrdKeluargaNama").value = record.nama;
-    document.getElementById("hrdKeluargaTempat").value = record.tempat_lahir;
+    document.getElementById("hrdKeluargaNama").value = record.nama || record.name || "";
+    document.getElementById("hrdKeluargaTempat").value = record.tempat_lahir || record.birth_place || "";
     document.getElementById("hrdKeluargaTanggal").value =
-        window.normalisasiTanggal(record.tanggal_lahir);
+        window.normalisasiTanggal(record.tanggal_lahir || record.birth_date);
     document.getElementById("hrdKeluargaUsia").value = window.hitungUsia(
-        record.tanggal_lahir,
+        record.tanggal_lahir || record.birth_date,
     );
-    document.getElementById("hrdKeluargaStatus").value = record.status;
+    // Select the status option (value is integer 1/2/3)
+    document.getElementById("hrdKeluargaStatus").value = String(record.status);
 
     openHrdKeluargaFormModal();
 }
+
 
 function closeHrdKeluargaForm() {
     const modal = document.getElementById("hrdKeluargaFormModal");
@@ -240,7 +244,7 @@ async function confirmHrdKeluargaDelete() {
             "Gagal menghapus data keluarga.",
         );
         hrdKeluargaState.records = hrdKeluargaState.records.filter(
-            (record) => `/keluarga/${record.id}` !== form.action,
+            (record) => `/family/${record.id}` !== form.action,
         );
         renderHrdKeluargaList();
         showHrdKeluargaToast("Data keluarga berhasil dihapus.");
@@ -296,10 +300,11 @@ function initHrdFamily() {
                 const saved = result.data;
                 const savedRecord = {
                     id: saved.id,
-                    nama: saved.nama,
-                    tempat_lahir: saved.tempat_lahir,
-                    tanggal_lahir: saved.tanggal_lahir,
+                    nama: saved.nama || saved.name,
+                    tempat_lahir: saved.tempat_lahir || saved.birth_place,
+                    tanggal_lahir: saved.tanggal_lahir || saved.birth_date,
                     status: saved.status,
+                    status_label: saved.status_label,
                 };
                 const existingIndex = hrdKeluargaState.records.findIndex(
                     (record) => record.id === savedRecord.id,

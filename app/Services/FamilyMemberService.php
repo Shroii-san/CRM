@@ -19,10 +19,20 @@ class FamilyMemberService
     public function store(Employee $employee, array $data): FamilyMember
     {
         return $employee->families()->create([
-            'name' => $data['name'],
+            'name'        => $data['name'],
             'birth_place' => $data['birth_place'],
-            'birth_date' => $this->normalizeDate($data['birth_date']),
-            'status' => (int) $data['status'],
+            'birth_date'  => $this->normalizeDate($data['birth_date']),
+            'status'      => (int) $data['status'],
+        ]);
+    }
+
+    public function storeForCandidate(\App\Models\Candidate $candidate, array $data): FamilyMember
+    {
+        return $candidate->families()->create([
+            'name'        => $data['name'],
+            'birth_place' => $data['birth_place'],
+            'birth_date'  => $this->normalizeDate($data['birth_date']),
+            'status'      => (int) $data['status'],
         ]);
     }
 

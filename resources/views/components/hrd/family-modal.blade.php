@@ -62,12 +62,9 @@
                     <select id="hrdKeluargaStatus" name="status" required
                         class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2">
                         <option value="">Pilih hubungan</option>
-                        <option>Ayah</option>
-                        <option>Ibu</option>
-                        <option>Suami</option>
-                        <option>Istri</option>
-                        <option>Anak</option>
-                        <option>Orang Tua</option>
+                        <option value="1">Orang Tua</option>
+                        <option value="2">Pasangan</option>
+                        <option value="3">Anak</option>
                     </select>
                 </div>
             </div>

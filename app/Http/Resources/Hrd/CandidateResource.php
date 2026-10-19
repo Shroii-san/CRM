@@ -59,14 +59,20 @@ class CandidateResource extends JsonResource
             'families' => $this->whenLoaded('families', function () {
                 return $this->families->map(function ($family) {
                     return [
-                        'id' => $family->id,
-                        'name' => $family->name,
-                        'nama' => $family->name,
-                        'birth_place' => $family->birth_place,
+                        'id'           => $family->id,
+                        'name'         => $family->name,
+                        'nama'         => $family->name,
+                        'birth_place'  => $family->birth_place,
                         'tempat_lahir' => $family->birth_place,
-                        'birth_date' => $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
-                        'tanggal_lahir' => $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
-                        'status' => $family->status,
+                        'birth_date'   => $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
+                        'tanggal_lahir'=> $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
+                        'status'       => $family->status,
+                        'status_label' => match ((int) $family->status) {
+                            1 => 'Orang Tua',
+                            2 => 'Pasangan',
+                            3 => 'Anak',
+                            default => (string) $family->status,
+                        },
                     ];
                 })->values();
             }),
@@ -78,14 +84,20 @@ class CandidateResource extends JsonResource
                 $families = $this->employee->relationLoaded('families')
                     ? $this->employee->families->map(function ($family) {
                         return [
-                            'id' => $family->id,
-                            'name' => $family->name,
-                            'nama' => $family->name,
-                            'birth_place' => $family->birth_place,
+                            'id'           => $family->id,
+                            'name'         => $family->name,
+                            'nama'         => $family->name,
+                            'birth_place'  => $family->birth_place,
                             'tempat_lahir' => $family->birth_place,
-                            'birth_date' => $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
-                            'tanggal_lahir' => $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
-                            'status' => $family->status,
+                            'birth_date'   => $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
+                            'tanggal_lahir'=> $family->birth_date ? \Carbon\Carbon::parse($family->birth_date)->format('Y-m-d') : null,
+                            'status'       => $family->status,
+                            'status_label' => match ((int) $family->status) {
+                                1 => 'Orang Tua',
+                                2 => 'Pasangan',
+                                3 => 'Anak',
+                                default => (string) $family->status,
+                            },
                         ];
                     })->values()
                     : [];

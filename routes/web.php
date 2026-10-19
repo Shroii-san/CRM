@@ -130,6 +130,7 @@ Route::middleware(['auth', 'permission'])->group(function () {
     Route::get('/calendar', fn() => view('layouts.react'))->name('calendar');
 
     Route::get('/family', [FamilyMemberController::class, 'index'])->name('family.index');
+    Route::post('/family', [FamilyMemberController::class, 'storeStandalone'])->name('family.storeStandalone');
     Route::post('/family/{employee}/family', [FamilyMemberController::class, 'store'])->name('family.store');
     Route::put('/family/{family}', [FamilyMemberController::class, 'update'])->name('family.update');
     Route::delete('/family/{family}', [FamilyMemberController::class, 'destroy'])->name('family.destroy');

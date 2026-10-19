@@ -11,6 +11,31 @@ class StoreCandidateRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $data = $this->all();
+
+        if (array_key_exists('pendidikan', $data) && !array_key_exists('education_histories', $data)) {
+            $data['education_histories'] = collect($data['pendidikan'] ?? [])
+                ->values()
+                ->map(function ($item) {
+                    return [
+                        'level' => $item['level'] ?? $item['jenjang'] ?? null,
+                        'school_name' => $item['school_name'] ?? $item['nama_sekolah'] ?? null,
+                        'major' => $item['major'] ?? $item['jurusan'] ?? null,
+                        'degree' => $item['degree'] ?? $item['gelar'] ?? null,
+                        'last_school_location' => $item['last_school_location'] ?? $item['lokasi'] ?? null,
+                        'start_year' => $item['start_year'] ?? $item['tahun_masuk'] ?? null,
+                        'graduation_year' => $item['graduation_year'] ?? $item['tahun_lulus'] ?? null,
+                        'score' => $item['score'] ?? $item['ipk_atau_nilai'] ?? null,
+                    ];
+                })
+                ->all();
+
+            $this->replace($data);
+        }
+    }
+
     public function rules(): array
     {
         return [

@@ -70,21 +70,21 @@ function tambahPendidikan(containerId, values) {
         "pendidikan-row space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-3";
     row.innerHTML = `
         <div class="grid grid-cols-2 gap-2">
-            <select name="pendidikan[${index}][jenjang]" class="${INP}">
+            <select name="education_histories[${index}][level]" class="${INP}">
                 <option value="">Jenjang</option>
                 ${JENJANG.map((jurusan) => `<option value="${jurusan}">${jurusan}</option>`).join("")}
             </select>
-            <input type="text" name="pendidikan[${index}][nama_sekolah]" placeholder="Nama sekolah" class="${INP}">
+            <input type="text" name="education_histories[${index}][school_name]" placeholder="Nama sekolah" class="${INP}">
         </div>
         <div class="grid grid-cols-3 gap-2">
-            <input type="text" name="pendidikan[${index}][jurusan]" placeholder="Jurusan" class="${INP}">
-            <input type="text" name="pendidikan[${index}][gelar]" placeholder="Gelar (S.Kom)" class="${INP}">
-            <input type="text" name="pendidikan[${index}][lokasi]" placeholder="Lokasi" class="${INP}">
+            <input type="text" name="education_histories[${index}][major]" placeholder="Jurusan" class="${INP}">
+            <input type="text" name="education_histories[${index}][degree]" placeholder="Gelar (S.Kom)" class="${INP}">
+            <input type="text" name="education_histories[${index}][last_school_location]" placeholder="Lokasi" class="${INP}">
         </div>
         <div class="grid grid-cols-3 gap-2">
-            <input type="number" name="pendidikan[${index}][tahun_masuk]" placeholder="Masuk" class="${INP}">
-            <input type="number" name="pendidikan[${index}][tahun_lulus]" placeholder="Lulus" class="${INP}">
-            <input type="text" name="pendidikan[${index}][ipk_atau_nilai]" placeholder="IPK / Nilai" class="${INP}">
+            <input type="number" name="education_histories[${index}][start_year]" placeholder="Masuk" class="${INP}">
+            <input type="number" name="education_histories[${index}][graduation_year]" placeholder="Lulus" class="${INP}">
+            <input type="text" name="education_histories[${index}][score]" placeholder="IPK / Nilai" class="${INP}">
         </div>
         <button type="button" onclick="this.closest('.pendidikan-row').remove()" class="text-xs text-red-500 hover:text-red-700">
             <i class="fas fa-trash mr-1"></i> Hapus baris
@@ -93,20 +93,20 @@ function tambahPendidikan(containerId, values) {
 
     const setValue = (field, value) => {
         const input = row.querySelector(
-            `[name="pendidikan[${index}][${field}]"]`,
+            `[name="education_histories[${index}][${field}]"]`,
         );
         if (input)
             input.value = value === null || value === undefined ? "" : value;
     };
 
-    setValue("jenjang", data.jenjang);
-    setValue("nama_sekolah", data.nama_sekolah);
-    setValue("jurusan", data.jurusan);
-    setValue("gelar", data.gelar);
-    setValue("lokasi", data.lokasi);
-    setValue("tahun_masuk", data.tahun_masuk);
-    setValue("tahun_lulus", data.tahun_lulus);
-    setValue("ipk_atau_nilai", data.ipk_atau_nilai);
+    setValue("level", data.level ?? data.jenjang);
+    setValue("school_name", data.school_name ?? data.nama_sekolah);
+    setValue("major", data.major ?? data.jurusan);
+    setValue("degree", data.degree ?? data.gelar);
+    setValue("last_school_location", data.last_school_location ?? data.lokasi);
+    setValue("start_year", data.start_year ?? data.tahun_masuk);
+    setValue("graduation_year", data.graduation_year ?? data.tahun_lulus);
+    setValue("score", data.score ?? data.ipk_atau_nilai);
 
     wrap.appendChild(row);
 }

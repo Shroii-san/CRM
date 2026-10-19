@@ -124,7 +124,7 @@ class HrdController extends Controller
                 return $this->errorResponse('Candidate must be accepted before being promoted to employee.', 422);
             }
 
-            $employee = $this->hrdService->promoteCandidateToEmployee($candidate);
+            $employee = $this->hrdService->promoteCandidateToEmployee($candidate, $validated);
 
             return $this->successResponse(
                 [

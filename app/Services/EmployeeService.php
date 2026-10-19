@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\DB;
 
 class EmployeeService
 {
-    public function promote(Candidate $candidate): Employee
+    public function promote(Candidate $candidate, array $data = []): Employee
     {
         if ($candidate->employee()->exists()) {
             return $candidate->employee;
         }
 
-        return DB::transaction(function () use ($candidate) {
+        return DB::transaction(function () use ($candidate, $data) {
             $employee = $candidate->employee()->create([
-                'department_id' => null,
+                'department_id' => $data['department_id'] ?? null,
                 'full_name' => $candidate->full_name,
                 'nik' => $candidate->nik,
                 'phone_number' => $candidate->phone_number,
-                'join_date' => now()->toDateString(),
+                'join_date' => !empty($data['join_date']) ? $data['join_date'] : now()->toDateString(),
                 'status' => 1,
             ]);
 

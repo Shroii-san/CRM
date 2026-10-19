@@ -9,6 +9,10 @@ class Employee extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'join_date' => 'date:Y-m-d',
+    ];
+
     protected $fillable = [
         'candidate_id',
         'department_id',

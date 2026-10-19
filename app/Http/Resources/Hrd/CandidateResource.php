@@ -94,10 +94,14 @@ class CandidateResource extends JsonResource
                     'id' => $this->employee->id,
                     'full_name' => $this->employee->full_name,
                     'nik' => $this->employee->nik,
-                    'join_date' => $this->employee->join_date?->toDateString(),
+                    'join_date' => $this->employee->join_date
+                        ? (is_string($this->employee->join_date)
+                            ? \Carbon\Carbon::parse($this->employee->join_date)->toDateString()
+                            : $this->employee->join_date->toDateString())
+                        : null,
                     'status' => $this->employee->status,
                     'families' => $families,
-                    'families_count' => $families->count(),
+                    'families_count' => count($families),
                 ];
             }),
             'created_at' => $this->created_at?->toIso8601String(),

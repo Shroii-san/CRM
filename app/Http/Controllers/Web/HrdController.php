@@ -92,7 +92,7 @@ class HrdController extends Controller
         }
 
         try {
-            $this->hrdService->promoteCandidateToEmployee($candidate);
+            $this->hrdService->promoteCandidateToEmployee($candidate, $validated);
 
             return redirect()->route('employees.index')->with('success', 'Kandidat berhasil dijadikan karyawan.');
         } catch (Throwable $e) {

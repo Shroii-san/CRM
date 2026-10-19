@@ -140,9 +140,9 @@ class HrdService extends BaseService
         $this->delete($candidate);
     }
 
-    public function promoteCandidateToEmployee(Candidate $candidate): Employee
+    public function promoteCandidateToEmployee(Candidate $candidate, array $data = []): Employee
     {
-        return app(EmployeeService::class)->promote($candidate);
+        return app(EmployeeService::class)->promote($candidate, $data);
     }
 
     public function getFilterOptions(): array
